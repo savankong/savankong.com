@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Link from "next/link";
 
 export default function Footer() {
   return (
@@ -30,9 +31,9 @@ export default function Footer() {
           <a href="https://lifebetweentitles.com" className="footer-link">
             Life Between Titles
           </a>
-          <a href="/#journal" className="footer-link">
+          <Link href="/#journal" className="footer-link">
             The Latest
-          </a>
+          </Link>
         </div>
       </div>
     </footer>
