@@ -1,13 +1,8 @@
 import Image from "next/image";
+import Link from "next/link";
+import Nav from "@/components/Nav";
+import Footer from "@/components/Footer";
 import styles from "./page.module.css";
-
-const navLinks = [
-  { label: "Home", href: "#", active: true },
-  { label: "The Latest", href: "#journal" },
-  { label: "Podcast", href: "#podcast" },
-  { label: "Book", href: "#book" },
-  { label: "About", href: "#about" },
-];
 
 const pressItems = [
   {
@@ -101,33 +96,36 @@ const testimonials = [
   },
 ];
 
+const bookTeasers = [
+  {
+    status: "Available Now",
+    title: "Laid Off and Lost.",
+    desc: "The whole truth about what happens when the career ends and nobody talks about it.",
+    href: "/books/laid-off-and-lost",
+  },
+  {
+    status: "In Progress",
+    title: "Halfway Light.",
+    desc: "A standalone memoir tracing his family's survival of the Khmer Rouge genocide and resettlement in America.",
+    href: "/books/halfway-light",
+  },
+  {
+    status: "Coming Soon",
+    title: "Right/Sized.",
+    desc: "A coloring book, part of the Life Between Titles book series.",
+    href: "/books/right-sized",
+  },
+];
+
 export default function Home() {
   return (
     <>
-      <nav className={styles.nav}>
-        <span className={styles.navLogo}>Savan Kong</span>
-        <div className={styles.navLinks}>
-          {navLinks.map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className={`${styles.navLink} ${
-                link.active ? styles.navLinkActive : ""
-              }`}
-            >
-              {link.label}
-            </a>
-          ))}
-          <a href="#podcast" className={styles.navCta}>
-            Listen
-          </a>
-        </div>
-      </nav>
+      <Nav active="Home" />
 
-      <section className={`${styles.hero} ${styles.glowBg}`}>
+      <section className={`${styles.hero} glow-bg`}>
         <div className={styles.heroText}>
           <h1 className={styles.heroH1}>
-            Savanrith <span className={styles.glitch}>&ldquo;Savan&rdquo;</span> Kong
+            Savanrith <span className="glitch">&ldquo;Savan&rdquo;</span> Kong
           </h1>
           <div className={styles.heroTagline}>
             <span className={styles.heroTaglineItem}>
@@ -164,13 +162,13 @@ export default function Home() {
           <div className={styles.heroCtas}>
             <a
               href="#podcast"
-              className={`${styles.pillFilled} ${styles.heroCtaListen}`}
+              className={`pill-filled ${styles.heroCtaListen}`}
             >
               ▶ Listen to the Podcast
             </a>
-            <a href="#book" className={styles.pillOutline}>
+            <Link href="/books/laid-off-and-lost" className="pill-outline">
               Get the Book
-            </a>
+            </Link>
           </div>
         </div>
         <div className={styles.heroImageWrap}>
@@ -185,22 +183,19 @@ export default function Home() {
         </div>
       </section>
 
-      <section
-        id="podcast"
-        className={`${styles.section} ${styles.blackBg} ${styles.topBorder}`}
-      >
+      <section id="podcast" className="section black-bg top-border">
         <div className={styles.podcastGrid}>
           <div>
-            <div className={styles.eyebrow}>
-              <span className={styles.eyebrowRule} />
-              <span className={styles.eyebrowLabel}>
+            <div className="eyebrow">
+              <span className="eyebrow-rule" />
+              <span className="eyebrow-label">
                 A Podcast Network for Career Transitions
               </span>
             </div>
             <h2 className={styles.podcastH2}>
               Life Between
               <br />
-              <span className={styles.glitch}>Titles.</span>
+              <span className="glitch">Titles.</span>
             </h2>
             <p className={styles.podcastBody}>
               Honest, unscripted stories from people navigating layoffs, career
@@ -210,19 +205,19 @@ export default function Home() {
             <div className={styles.podcastLinks}>
               <a
                 href="https://open.spotify.com"
-                className={`${styles.pillFilled} ${styles.podcastLinkFilled}`}
+                className={`pill-filled ${styles.podcastLinkFilled}`}
               >
                 Spotify
               </a>
               <a
                 href="https://podcasts.apple.com"
-                className={`${styles.pillOutline} ${styles.podcastLinkOutline}`}
+                className={`pill-outline ${styles.podcastLinkOutline}`}
               >
                 Apple
               </a>
               <a
                 href="https://youtube.com"
-                className={`${styles.pillOutline} ${styles.podcastLinkOutline}`}
+                className={`pill-outline ${styles.podcastLinkOutline}`}
               >
                 YouTube
               </a>
@@ -245,56 +240,42 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="book" className={`${styles.section} ${styles.glowBg}`}>
-        <div className={styles.bookGrid}>
-          <div className={styles.bookCoverWrap}>
-            <div className={styles.bookCover}>
-              <Image
-                src="https://www.lifebetweentitles.com/Cover-LaidOff.jpg"
-                alt="Laid Off and Lost book cover"
-                width={280}
-                height={420}
-              />
-            </div>
-          </div>
+      <section id="books" className="section glow-bg">
+        <div className="section-head-row">
           <div>
-            <div className={styles.eyebrow}>
-              <span className={styles.eyebrowRule} />
-              <span className={styles.eyebrowLabel}>New Book · Now Available</span>
+            <div className="eyebrow">
+              <span className="eyebrow-rule" />
+              <span className="eyebrow-label">Authorship</span>
             </div>
-            <h2 className={styles.bookH2}>
-              Laid Off <span className={styles.glitch}>and Lost.</span>
-            </h2>
-            <p className={styles.bookBody}>
-              The whole truth about what happens when the career ends and nobody
-              talks about it: the identity crisis, the isolation, and the
-              process of clarifying what you&rsquo;re actually trying to
-              rebuild.
-            </p>
-            <p className={styles.bookBody}>
-              Written from inside the transition itself. Savan was unemployed
-              for a year after leaving the DoD, received an ADHD diagnosis at
-              46, and wrote every page while still figuring it out. Each
-              chapter ends with a <strong>Try This</strong> section.
-            </p>
-            <div className={styles.bookCtas}>
-              <a href="#" className={styles.pillFilled}>
-                Kindle →
-              </a>
-              <a href="#" className={styles.pillOutline}>
-                Paperback →
-              </a>
-            </div>
+            <h2 className="h2">Books.</h2>
           </div>
+          <Link href="/books" className="view-all">
+            See all books →
+          </Link>
+        </div>
+        <p className={styles.authorshipIntro}>
+          A book series under the Life Between Titles name — starting with the
+          practical guide for surviving a layoff, and expanding into a
+          standalone memoir and a coloring book for the same in-between space.
+        </p>
+        <div className={styles.booksTeaserGrid}>
+          {bookTeasers.map((book) => (
+            <Link key={book.title} href={book.href} className={styles.bookTeaserCard}>
+              <div className={styles.bookTeaserStatus}>{book.status}</div>
+              <div className={styles.bookTeaserTitle}>{book.title}</div>
+              <p className={styles.bookTeaserDesc}>{book.desc}</p>
+              <span className={styles.bookTeaserLink}>Learn more →</span>
+            </Link>
+          ))}
         </div>
       </section>
 
-      <section className={`${styles.section} ${styles.blackBg} ${styles.topBorder}`}>
-        <div className={styles.eyebrow}>
-          <span className={styles.eyebrowRule} />
-          <span className={styles.eyebrowLabel}>In the Press</span>
+      <section className="section black-bg top-border">
+        <div className="eyebrow">
+          <span className="eyebrow-rule" />
+          <span className="eyebrow-label">In the Press</span>
         </div>
-        <h2 className={styles.h2} style={{ marginBottom: 46 }}>
+        <h2 className="h2" style={{ marginBottom: 46 }}>
           Featured conversations.
         </h2>
         <div className={styles.pressGrid}>
@@ -311,16 +292,16 @@ export default function Home() {
         </div>
       </section>
 
-      <section id="journal" className={`${styles.section} ${styles.glowBg}`}>
-        <div className={styles.sectionHeadRow}>
+      <section id="journal" className="section glow-bg">
+        <div className="section-head-row">
           <div>
-            <div className={styles.eyebrow}>
-              <span className={styles.eyebrowRule} />
-              <span className={styles.eyebrowLabel}>The Latest</span>
+            <div className="eyebrow">
+              <span className="eyebrow-rule" />
+              <span className="eyebrow-label">The Latest</span>
             </div>
-            <h2 className={styles.h2}>Journal.</h2>
+            <h2 className="h2">Journal.</h2>
           </div>
-          <a href="#" className={styles.viewAll}>
+          <a href="#" className="view-all">
             View all entries →
           </a>
         </div>
@@ -343,12 +324,12 @@ export default function Home() {
         </div>
       </section>
 
-      <section className={`${styles.section} ${styles.blackBg} ${styles.topBorder}`}>
-        <div className={styles.eyebrow}>
-          <span className={styles.eyebrowRule} />
-          <span className={styles.eyebrowLabel}>What People Say</span>
+      <section className="section black-bg top-border">
+        <div className="eyebrow">
+          <span className="eyebrow-rule" />
+          <span className="eyebrow-label">What People Say</span>
         </div>
-        <h2 className={styles.h2} style={{ marginBottom: 46 }}>
+        <h2 className="h2" style={{ marginBottom: 46 }}>
           Trusted by leaders.
         </h2>
         <div className={styles.testimonialsGrid}>
@@ -373,46 +354,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer
-        id="about"
-        className={`${styles.footer} ${styles.glowBg} ${styles.topBorder}`}
-      >
-        <div className={styles.footerTop}>
-          <div>
-            <h2 className={styles.footerH2}>
-              Let&rsquo;s <span className={styles.glitch}>connect.</span>
-            </h2>
-            <p className={styles.footerBlurb}>
-              Reach out about speaking, press, sponsorships, or just to say hi.
-            </p>
-          </div>
-          <div className={styles.footerPhoto}>
-            <Image
-              src="https://images.squarespace-cdn.com/content/v1/67d45a59e5abd35cf0bf7d15/1750d3c6-517b-4d55-9972-7e34ab46cdcb/9999396F-17FA-4133-B6F1-B99D197B02D7_1_105_c.jpeg"
-              alt="Savan Kong"
-              width={110}
-              height={110}
-            />
-          </div>
-        </div>
-        <div className={styles.footerBottom}>
-          <span className={styles.footerMade}>Made with ❤️ in Longview, WA</span>
-          <div className={styles.footerLinks}>
-            <a href="https://linkedin.com" className={styles.footerLink}>
-              LinkedIn
-            </a>
-            <a
-              href="https://lifebetweentitles.com"
-              className={styles.footerLink}
-            >
-              Life Between Titles
-            </a>
-            <a href="#journal" className={styles.footerLink}>
-              The Latest
-            </a>
-          </div>
-        </div>
-      </footer>
+      <Footer />
     </>
   );
 }
