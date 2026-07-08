@@ -16,6 +16,169 @@
   color: #e4e7f0;
 }
 
+/* ---------- FEATURED (latest release) ---------- */
+.featuredGrid {
+  display: grid;
+  grid-template-columns: 0.55fr 1.45fr;
+  gap: 64px;
+  align-items: center;
+}
+
+.featuredCoverWrap {
+  width: 100%;
+  max-width: 300px;
+  box-shadow: -8px 8px 0 rgba(0, 212, 255, 0.85), 8px -8px 0 rgba(47, 107, 255, 0.85);
+  border-radius: 4px;
+  overflow: hidden;
+  display: block;
+}
+
+.featuredCoverWrap img {
+  width: 100%;
+  display: block;
+}
+
+.featuredTitle {
+  margin: 0 0 14px;
+  font: 400 60px/0.92 var(--font-anton), sans-serif;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.featuredTagline {
+  margin: 0 0 22px;
+  font: italic 400 19px/1.5 var(--font-lora), serif;
+  color: var(--neon);
+}
+
+.featuredDesc {
+  margin: 0 0 30px;
+  font: 400 17px/1.7 var(--font-inter), sans-serif;
+  color: #b9c1d6;
+  max-width: 580px;
+}
+
+.featuredCtas {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+/* ---------- SERIES GROUP (umbrella) ---------- */
+.seriesLabelRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  margin-bottom: 36px;
+}
+
+.seriesLabelLine {
+  height: 1px;
+  width: 60px;
+  background: rgba(0, 212, 255, 0.35);
+}
+
+.seriesLabel {
+  font: 800 12px var(--font-inter), sans-serif;
+  color: var(--neon);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.seriesBox {
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  border-radius: 12px;
+  padding: 44px;
+  box-shadow: 0 0 40px rgba(0, 212, 255, 0.08);
+}
+
+.seriesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 40px;
+}
+
+.seriesCard {
+  display: grid;
+  grid-template-columns: 110px 1fr;
+  gap: 22px;
+  align-items: center;
+}
+
+.seriesCoverWrap {
+  width: 110px;
+  height: 165px;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: -4px 4px 0 rgba(0, 212, 255, 0.85), 4px -4px 0 rgba(47, 107, 255, 0.85);
+  flex: none;
+}
+
+.seriesCoverWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.seriesCoverPlaceholder {
+  width: 110px;
+  height: 165px;
+  border-radius: 4px;
+  flex: none;
+  border: 1px dashed rgba(0, 212, 255, 0.35);
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+}
+
+.seriesCoverPlaceholderText {
+  font: 800 9px var(--font-inter), sans-serif;
+  color: #8b93a8;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.seriesCardStatus {
+  font: 800 10px var(--font-inter), sans-serif;
+  color: var(--neon);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.seriesCardTitle {
+  font: 400 26px/1 var(--font-anton), sans-serif;
+  color: #fff;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.seriesCardDesc {
+  font: 400 13px/1.55 var(--font-inter), sans-serif;
+  color: #8b93a8;
+  margin-bottom: 12px;
+}
+
+.seriesCardLink {
+  font: 800 11px var(--font-inter), sans-serif;
+  color: var(--neon);
+  text-transform: uppercase;
+}
+
+/* ---------- STANDALONE ---------- */
+.standaloneLabelRow {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 8px;
+}
+
 .list {
   display: flex;
   flex-direction: column;
@@ -26,12 +189,7 @@
   grid-template-columns: 180px 1fr;
   gap: 44px;
   align-items: center;
-  padding: 48px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.rowFirst {
-  border-top: 1px solid rgba(0, 212, 255, 0.25);
+  padding: 44px 0 0;
 }
 
 .coverWrap {
@@ -104,6 +262,35 @@
 @media (max-width: 900px) {
   .h1 {
     font-size: 44px;
+  }
+
+  .featuredGrid {
+    grid-template-columns: 1fr;
+    text-align: center;
+    justify-items: center;
+  }
+
+  .featuredDesc {
+    max-width: 100%;
+  }
+
+  .featuredCtas {
+    justify-content: center;
+  }
+
+  .seriesBox {
+    padding: 28px;
+  }
+
+  .seriesGrid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+
+  .seriesCard {
+    grid-template-columns: 1fr;
+    justify-items: center;
+    text-align: center;
   }
 
   .row {
