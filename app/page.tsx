@@ -111,8 +111,8 @@ const bookTeasers = [
   },
   {
     status: "Coming Soon",
-    title: "Right/Sized.",
-    desc: "A coloring book, part of the Life Between Titles book series.",
+    title: "Right-Sized.",
+    desc: "A corporate jargon coloring book, part of the Life Between Titles book series.",
     href: "/books/right-sized",
   },
 ];

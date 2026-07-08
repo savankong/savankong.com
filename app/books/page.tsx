@@ -8,7 +8,7 @@ import styles from "./books.module.css";
 export const metadata: Metadata = {
   title: "Books — Savan Kong",
   description:
-    "Laid Off and Lost, Halfway Light, and Right/Sized. — books by Savanrith \"Savan\" Kong.",
+    "Laid Off and Lost, Halfway Light, and Right-Sized: A Corporate Jargon Coloring Book — books by Savanrith \"Savan\" Kong.",
 };
 
 const books = [
@@ -30,8 +30,8 @@ const books = [
   },
   {
     status: "Coming Soon",
-    title: "Right/Sized.",
-    series: "A Life Between Titles Book",
+    title: "Right-Sized.",
+    series: "A Corporate Jargon Coloring Book",
     desc: "Details coming soon.",
     href: "/books/right-sized",
     cover: null,
@@ -49,7 +49,7 @@ export default function BooksHub() {
           Every book carries the same question forward: who are you when the
           title is gone? <strong>Laid Off and Lost</strong> answers it for the
           job search. <strong>Halfway Light</strong> answers it across
-          generations. <strong>Right/Sized.</strong> answers it with a
+          generations. <strong>Right-Sized.</strong> answers it with a
           coloring pencil in hand.
         </p>
       </section>
