@@ -4,6 +4,9 @@
   --bg-black: #000;
   --bg-glow: #05060a;
   --card: #0a0d16;
+  --banner-h: 46px;
+  --nav-bar-h: 78px;
+  --nav-h: calc(var(--banner-h) + var(--nav-bar-h));
 }
 
 * {
@@ -113,17 +116,31 @@ img {
 
 /* ---------- SHARED: subscribe banner ---------- */
 .subscribe-banner {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--banner-h);
+  z-index: 201;
+  display: flex;
+  align-items: center;
   background: var(--bg-glow);
   border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+  transition: transform 0.25s ease;
+}
+
+body.scrolled .subscribe-banner {
+  transform: translateY(-100%);
 }
 
 .subscribe-banner-inner {
+  width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px 24px;
-  padding: 12px 56px;
+  flex-wrap: nowrap;
+  gap: 20px;
+  padding: 0 56px;
 }
 
 .subscribe-copy {
@@ -145,13 +162,12 @@ img {
   color: #fff;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  white-space: nowrap;
   margin: 0;
 }
 
 .subscribe-sub {
-  font: 400 12px var(--font-inter), sans-serif;
-  color: #8b93a8;
-  margin: 2px 0 0;
+  display: none;
 }
 
 .subscribe-form {
@@ -211,15 +227,30 @@ img {
 
 /* ---------- SHARED: nav ---------- */
 .nav {
-  position: sticky;
-  top: 0;
-  z-index: 20;
+  position: fixed;
+  top: var(--banner-h);
+  left: 0;
+  right: 0;
+  z-index: 200;
+  height: var(--nav-bar-h);
   display: flex;
   align-items: center;
-  padding: 24px 56px;
-  background: rgba(5, 6, 9, 0.85);
-  backdrop-filter: blur(8px);
+  padding: 0 56px;
+  background: var(--bg-black);
   border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+  transition: top 0.25s ease;
+}
+
+body.scrolled .nav {
+  top: 0;
+}
+
+.nav-spacer {
+  height: var(--nav-h);
+}
+
+section[id] {
+  scroll-margin-top: var(--nav-h);
 }
 
 .nav-logo {
@@ -405,12 +436,17 @@ img {
 
 /* ---------- SHARED RESPONSIVE ---------- */
 @media (max-width: 900px) {
+  :root {
+    --banner-h: 56px;
+    --nav-bar-h: 64px;
+  }
+
   .subscribe-banner-inner {
-    padding: 12px 20px;
+    padding: 0 20px;
     justify-content: center;
   }
 
-  .subscribe-sub {
+  .subscribe-icon {
     display: none;
   }
 
@@ -419,7 +455,7 @@ img {
   }
 
   .nav {
-    padding: 18px 20px;
+    padding: 0 20px;
   }
 
   .nav-links {
@@ -450,5 +486,15 @@ img {
   .footer-bottom {
     flex-direction: column;
     text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .subscribe-headline {
+    display: none;
+  }
+
+  .subscribe-input {
+    width: 150px;
   }
 }

@@ -28,6 +28,7 @@ export default function Nav({ active = "Home" }: { active?: string }) {
           ))}
         </div>
       </nav>
+      <div className="nav-spacer" aria-hidden="true" />
     </>
   );
 }
