@@ -155,6 +155,36 @@
   color: #8b93a8;
 }
 
+.voicesGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 26px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.voiceCard {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 34px;
+  box-shadow: 5px 5px 0 rgba(0, 212, 255, 0.2);
+}
+
+.voiceQuote {
+  margin: 0 0 18px;
+  font: 400 26px/1.25 var(--font-anton), sans-serif;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.voiceAttr {
+  font: 700 12px var(--font-inter), sans-serif;
+  color: var(--neon);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .chapterList {
   max-width: 720px;
   margin: 0 auto;
@@ -218,6 +248,14 @@
 
   .problemsGrid {
     grid-template-columns: 1fr;
+  }
+
+  .voicesGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .voiceQuote {
+    font-size: 21px;
   }
 
   .chapterRow {

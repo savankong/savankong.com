@@ -70,7 +70,15 @@ export default function HalfwayLight() {
         </div>
       </section>
 
-      <section className="section black-bg top-border">
+      <section className={`${styles.pullQuoteWrap} black-bg top-border`}>
+        <p className={styles.pullQuote}>
+          &ldquo;They didn&rsquo;t talk about Cambodia because they&rsquo;d
+          once survived by not talking about Cambodia.&rdquo;
+          <span className={styles.pullQuoteAttr}>— Halfway Light, Prologue</span>
+        </p>
+      </section>
+
+      <section className="section glow-bg">
         <div className="eyebrow" style={{ justifyContent: "center" }}>
           <span className="eyebrow-rule" />
           <span className="eyebrow-label">What&rsquo;s Inside</span>
@@ -82,6 +90,47 @@ export default function HalfwayLight() {
               <span className={styles.chapterTitle}>{title}</span>
             </div>
           ))}
+        </div>
+      </section>
+
+      <section className="section black-bg top-border">
+        <div className="eyebrow" style={{ justifyContent: "center" }}>
+          <span className="eyebrow-rule" />
+          <span className="eyebrow-label">In Their Own Words</span>
+        </div>
+        <div className={styles.voicesGrid}>
+          <div className={styles.voiceCard}>
+            <p className={styles.voiceQuote}>
+              &ldquo;We never ate until we were full. We ate to stay
+              upright.&rdquo;
+            </p>
+            <div className={styles.voiceAttr}>— Im, his mother</div>
+          </div>
+          <div className={styles.voiceCard}>
+            <p className={styles.voiceQuote}>
+              &ldquo;To survive, you had to forget who you were. You had to
+              forget that you remembered.&rdquo;
+            </p>
+            <div className={styles.voiceAttr}>— Saroeun, his father</div>
+          </div>
+        </div>
+      </section>
+
+      <section className={`${styles.pullQuoteWrap} glow-bg top-border`}>
+        <p className={styles.pullQuote} style={{ fontSize: 28 }}>
+          &ldquo;We didn&rsquo;t wait for permission. We just started
+          walking.&rdquo;
+          <span className={styles.pullQuoteAttr}>— Saroeun, his father</span>
+        </p>
+        <div style={{ textAlign: "center", marginTop: 32 }}>
+          <a
+            href="https://substack.com/@lifebetweentitles"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="pill-filled"
+          >
+            Follow Updates on Substack →
+          </a>
         </div>
       </section>
 

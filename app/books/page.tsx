@@ -3,7 +3,9 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import NewsletterSignup from "@/components/NewsletterSignup";
 import styles from "./books.module.css";
+import detailStyles from "./detail.module.css";
 
 export const metadata: Metadata = {
   title: "Books — Savan Kong",
@@ -158,6 +160,18 @@ export default function BooksHub() {
             </div>
           </div>
         </div>
+      </section>
+
+      <section className={`${detailStyles.pullQuoteWrap} glow-bg top-border`}>
+        <p className={detailStyles.pullQuote}>
+          &ldquo;They didn&rsquo;t talk about Cambodia because they&rsquo;d
+          once survived by not talking about Cambodia.&rdquo;
+          <span className={detailStyles.pullQuoteAttr}>— Halfway Light, Prologue</span>
+        </p>
+      </section>
+
+      <section className="section black-bg top-border">
+        <NewsletterSignup />
       </section>
 
       <Footer />

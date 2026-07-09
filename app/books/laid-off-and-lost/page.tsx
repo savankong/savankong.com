@@ -161,6 +161,29 @@ export default function LaidOffAndLost() {
         </div>
       </section>
 
+      <section className="section black-bg top-border">
+        <div className="eyebrow" style={{ justifyContent: "center" }}>
+          <span className="eyebrow-rule" />
+          <span className="eyebrow-label">Voices From the Book</span>
+        </div>
+        <div className={styles.voicesGrid}>
+          <div className={styles.voiceCard}>
+            <p className={styles.voiceQuote}>
+              &ldquo;Success to me at the time was just coming back every
+              day.&rdquo;
+            </p>
+            <div className={styles.voiceAttr}>— Wes Averkamp, retired First Sergeant</div>
+          </div>
+          <div className={styles.voiceCard}>
+            <p className={styles.voiceQuote}>
+              &ldquo;The hardest thing is getting in touch with the real
+              you.&rdquo;
+            </p>
+            <div className={styles.voiceAttr}>— Tré Wright, leadership coach</div>
+          </div>
+        </div>
+      </section>
+
       <section className="section glow-bg">
         <div className="eyebrow" style={{ justifyContent: "center" }}>
           <span className="eyebrow-rule" />
