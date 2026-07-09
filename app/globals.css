@@ -111,6 +111,104 @@ img {
   cursor: default;
 }
 
+/* ---------- SHARED: subscribe banner ---------- */
+.subscribe-banner {
+  background: var(--bg-glow);
+  border-bottom: 1px solid rgba(0, 212, 255, 0.15);
+}
+
+.subscribe-banner-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+  padding: 12px 56px;
+}
+
+.subscribe-copy {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+}
+
+.subscribe-icon {
+  font-size: 1.1rem;
+  color: var(--neon);
+  flex: none;
+  line-height: 1;
+}
+
+.subscribe-headline {
+  font: 800 12px var(--font-inter), sans-serif;
+  color: #fff;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  margin: 0;
+}
+
+.subscribe-sub {
+  font: 400 12px var(--font-inter), sans-serif;
+  color: #8b93a8;
+  margin: 2px 0 0;
+}
+
+.subscribe-form {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex: none;
+}
+
+.subscribe-input {
+  height: 38px;
+  padding: 0 14px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  color: #fff;
+  font: 500 13px var(--font-inter), sans-serif;
+  width: 220px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.subscribe-input::placeholder {
+  color: #8b93a8;
+}
+
+.subscribe-input:focus {
+  border-color: var(--neon);
+}
+
+.subscribe-btn {
+  height: 38px;
+  padding: 0 20px;
+  border: none;
+  border-radius: 4px;
+  background: var(--neon);
+  color: #04070d;
+  font: 800 12px var(--font-inter), sans-serif;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow: 0 0 24px rgba(0, 212, 255, 0.5);
+  transition: filter 0.15s, box-shadow 0.15s;
+}
+
+.subscribe-btn:hover {
+  filter: brightness(1.1);
+  box-shadow: 0 0 34px rgba(0, 212, 255, 0.7);
+}
+
+.subscribe-success {
+  font: 600 13px var(--font-inter), sans-serif;
+  color: var(--neon);
+  margin: 0;
+}
+
 /* ---------- SHARED: nav ---------- */
 .nav {
   position: sticky;
@@ -118,7 +216,6 @@ img {
   z-index: 20;
   display: flex;
   align-items: center;
-  justify-content: space-between;
   padding: 24px 56px;
   background: rgba(5, 6, 9, 0.85);
   backdrop-filter: blur(8px);
@@ -126,6 +223,7 @@ img {
 }
 
 .nav-logo {
+  flex: none;
   font: 400 24px var(--font-anton), sans-serif;
   color: #fff;
   letter-spacing: 0.02em;
@@ -135,6 +233,8 @@ img {
 }
 
 .nav-links {
+  flex: 1;
+  justify-content: center;
   display: flex;
   align-items: center;
   gap: 34px;
@@ -305,6 +405,19 @@ img {
 
 /* ---------- SHARED RESPONSIVE ---------- */
 @media (max-width: 900px) {
+  .subscribe-banner-inner {
+    padding: 12px 20px;
+    justify-content: center;
+  }
+
+  .subscribe-sub {
+    display: none;
+  }
+
+  .subscribe-input {
+    width: 160px;
+  }
+
   .nav {
     padding: 18px 20px;
   }

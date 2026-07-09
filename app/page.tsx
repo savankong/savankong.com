@@ -136,17 +136,6 @@ export default async function Home() {
             <strong>Life Between Titles</strong>, a show exploring identity,
             purpose, and the uncertain space between titles and jobs.
           </p>
-          <div className={styles.heroCtas}>
-            <a
-              href="#podcast"
-              className={`pill-filled ${styles.heroCtaListen}`}
-            >
-              ▶ Listen to the Podcast
-            </a>
-            <Link href="/books/laid-off-and-lost" className="pill-outline">
-              Get the Book
-            </Link>
-          </div>
         </div>
         <div className={styles.heroImageWrap}>
           <Image
