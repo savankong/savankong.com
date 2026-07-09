@@ -27,7 +27,6 @@ const apps = [
   },
   {
     logo: "/logos/light-lux.svg",
-    plainLogo: true,
     badge: "B2B Sales Intelligence",
     title: "Light-Lux.",
     tagline: "Turn buying signals into real pipeline.",
@@ -49,14 +48,17 @@ export default function Apps() {
       <Nav active="Apps" />
 
       <section className={`${styles.hero} glow-bg`}>
-        <h1 className={styles.h1}>Apps.</h1>
-        <p className={styles.intro}>
-          Tools born out of the same problem the podcast talks about — too
-          much noise, not enough signal. <strong>War Room</strong> maps the
-          Department of Defense so business development teams stop guessing.{" "}
-          <strong>Light-Lux</strong> turns buying signals into a real
-          pipeline. Both started as ways to solve my own problem first.
-        </p>
+        <div className={styles.container}>
+          <h1 className={styles.h1}>Apps.</h1>
+          <p className={styles.intro}>
+            Tools born out of the same problem the podcast talks about — too
+            much noise, not enough signal. <strong>War Room</strong> maps the
+            Department of Defense so business development teams stop
+            guessing. <strong>Light-Lux</strong> turns buying signals into a
+            real pipeline. Both started as ways to solve my own problem
+            first.
+          </p>
+        </div>
       </section>
 
       {apps.map((app, i) => (
@@ -64,28 +66,19 @@ export default function Apps() {
           key={app.title}
           className={`section ${i % 2 === 0 ? "black-bg" : "glow-bg"} top-border`}
         >
-          <div className={app.plainLogo ? styles.appHeroPlain : styles.appHero}>
-            <div>
-              <div className={styles.appBadge}>
-                {!app.plainLogo && (
-                  <span className={styles.appBadgeIcon}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={app.logo} alt="" aria-hidden="true" />
-                  </span>
-                )}
-                <span className={styles.appBadgeText}>{app.badge}</span>
+          <div className={styles.container}>
+            <div className={styles.appHero}>
+              <div className="eyebrow">
+                <span className="eyebrow-rule" />
+                <span className="eyebrow-label">{app.badge}</span>
               </div>
-              {app.plainLogo ? (
-                <div className={styles.titleRow}>
-                  <span className={styles.plainLogo}>
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img src={app.logo} alt={`${app.title} logo`} />
-                  </span>
-                  <h2 className={styles.appTitle}>{app.title}</h2>
-                </div>
-              ) : (
+              <div className={styles.titleRow}>
+                <span className={styles.logoBadge}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={app.logo} alt={`${app.title} logo`} />
+                </span>
                 <h2 className={styles.appTitle}>{app.title}</h2>
-              )}
+              </div>
               <p className={styles.appTagline}>{app.tagline}</p>
               <p className={styles.appDesc}>{app.desc}</p>
               <div className={styles.appCtaRow}>
@@ -99,22 +92,18 @@ export default function Apps() {
                 </a>
               </div>
             </div>
-            {!app.plainLogo && (
-              <div className={styles.logoTile}>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={app.logo} alt={`${app.title} logo`} />
-              </div>
-            )}
-          </div>
 
-          <div className={styles.pillarsRow}>
-            {app.pillars.map((pillar, idx) => (
-              <div key={pillar.label} className={styles.pillar}>
-                <div className={styles.pillarNum}>{String(idx + 1).padStart(2, "0")}</div>
-                <div className={styles.pillarLabel}>{pillar.label}</div>
-                <p className={styles.pillarText}>{pillar.text}</p>
-              </div>
-            ))}
+            <div className={styles.pillarsRow}>
+              {app.pillars.map((pillar, idx) => (
+                <div key={pillar.label} className={styles.pillar}>
+                  <div className={styles.pillarNum}>
+                    {String(idx + 1).padStart(2, "0")}
+                  </div>
+                  <div className={styles.pillarLabel}>{pillar.label}</div>
+                  <p className={styles.pillarText}>{pillar.text}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
       ))}

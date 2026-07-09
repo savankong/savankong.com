@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Light Lux icon">
-  <line x1="18" y1="60" x2="102" y2="60" stroke="#e4e7f0" stroke-opacity="0.82" stroke-width="3"></line>
-  <line x1="60" y1="18" x2="60" y2="102" stroke="#e4e7f0" stroke-opacity="0.82" stroke-width="3"></line>
+  <line x1="18" y1="60" x2="102" y2="60" stroke="#26262A" stroke-opacity="0.82" stroke-width="3"></line>
+  <line x1="60" y1="18" x2="60" y2="102" stroke="#26262A" stroke-opacity="0.82" stroke-width="3"></line>
   <circle cx="60" cy="60" r="15" fill="none" stroke="#A8824A" stroke-width="3"></circle>
   <circle cx="60" cy="60" r="6.5" fill="#A8824A"></circle>
 </svg>
