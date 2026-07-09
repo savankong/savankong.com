@@ -24,6 +24,11 @@
   align-items: center;
 }
 
+.appHeroPlain {
+  display: block;
+  max-width: 700px;
+}
+
 .appBadge {
   display: inline-flex;
   align-items: center;
@@ -61,6 +66,30 @@
   font: 400 80px/0.92 var(--font-anton), sans-serif;
   color: #fff;
   text-transform: uppercase;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 18px;
+}
+
+.titleRow .appTitle {
+  margin-bottom: 0;
+}
+
+.plainLogo {
+  flex: none;
+  width: 72px;
+  height: 72px;
+}
+
+.plainLogo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .appTagline {
@@ -166,6 +195,16 @@
   .logoTile {
     margin: 0 auto;
     max-width: 180px;
+  }
+
+  .titleRow {
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .plainLogo {
+    width: 56px;
+    height: 56px;
   }
 
   .appCtaRow {

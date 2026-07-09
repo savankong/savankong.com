@@ -27,6 +27,7 @@ const apps = [
   },
   {
     logo: "/logos/light-lux.svg",
+    plainLogo: true,
     badge: "B2B Sales Intelligence",
     title: "Light-Lux.",
     tagline: "Turn buying signals into real pipeline.",
@@ -63,16 +64,28 @@ export default function Apps() {
           key={app.title}
           className={`section ${i % 2 === 0 ? "black-bg" : "glow-bg"} top-border`}
         >
-          <div className={styles.appHero}>
+          <div className={app.plainLogo ? styles.appHeroPlain : styles.appHero}>
             <div>
               <div className={styles.appBadge}>
-                <span className={styles.appBadgeIcon}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={app.logo} alt="" aria-hidden="true" />
-                </span>
+                {!app.plainLogo && (
+                  <span className={styles.appBadgeIcon}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={app.logo} alt="" aria-hidden="true" />
+                  </span>
+                )}
                 <span className={styles.appBadgeText}>{app.badge}</span>
               </div>
-              <h2 className={styles.appTitle}>{app.title}</h2>
+              {app.plainLogo ? (
+                <div className={styles.titleRow}>
+                  <span className={styles.plainLogo}>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={app.logo} alt={`${app.title} logo`} />
+                  </span>
+                  <h2 className={styles.appTitle}>{app.title}</h2>
+                </div>
+              ) : (
+                <h2 className={styles.appTitle}>{app.title}</h2>
+              )}
               <p className={styles.appTagline}>{app.tagline}</p>
               <p className={styles.appDesc}>{app.desc}</p>
               <div className={styles.appCtaRow}>
@@ -86,10 +99,12 @@ export default function Apps() {
                 </a>
               </div>
             </div>
-            <div className={styles.logoTile}>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={app.logo} alt={`${app.title} logo`} />
-            </div>
+            {!app.plainLogo && (
+              <div className={styles.logoTile}>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={app.logo} alt={`${app.title} logo`} />
+              </div>
+            )}
           </div>
 
           <div className={styles.pillarsRow}>
