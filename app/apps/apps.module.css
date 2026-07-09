@@ -115,9 +115,97 @@
   color: #8b93a8;
 }
 
+/* ---------- SCREENSHOTS (browser-frame gallery) ---------- */
+.screenshotsRow {
+  margin-top: 64px;
+  padding-top: 48px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 44px 40px;
+}
+
+.browserFrame {
+  border-radius: 10px;
+  overflow: hidden;
+  background: #1c1f26;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5);
+}
+
+.browserChrome {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 10px 14px;
+  background: #21242c;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.browserDots {
+  display: flex;
+  gap: 6px;
+  flex: none;
+}
+
+.browserDot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.dotRed {
+  background: #ff5f56;
+}
+
+.dotYellow {
+  background: #ffbd2e;
+}
+
+.dotGreen {
+  background: #27c93f;
+}
+
+.browserUrl {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.06);
+  border-radius: 6px;
+  padding: 4px 14px;
+  font: 500 11px var(--font-inter), sans-serif;
+  color: #8b93a8;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.browserFrame img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.screenshotLabel {
+  margin: 18px 0 6px;
+  font: 800 14px var(--font-inter), sans-serif;
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.screenshotDesc {
+  margin: 0;
+  font: 400 13px/1.6 var(--font-inter), sans-serif;
+  color: #8b93a8;
+}
+
 @media (max-width: 900px) {
   .h1 {
     font-size: 44px;
+  }
+
+  .screenshotsRow {
+    grid-template-columns: 1fr;
   }
 
   .appHero {

@@ -22,6 +22,32 @@ const apps = [
       { label: "Live Signals", text: "8,100+ contract awards and solicitations, synced daily." },
       { label: "Export Ready", text: "One-click CSV export straight into your CRM." },
     ],
+    screenshots: [
+      {
+        src: "/screenshots/war-room/signals.png",
+        url: "warroomusa.com/signals",
+        label: "Signals",
+        desc: "8,300+ live contract signals — awards, solicitations, and budget shifts, synced daily from SAM.gov.",
+      },
+      {
+        src: "/screenshots/war-room/people.png",
+        url: "warroomusa.com/people",
+        label: "People",
+        desc: "7,000+ verified DoD leadership profiles, searchable by focus area and seniority.",
+      },
+      {
+        src: "/screenshots/war-room/organizations.png",
+        url: "warroomusa.com/org/nuaxis",
+        label: "Organizations",
+        desc: "Deep dives on primes and subcontractors — awards, contacts, and featured projects.",
+      },
+      {
+        src: "/screenshots/war-room/org-chart.png",
+        url: "warroomusa.com/org/arcyber",
+        label: "Org Charts",
+        desc: "Full command hierarchy mapped — see exactly who reports to whom.",
+      },
+    ],
     href: "https://warroomusa.com",
     cta: "Visit War Room →",
   },
@@ -104,6 +130,29 @@ export default function Apps() {
                 </div>
               ))}
             </div>
+
+            {app.screenshots && (
+              <div className={styles.screenshotsRow}>
+                {app.screenshots.map((shot) => (
+                  <div key={shot.label}>
+                    <div className={styles.browserFrame}>
+                      <div className={styles.browserChrome}>
+                        <span className={styles.browserDots}>
+                          <span className={`${styles.browserDot} ${styles.dotRed}`} />
+                          <span className={`${styles.browserDot} ${styles.dotYellow}`} />
+                          <span className={`${styles.browserDot} ${styles.dotGreen}`} />
+                        </span>
+                        <span className={styles.browserUrl}>{shot.url}</span>
+                      </div>
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img src={shot.src} alt={`War Room — ${shot.label}`} />
+                    </div>
+                    <div className={styles.screenshotLabel}>{shot.label}</div>
+                    <p className={styles.screenshotDesc}>{shot.desc}</p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </section>
       ))}
