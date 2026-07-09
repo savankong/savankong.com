@@ -6,6 +6,8 @@ const navLinks = [
   { label: "About", href: "/about" },
   { label: "LBT Podcast", href: "/#podcast" },
   { label: "Books", href: "/books" },
+  { label: "The Journal", href: "/the-latest" },
+  { label: "Apps", href: "/apps" },
 ];
 
 export default function Nav({ active = "Home" }: { active?: string }) {

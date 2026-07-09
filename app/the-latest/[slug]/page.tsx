@@ -36,7 +36,7 @@ export default async function PostPage({
 
   return (
     <>
-      <Nav active="The Latest" />
+      <Nav active="The Journal" />
 
       <section className={`${styles.postHero} glow-bg`}>
         <Link href="/the-latest" className="back-link">

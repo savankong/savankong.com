@@ -263,7 +263,7 @@ export default async function Home() {
           <div>
             <div className="eyebrow">
               <span className="eyebrow-rule" />
-              <span className="eyebrow-label">The Latest</span>
+              <span className="eyebrow-label">The Journal</span>
             </div>
             <h2 className="h2">Journal.</h2>
           </div>

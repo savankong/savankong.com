@@ -8,7 +8,7 @@ import styles from './the-latest.module.css'
 export const dynamic = 'force-dynamic'
 
 export const metadata: Metadata = {
-  title: 'The Latest — Savan Kong',
+  title: 'The Journal — Savan Kong',
   description: 'Journal entries on identity, leadership, and the space between titles, from Savanrith "Savan" Kong.',
 }
 
@@ -17,7 +17,7 @@ export default async function TheLatest() {
 
   return (
     <>
-      <Nav active="The Latest" />
+      <Nav active="The Journal" />
 
       <section className={`${styles.hero} glow-bg`}>
         <h1 className={styles.h1}>Journal.</h1>

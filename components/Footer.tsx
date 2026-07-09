@@ -32,7 +32,10 @@ export default function Footer() {
             Life Between Titles
           </a>
           <Link href="/the-latest" className="footer-link">
-            The Latest
+            The Journal
+          </Link>
+          <Link href="/apps" className="footer-link">
+            Apps
           </Link>
         </div>
       </div>
