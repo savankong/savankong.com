@@ -1,0 +1,138 @@
+.hero {
+  padding: 90px 56px 70px;
+}
+
+.h1 {
+  margin: 0 0 24px;
+  font: 400 76px/0.9 var(--font-anton), sans-serif;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.intro {
+  margin: 0;
+  max-width: 640px;
+  font: 400 19px/1.7 var(--font-inter), sans-serif;
+  color: #e4e7f0;
+}
+
+.list {
+  max-width: 840px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 36px;
+  padding: 40px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.entryFirst {
+  border-top: 1px solid rgba(0, 212, 255, 0.25);
+}
+
+.entryDate {
+  font: 600 13px ui-monospace, Menlo, monospace;
+  color: var(--neon);
+  letter-spacing: 0.04em;
+}
+
+.entryTitle {
+  font: 400 32px/1.05 var(--font-anton), sans-serif;
+  color: #fff;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+
+.entryExcerpt {
+  margin: 0 0 16px;
+  font: italic 400 17px/1.75 var(--font-lora), serif;
+  color: #c7cbd6;
+}
+
+.entryLink {
+  font: 800 11px var(--font-inter), sans-serif;
+  color: var(--neon);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.empty {
+  color: #8b93a8;
+  font: 400 16px var(--font-inter), sans-serif;
+}
+
+/* ---------- POST DETAIL ---------- */
+.postHero {
+  padding: 90px 56px 60px;
+  max-width: 780px;
+  margin: 0 auto;
+}
+
+.postDate {
+  font: 600 13px ui-monospace, Menlo, monospace;
+  color: var(--neon);
+  letter-spacing: 0.04em;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.postTitle {
+  margin: 0 0 30px;
+  font: 400 52px/1.02 var(--font-anton), sans-serif;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.postExcerpt {
+  margin: 0;
+  font: italic 400 20px/1.65 var(--font-lora), serif;
+  color: #c7cbd6;
+}
+
+.postBody {
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 20px 56px 100px;
+}
+
+.postBody p {
+  margin: 0 0 24px;
+  font: 400 18px/1.8 var(--font-inter), sans-serif;
+  color: #e4e7f0;
+}
+
+@media (max-width: 900px) {
+  .h1 {
+    font-size: 44px;
+  }
+
+  .entry {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+  .postHero {
+    padding: 56px 24px 40px;
+  }
+
+  .postBody {
+    padding: 20px 24px 64px;
+  }
+
+  .postTitle {
+    font-size: 34px;
+  }
+
+  .postExcerpt {
+    font-size: 17px;
+  }
+
+  .postBody p {
+    font-size: 16px;
+  }
+}

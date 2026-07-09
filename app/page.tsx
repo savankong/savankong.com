@@ -2,7 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
+import { getPublishedPosts } from "@/lib/posts";
 import styles from "./page.module.css";
+
+export const dynamic = "force-dynamic";
 
 const pressItems = [
   {
@@ -30,34 +33,6 @@ const pressItems = [
       "CX Exchange 2025: Savan Kong on Building First Pentagon CX Office from the Ground Up",
     desc: "Building the first Pentagon customer experience office from the ground up.",
     cta: "Read / watch →",
-  },
-];
-
-const journalEntries = [
-  {
-    num: "04",
-    title: "The Compliance Gap That's Costing Us the Mission",
-    excerpt:
-      "The hardest part of running customer experience for the Department of Defense wasn't the scale of the mission. It was trying to hear from the people doing it — with tools that weren't cleared to hold what they said.",
-  },
-  {
-    num: "03",
-    title: "The Silence Between Jobs: Finding Voice in the Search",
-    excerpt:
-      "Every job search carries a story. Behind every resume, application, or unanswered email is a person navigating hope, uncertainty, and the daily challenge of staying resilient.",
-  },
-  {
-    num: "02",
-    title:
-      "If You Want to Become a Better Leader, AI Cannot Teach You the Skills That Matter Most",
-    excerpt:
-      "Machines can scan résumés in seconds and evaluate communication patterns. But they cannot fully grasp how a leader builds trust during moments of crisis.",
-  },
-  {
-    num: "01",
-    title: "Translating DoD Experience into Private Sector Success",
-    excerpt:
-      "I recently stepped away from my role as the Department of Defense's first Customer Experience Officer, and like many who have spent years in public service, I am now navigating what comes next.",
   },
 ];
 
@@ -117,7 +92,9 @@ const bookTeasers = [
   },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const latestPosts = (await getPublishedPosts()).slice(0, 4);
+
   return (
     <>
       <Nav active="Home" />
@@ -301,23 +278,25 @@ export default function Home() {
             </div>
             <h2 className="h2">Journal.</h2>
           </div>
-          <a href="#" className="view-all">
+          <Link href="/the-latest" className="view-all">
             View all entries →
-          </a>
+          </Link>
         </div>
         <div className={styles.journalList}>
-          {journalEntries.map((entry, i) => (
+          {latestPosts.map((post, i) => (
             <div
-              key={entry.num}
+              key={post.slug}
               className={`${styles.entry} ${i === 0 ? styles.entryFirst : ""}`}
             >
-              <div className={styles.entryNum}>Entry No. {entry.num}</div>
+              <div className={styles.entryNum}>
+                Entry No. {String(latestPosts.length - i).padStart(2, "0")}
+              </div>
               <div>
-                <div className={styles.entryTitle}>{entry.title}</div>
-                <p className={styles.entryExcerpt}>{entry.excerpt}</p>
-                <a href="#" className={styles.entryLink}>
+                <div className={styles.entryTitle}>{post.title}</div>
+                <p className={styles.entryExcerpt}>{post.excerpt}</p>
+                <Link href={`/the-latest/${post.slug}`} className={styles.entryLink}>
                   Continue reading →
-                </a>
+                </Link>
               </div>
             </div>
           ))}

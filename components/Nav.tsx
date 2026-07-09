@@ -2,10 +2,10 @@ import Link from "next/link";
 
 const navLinks = [
   { label: "Home", href: "/" },
-  { label: "The Latest", href: "/#journal" },
+  { label: "The Latest", href: "/the-latest" },
   { label: "Podcast", href: "/#podcast" },
   { label: "Books", href: "/books" },
-  { label: "About", href: "/#about" },
+  { label: "About", href: "/about" },
 ];
 
 export default function Nav({ active = "Home" }: { active?: string }) {

@@ -1,0 +1,155 @@
+.hero {
+  padding: 90px 56px 70px;
+}
+
+.intro {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.h1 {
+  margin: 0 0 26px;
+  font: 400 60px/1 var(--font-anton), sans-serif;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.lede {
+  margin: 0;
+  font: 400 20px/1.7 var(--font-inter), sans-serif;
+  color: #e4e7f0;
+}
+
+.body {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.h2 {
+  margin: 0 0 26px;
+  font: 400 40px/1.05 var(--font-anton), sans-serif;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.p {
+  margin: 0 0 22px;
+  font: 400 17px/1.75 var(--font-inter), sans-serif;
+  color: #c7cbd6;
+}
+
+.question {
+  margin: 0 0 26px;
+  font: 400 26px/1.4 var(--font-anton), sans-serif;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.list {
+  margin: 0 0 26px;
+  padding-left: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.list li {
+  display: flex;
+  gap: 14px;
+  font: 400 17px/1.6 var(--font-inter), sans-serif;
+  color: #c7cbd6;
+}
+
+.list li::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  margin-top: 8px;
+  border-radius: 50%;
+  background: var(--neon);
+  flex: none;
+  box-shadow: 0 0 8px rgba(0, 212, 255, 0.7);
+}
+
+.disclaimer {
+  margin: 0 0 22px;
+  font: italic 400 16px/1.7 var(--font-lora), serif;
+  color: #8b93a8;
+}
+
+.h3 {
+  margin: 36px 0 16px;
+  font: 400 24px var(--font-anton), sans-serif;
+  color: var(--neon);
+  text-transform: uppercase;
+}
+
+.h3:first-of-type {
+  margin-top: 0;
+}
+
+.bulletList {
+  margin: 0 0 8px;
+  padding-left: 22px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bulletList li {
+  font: 400 16px/1.6 var(--font-inter), sans-serif;
+  color: #c7cbd6;
+}
+
+.inlineLink {
+  color: var(--neon);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.ctaSection {
+  text-align: center;
+}
+
+.ctaTitle {
+  margin: 0 0 16px;
+  font: 400 40px var(--font-anton), sans-serif;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.ctaBody {
+  margin: 0 auto 34px;
+  max-width: 520px;
+  font: 400 17px/1.7 var(--font-inter), sans-serif;
+  color: #b9c1d6;
+}
+
+.ctaButtons {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 900px) {
+  .hero {
+    padding: 56px 24px 40px;
+    text-align: center;
+  }
+
+  .h1 {
+    font-size: 40px;
+  }
+
+  .h2,
+  .question {
+    font-size: 28px;
+  }
+
+  .ctaTitle {
+    font-size: 30px;
+  }
+}

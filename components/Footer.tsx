@@ -31,7 +31,7 @@ export default function Footer() {
           <a href="https://lifebetweentitles.com" className="footer-link">
             Life Between Titles
           </a>
-          <Link href="/#journal" className="footer-link">
+          <Link href="/the-latest" className="footer-link">
             The Latest
           </Link>
         </div>
