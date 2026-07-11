@@ -21,6 +21,14 @@ const engagements = [
     cta: "View session →",
   },
   {
+    format: "Featured Session",
+    date: "March 2025",
+    event: "Federal News Network — DoD Modernization Exchange",
+    desc: "Building the Department of Defense’s first Customer Experience Office from the ground up — the strategy, alliances, and infrastructure it took to stand up a CXO function inside the Pentagon.",
+    href: "https://federalnewsnetwork.com/defense-main/2025/03/dod-modernization-exchange-2025-savan-kong-on-building-first-pentagon-cx-office-from-the-ground-up/",
+    cta: "Read / watch →",
+  },
+  {
     format: "Panel",
     date: "2025",
     event: "Federal Executive Forum",
@@ -31,36 +39,11 @@ const engagements = [
     cta: "View event →",
   },
   {
-    format: "Featured Session",
-    date: "March 2025",
-    event: "Federal News Network — DoD Modernization Exchange",
-    desc: "Building the Department of Defense’s first Customer Experience Office from the ground up — the strategy, alliances, and infrastructure it took to stand up a CXO function inside the Pentagon.",
-    href: "https://federalnewsnetwork.com/defense-main/2025/03/dod-modernization-exchange-2025-savan-kong-on-building-first-pentagon-cx-office-from-the-ground-up/",
-    cta: "Read / watch →",
-  },
-  {
-    format: "Speaker",
-    date: "February 2025 · National Harbor, MD",
-    event: "ServiceNow Federal Forum",
-    desc: "Speaker profile for the UX Portfolio Management Office role at the DoD CIO, at ServiceNow’s annual federal conference.",
-    href: "https://www.nowfedforum.com/profile/savanrith-savan-kong/",
-    cta: "View profile →",
-  },
-  {
     format: "Speaker",
     date: "2025",
     event: "AFCEA TechNet Indo-Pacific",
     desc: "Listed on the official AFCEA speaker roster for TechNet Indo-Pacific.",
     href: "https://events.afcea.org/tip25/Public/enter.aspx",
-    cta: "View event →",
-  },
-  {
-    format: "Session",
-    date: "June 2024 · Baltimore, MD",
-    event: "AFCEA TechNet Cyber",
-    session: "with Jason Pickart",
-    desc: "The DoD’s approach to UX, the role of the CXO, and the DoD–VA integration case study — at the same conference where Fulcrum was unveiled.",
-    href: "https://events.afcea.org/afceacyber25/Public/enter.aspx",
     cta: "View event →",
   },
   {
@@ -80,6 +63,25 @@ const engagements = [
     desc: "Introducing design thinking into a massive, complex organization — building alliances with key stakeholders, finding organizational leverage points, and developing design infrastructure that scales.",
     href: "https://open.spotify.com/episode/2Cr5lf1BE3VHvYrLHqVx9C",
     cta: "Listen →",
+  },
+  {
+    format: "Session",
+    date: "June 2024 · Baltimore, MD",
+    event: "AFCEA TechNet Cyber",
+    session: "with Jason Pickart",
+    desc: "The DoD’s approach to UX, the role of the CXO, and the DoD–VA integration case study — at the same conference where Fulcrum was unveiled.",
+    href: "https://events.afcea.org/afceacyber25/Public/enter.aspx",
+    cta: "View event →",
+  },
+  {
+    format: "Panel",
+    date: "March 2024",
+    event: "ServiceNow Federal Forum",
+    session: "“Building a Resilient Government with Secure Automation”",
+    desc: "A panel on strengthening resilience in government through secure automation, part of ServiceNow’s Intelligent Transformation federal conference.",
+    href: "https://www.nowfedforum.com/profile/savanrith-savan-kong/",
+    cta: "View profile →",
+    photo: "/speaking/servicenow-fedforum-2024.jpg",
   },
   {
     format: "Podcast",
@@ -123,11 +125,16 @@ export default function Speaking() {
           >
             <div className={styles.entryPhotoCol}>
               <div className={styles.entryPhoto}>
-                <span className={styles.entryPhotoText}>
-                  Photo
-                  <br />
-                  Coming Soon
-                </span>
+                {item.photo ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={item.photo} alt={`${item.event} — Savan Kong speaking`} />
+                ) : (
+                  <span className={styles.entryPhotoText}>
+                    Photo
+                    <br />
+                    Coming Soon
+                  </span>
+                )}
               </div>
             </div>
             <div>
