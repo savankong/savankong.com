@@ -109,6 +109,71 @@
   text-underline-offset: 2px;
 }
 
+.speakingList {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.speakingCard {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 8px;
+  padding: 28px 30px;
+  box-shadow: 5px 5px 0 rgba(0, 212, 255, 0.25);
+}
+
+.speakingMeta {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+}
+
+.speakingFormat {
+  font: 800 11px var(--font-inter), sans-serif;
+  color: var(--neon);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.speakingDot {
+  color: #8b93a8;
+}
+
+.speakingDate {
+  font: 700 12px var(--font-inter), sans-serif;
+  color: #8b93a8;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.speakingEvent {
+  margin: 0 0 6px;
+  font: 400 26px var(--font-anton), sans-serif;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.speakingSession {
+  margin: 0 0 14px;
+  font: italic 400 15px var(--font-lora), serif;
+  color: var(--neon);
+}
+
+.speakingDesc {
+  margin: 0 0 16px;
+  font: 400 15px/1.7 var(--font-inter), sans-serif;
+  color: #b9c1d6;
+}
+
+.speakingLink {
+  font: 800 12px var(--font-inter), sans-serif;
+  color: var(--neon);
+  text-transform: uppercase;
+}
+
 .ctaSection {
   text-align: center;
 }

@@ -142,6 +142,99 @@ export default function About() {
         </div>
       </section>
 
+      <section className="section glow-bg top-border">
+        <div className={styles.body}>
+          <h2 className={styles.h2}>Speaking Engagements</h2>
+          <p className={styles.p}>
+            A running list of panels, sessions, and interviews on customer
+            experience, digital transformation, and building CX programs
+            inside government.
+          </p>
+          <div className={styles.speakingList}>
+            <div className={styles.speakingCard}>
+              <div className={styles.speakingMeta}>
+                <span className={styles.speakingFormat}>Panel</span>
+                <span className={styles.speakingDot}>·</span>
+                <span className={styles.speakingDate}>December 2025</span>
+              </div>
+              <h3 className={styles.speakingEvent}>
+                GovExec Breakfast Buzz: DoD
+              </h3>
+              <p className={styles.speakingSession}>
+                &ldquo;Breaking Down IT Bottlenecks&rdquo; — From Bottlenecks
+                to Breakthroughs: Elevating User Experience in Defense IT
+              </p>
+              <p className={styles.speakingDesc}>
+                A panel on how cutting-edge digital tools are streamlining IT
+                processes across the DoD, and how real-time data access
+                improves decision-making and tactical response — alongside
+                representatives from the Department of the Navy, DISA, and
+                Riverbed.
+              </p>
+              <a
+                href="https://events.govexec.com/breakfast-buzz-dod/speakers/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.speakingLink}
+              >
+                View session →
+              </a>
+            </div>
+
+            <div className={styles.speakingCard}>
+              <div className={styles.speakingMeta}>
+                <span className={styles.speakingFormat}>Featured Session</span>
+                <span className={styles.speakingDot}>·</span>
+                <span className={styles.speakingDate}>March 2025</span>
+              </div>
+              <h3 className={styles.speakingEvent}>
+                Federal News Network — DoD Modernization Exchange
+              </h3>
+              <p className={styles.speakingDesc}>
+                On building the Department of Defense&rsquo;s first Customer
+                Experience Office from the ground up — the strategy,
+                alliances, and infrastructure it took to stand up a CXO
+                function inside the Pentagon.
+              </p>
+              <a
+                href="https://federalnewsnetwork.com/defense-main/2025/03/dod-modernization-exchange-2025-savan-kong-on-building-first-pentagon-cx-office-from-the-ground-up/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.speakingLink}
+              >
+                Read / watch →
+              </a>
+            </div>
+
+            <div className={styles.speakingCard}>
+              <div className={styles.speakingMeta}>
+                <span className={styles.speakingFormat}>Podcast</span>
+                <span className={styles.speakingDot}>·</span>
+                <span className={styles.speakingDate}>October 2025</span>
+              </div>
+              <h3 className={styles.speakingEvent}>The 311 Podcast</h3>
+              <p className={styles.speakingSession}>
+                S2 E8 — &ldquo;Design at Scale with Savan Kong&rdquo;
+              </p>
+              <p className={styles.speakingDesc}>
+                On introducing design thinking into a massive, complex
+                organization — building alliances with key stakeholders,
+                finding organizational leverage points, and developing design
+                infrastructure that scales.
+              </p>
+              <a
+                href="https://open.spotify.com/episode/2Cr5lf1BE3VHvYrLHqVx9C"
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.speakingLink}
+              >
+                Listen →
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section className="section black-bg top-border">
         <div className={styles.body}>
           <h2 className={styles.h2}>Other Interests</h2>
