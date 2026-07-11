@@ -16,6 +16,29 @@
   color: #e4e7f0;
 }
 
+.openItems {
+  max-width: 720px;
+  margin: 0 0 36px;
+  padding: 18px 22px;
+  border: 1px dashed rgba(0, 212, 255, 0.35);
+  border-radius: 8px;
+  background: var(--card);
+}
+
+.openItemsLabel {
+  font: 800 11px var(--font-inter), sans-serif;
+  color: var(--neon);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+}
+
+.openItemsText {
+  margin: 0;
+  font: 400 14px/1.6 var(--font-inter), sans-serif;
+  color: #b9c1d6;
+}
+
 .orgsLabel {
   font: 800 12px var(--font-inter), sans-serif;
   color: var(--neon);
