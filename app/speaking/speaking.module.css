@@ -1,45 +1,123 @@
 .hero {
-  padding: 90px 56px 70px;
+  padding: 90px 56px 60px;
 }
 
 .h1 {
-  margin: 0 0 24px;
+  margin: 0 0 22px;
   font: 400 76px/0.9 var(--font-anton), sans-serif;
   color: #fff;
   text-transform: uppercase;
 }
 
 .intro {
-  margin: 0;
-  max-width: 680px;
+  margin: 0 0 40px;
+  max-width: 720px;
   font: 400 19px/1.7 var(--font-inter), sans-serif;
   color: #e4e7f0;
 }
 
-.body {
-  max-width: 760px;
-  margin: 0 auto;
+.orgsLabel {
+  font: 800 12px var(--font-inter), sans-serif;
+  color: var(--neon);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-bottom: 14px;
 }
 
+.orgsList {
+  max-width: 900px;
+  font: 400 17px/1.8 var(--font-inter), sans-serif;
+  color: #b9c1d6;
+}
+
+.orgsList strong {
+  color: #fff;
+}
+
+/* ---------- BOOKING ---------- */
+.bookingSection {
+  padding: 56px;
+  text-align: center;
+}
+
+.bookingTitle {
+  margin: 0 0 14px;
+  font: 400 34px var(--font-anton), sans-serif;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.bookingBody {
+  margin: 0 auto 28px;
+  max-width: 560px;
+  font: 400 16px/1.7 var(--font-inter), sans-serif;
+  color: #b9c1d6;
+}
+
+/* ---------- ENGAGEMENTS LIST (full-width, quote style) ---------- */
 .list {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
+  padding: 0 56px;
 }
 
-.card {
-  background: var(--card);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.entry {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 56px;
+  align-items: center;
+  padding: 56px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.entry:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
+.entryReverse {
+  grid-template-columns: 1fr 340px;
+}
+
+.entryReverse .entryPhotoCol {
+  order: 2;
+}
+
+.entryPhotoCol {
+  order: 1;
+}
+
+.entryPhoto {
+  width: 100%;
+  aspect-ratio: 4 / 3;
   border-radius: 8px;
-  padding: 28px 30px;
-  box-shadow: 5px 5px 0 rgba(0, 212, 255, 0.25);
+  overflow: hidden;
+  border: 1px dashed rgba(0, 212, 255, 0.35);
+  background: var(--card);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 20px;
 }
 
-.meta {
+.entryPhoto img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.entryPhotoText {
+  font: 800 11px var(--font-inter), sans-serif;
+  color: #8b93a8;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.entryMeta {
   display: flex;
   align-items: center;
   gap: 12px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   flex-wrap: wrap;
 }
 
@@ -62,22 +140,22 @@
 }
 
 .event {
-  margin: 0 0 6px;
-  font: 400 26px var(--font-anton), sans-serif;
+  margin: 0 0 8px;
+  font: 400 34px/1.05 var(--font-anton), sans-serif;
   color: #fff;
   text-transform: uppercase;
 }
 
 .session {
-  margin: 0 0 14px;
-  font: italic 400 15px var(--font-lora), serif;
+  margin: 0 0 18px;
+  font: 700 15px var(--font-inter), sans-serif;
   color: var(--neon);
 }
 
-.desc {
-  margin: 0 0 16px;
-  font: 400 15px/1.7 var(--font-inter), sans-serif;
-  color: #b9c1d6;
+.quote {
+  margin: 0 0 20px;
+  font: italic 400 22px/1.5 var(--font-lora), serif;
+  color: #e4e7f0;
 }
 
 .link {
@@ -87,9 +165,8 @@
 }
 
 .note {
-  margin: 40px 0 0;
-  padding-top: 28px;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  margin: 8px 0 0;
+  padding-top: 32px;
   font: 400 14px/1.7 var(--font-inter), sans-serif;
   color: #8b93a8;
 }
@@ -104,11 +181,36 @@
     font-size: 44px;
   }
 
-  .intro {
+  .intro,
+  .orgsList {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .list {
+    padding: 0 24px;
+  }
+
+  .entry,
+  .entryReverse {
+    grid-template-columns: 1fr;
+    text-align: center;
+  }
+
+  .entryReverse .entryPhotoCol {
+    order: -1;
+  }
+
+  .entryPhoto {
+    max-width: 320px;
     margin: 0 auto;
   }
 
-  .card {
-    padding: 24px 22px;
+  .entryMeta {
+    justify-content: center;
+  }
+
+  .quote {
+    font-size: 19px;
   }
 }
