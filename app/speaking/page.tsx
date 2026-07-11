@@ -76,12 +76,20 @@ const engagements = [
   {
     format: "Panel",
     date: "March 2024",
-    event: "ServiceNow Federal Forum",
+    event: "DefenseTalks 2024",
     session: "“Building a Resilient Government with Secure Automation”",
-    desc: "A panel on strengthening resilience in government through secure automation, part of ServiceNow’s Intelligent Transformation federal conference.",
+    desc: "A panel on strengthening resilience in government through secure automation, at DefenseScoop’s DefenseTalks 2024.",
+    href: "https://defensetalks.upgather.com/2024/",
+    cta: "View event →",
+    photo: "/speaking/defensetalks-2024.jpg",
+  },
+  {
+    format: "Speaker",
+    date: "2025",
+    event: "ServiceNow Federal Forum",
+    desc: "Speaker profile for the UX Portfolio Management Office role at the DoD CIO, at ServiceNow’s annual federal conference.",
     href: "https://www.nowfedforum.com/profile/savanrith-savan-kong/",
     cta: "View profile →",
-    photo: "/speaking/servicenow-fedforum-2024.jpg",
   },
   {
     format: "Podcast",
@@ -112,7 +120,8 @@ export default function Speaking() {
           <strong>AFCEA</strong> (TechNet Cyber, TechNet Indo-Pacific),{" "}
           <strong>Federal News Network</strong> (DoD Modernization Exchange,
           Federal Executive Forum), <strong>GovExec</strong> (Breakfast
-          Buzz), the <strong>ServiceNow Federal Forum</strong>, and{" "}
+          Buzz), <strong>DefenseScoop</strong> (DefenseTalks), the{" "}
+          <strong>ServiceNow Federal Forum</strong>, and{" "}
           <strong>FedScoop</strong>.
         </p>
       </section>
