@@ -34,6 +34,9 @@ export default function Footer() {
           <Link href="/the-latest" className="footer-link">
             The Journal
           </Link>
+          <Link href="/speaking" className="footer-link">
+            Speaking
+          </Link>
           <Link href="/apps" className="footer-link">
             Apps
           </Link>
