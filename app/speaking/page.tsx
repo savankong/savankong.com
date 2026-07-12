@@ -143,47 +143,36 @@ export default function Speaking() {
       </section>
 
       <div className={styles.list}>
-        {engagements.map((item, i) => (
-          <div
-            key={`${item.event}-${item.date}`}
-            className={
-              item.photo
-                ? i % 2 === 1
-                  ? `${styles.entry} ${styles.entryReverse}`
-                  : styles.entry
-                : styles.entrySolo
-            }
-          >
+        {engagements.map((item) => (
+          <div key={`${item.event}-${item.date}`} className={styles.row}>
             {item.photo && (
-              <div className={styles.entryPhotoCol}>
-                <div className={styles.entryPhoto}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={item.photo} alt={`${item.event} — Savan Kong speaking`} />
-                </div>
-              </div>
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                className={styles.rowPhoto}
+                src={item.photo}
+                alt={`${item.event} — Savan Kong speaking`}
+              />
             )}
-            <div>
-              <div className={styles.entryMeta}>
-                <span className={styles.format}>{item.format}</span>
-                {item.date && (
-                  <>
-                    <span className={styles.dot}>·</span>
-                    <span className={styles.date}>{item.date}</span>
-                  </>
-                )}
-              </div>
-              <h2 className={styles.event}>{item.event}</h2>
-              {item.session && <p className={styles.session}>{item.session}</p>}
-              <p className={styles.quote}>{item.desc}</p>
-              <a
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.link}
-              >
-                {item.cta}
-              </a>
+            <div className={styles.meta}>
+              <span className={styles.format}>{item.format}</span>
+              {item.date && (
+                <>
+                  <span className={styles.dot}>·</span>
+                  <span className={styles.date}>{item.date}</span>
+                </>
+              )}
             </div>
+            <h2 className={styles.event}>{item.event}</h2>
+            {item.session && <p className={styles.session}>{item.session}</p>}
+            <p className={styles.desc}>{item.desc}</p>
+            <a
+              href={item.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.link}
+            >
+              {item.cta}
+            </a>
           </div>
         ))}
 
