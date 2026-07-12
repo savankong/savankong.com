@@ -100,6 +100,16 @@
   grid-template-columns: 1fr 340px;
 }
 
+.entrySolo {
+  padding: 56px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.entrySolo:first-child {
+  border-top: none;
+  padding-top: 0;
+}
+
 .entryReverse .entryPhotoCol {
   order: 2;
 }
@@ -127,13 +137,6 @@
   height: 100%;
   object-fit: cover;
   display: block;
-}
-
-.entryPhotoText {
-  font: 800 11px var(--font-inter), sans-serif;
-  color: #8b93a8;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
 }
 
 .entryMeta {

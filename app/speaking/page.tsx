@@ -6,7 +6,7 @@ import styles from "./speaking.module.css";
 export const metadata: Metadata = {
   title: "Speaking Events — Savan Kong",
   description:
-    "Panels, sessions, and interviews with Savanrith \"Savan\" Kong on customer experience, digital transformation, and building CX programs inside government.",
+    "Savanrith \"Savan\" Kong speaks at conferences, industry panels, and podcasts on customer experience, digital transformation, career transitions, and identity after job loss.",
 };
 
 const engagements = [
@@ -19,7 +19,6 @@ const engagements = [
     desc: "How cutting-edge digital tools are streamlining IT processes across the DoD, and how real-time data access improves decision-making and tactical response — alongside representatives from the Department of the Navy, DISA, and Riverbed.",
     href: "https://events.govexec.com/breakfast-buzz-dod/speakers/",
     cta: "View session →",
-    photo: "/speaking/govexec-breakfast-buzz.png",
   },
   {
     format: "Featured Session",
@@ -28,7 +27,6 @@ const engagements = [
     desc: "Building the Department of Defense’s first Customer Experience Office from the ground up — the strategy, alliances, and infrastructure it took to stand up a CXO function inside the Pentagon.",
     href: "https://federalnewsnetwork.com/defense-main/2025/03/dod-modernization-exchange-2025-savan-kong-on-building-first-pentagon-cx-office-from-the-ground-up/",
     cta: "Read / watch →",
-    photo: "/speaking/dod-modernization-exchange.png",
   },
   {
     format: "Panel",
@@ -39,7 +37,6 @@ const engagements = [
     desc: "How agencies use data, digital services, and cross-team strategy to improve customer experience — alongside CX leaders from CBP, VA, and the Federal EHR Modernization Office.",
     href: "https://federalnewsnetwork.com/cme-event/federal-executive-forum/federal-executive-forum-customer-experience-strategies-in-government-progress-and-best-practices-2025/",
     cta: "View event →",
-    photo: "/speaking/defensescoop-headshot.png",
   },
   {
     format: "Speaker",
@@ -48,7 +45,6 @@ const engagements = [
     desc: "Listed on the official AFCEA speaker roster for TechNet Indo-Pacific.",
     href: "https://events.afcea.org/tip25/Public/enter.aspx",
     cta: "View event →",
-    photo: "/speaking/defensescoop-headshot.png",
   },
   {
     format: "Podcast / Interview",
@@ -58,7 +54,6 @@ const engagements = [
     desc: "Reflecting on nearly 18 months as the Department of Defense’s first Customer Experience Officer — what got built, what’s next, and where AI fits into CX.",
     href: "https://fedscoop.com/radio/savan-kong-joins-the-podcast-to-discuss-the-pentagons-progress-in-digital-experience/",
     cta: "Listen →",
-    photo: "/speaking/fedscoop-dailyscoop.png",
   },
   {
     format: "Podcast",
@@ -68,7 +63,6 @@ const engagements = [
     desc: "Introducing design thinking into a massive, complex organization — building alliances with key stakeholders, finding organizational leverage points, and developing design infrastructure that scales.",
     href: "https://open.spotify.com/episode/2Cr5lf1BE3VHvYrLHqVx9C",
     cta: "Listen →",
-    photo: "/speaking/the-311-podcast.jpg",
   },
   {
     format: "Session",
@@ -78,7 +72,6 @@ const engagements = [
     desc: "The DoD’s approach to UX, the role of the CXO, and the DoD–VA integration case study — at the same conference where Fulcrum was unveiled.",
     href: "https://events.afcea.org/afceacyber25/Public/enter.aspx",
     cta: "View event →",
-    photo: "/speaking/defensescoop-headshot.png",
   },
   {
     format: "Panel",
@@ -97,7 +90,6 @@ const engagements = [
     desc: "Speaker profile for the UX Portfolio Management Office role at the DoD CIO, at ServiceNow’s annual federal conference.",
     href: "https://www.nowfedforum.com/profile/savanrith-savan-kong/",
     cta: "View profile →",
-    photo: "/speaking/servicenow-fedforum.jpg",
   },
   {
     format: "Podcast",
@@ -107,7 +99,6 @@ const engagements = [
     desc: "From South Seattle and the Khmer Rouge, to Lakeside School, to the Pentagon — on privilege, grit, and the resources that shape who gets to succeed.",
     href: "https://www.ivoox.com/en/seeing-the-power-of-privilege-at-play-with-audios-mp3_rf_146556782_1.html",
     cta: "Listen →",
-    photo: "/speaking/khmer-voices.jpg",
   },
 ];
 
@@ -127,10 +118,18 @@ export default function Speaking() {
           </p>
         </div>
         <p className={styles.intro}>
-          I&rsquo;m occasionally asked to speak at conferences, industry
-          panels, and podcasts — mostly on customer experience, digital
-          transformation, and what it takes to stand up a CX function inside
-          a massive, complex organization.
+          I speak at conferences, industry panels, and podcasts on customer
+          experience, digital transformation, and what it takes to build a CX
+          function inside a large, complex organization. I also speak on
+          career transitions and reinvention — the focus of my podcast,{" "}
+          <strong>Life Between Titles</strong> — and on themes from the two
+          books I&rsquo;m writing: <strong>Laid Off and Lost</strong>, a
+          narrative nonfiction book on identity and rebuilding after job
+          loss, drawn from a year of interviews with 29 people alongside my
+          own story of being laid off from a decade at the Department of
+          Defense; and <strong>Halfway Light</strong>, a memoir breaking my
+          family&rsquo;s decades-long silence about surviving the Khmer
+          Rouge genocide.
         </p>
         <div className={styles.orgsLabel}>Recent Engagements With</div>
         <p className={styles.orgsList}>
@@ -147,22 +146,22 @@ export default function Speaking() {
         {engagements.map((item, i) => (
           <div
             key={`${item.event}-${item.date}`}
-            className={i % 2 === 1 ? `${styles.entry} ${styles.entryReverse}` : styles.entry}
+            className={
+              item.photo
+                ? i % 2 === 1
+                  ? `${styles.entry} ${styles.entryReverse}`
+                  : styles.entry
+                : styles.entrySolo
+            }
           >
-            <div className={styles.entryPhotoCol}>
-              <div className={styles.entryPhoto}>
-                {item.photo ? (
-                  // eslint-disable-next-line @next/next/no-img-element
+            {item.photo && (
+              <div className={styles.entryPhotoCol}>
+                <div className={styles.entryPhoto}>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img src={item.photo} alt={`${item.event} — Savan Kong speaking`} />
-                ) : (
-                  <span className={styles.entryPhotoText}>
-                    Photo
-                    <br />
-                    Coming Soon
-                  </span>
-                )}
+                </div>
               </div>
-            </div>
+            )}
             <div>
               <div className={styles.entryMeta}>
                 <span className={styles.format}>{item.format}</span>
