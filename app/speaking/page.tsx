@@ -108,14 +108,6 @@ export default function Speaking() {
 
       <section className={`${styles.hero} glow-bg`}>
         <h1 className={styles.h1}>Speaking Events.</h1>
-        <div className={styles.openItems}>
-          <div className={styles.openItemsLabel}>Open Item</div>
-          <p className={styles.openItemsText}>
-            I have two photos from a panel on November 15, 2024 in Crystal
-            City / Arlington, VA that I haven&rsquo;t identified yet. If you
-            recognize the event, let me know and I&rsquo;ll add it below.
-          </p>
-        </div>
         <p className={styles.intro}>
           I speak at conferences, industry panels, and podcasts on customer
           experience, digital transformation, and what it takes to build a CX
