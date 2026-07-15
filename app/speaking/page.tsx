@@ -81,7 +81,6 @@ const engagements = [
     desc: "A panel on strengthening resilience in government through secure automation, at DefenseScoop’s DefenseTalks 2024.",
     href: "https://defensetalks.upgather.com/2024/",
     cta: "View event →",
-    photo: "/speaking/defensetalks-2024.jpg",
   },
   {
     format: "Speaker",
@@ -120,16 +119,17 @@ export default function Speaking() {
         <p className={styles.intro}>
           I speak at conferences, industry panels, and podcasts on customer
           experience, digital transformation, and what it takes to build a CX
-          function inside a large, complex organization. I also speak on
-          career transitions and reinvention — the focus of my podcast,{" "}
-          <strong>Life Between Titles</strong> — and on themes from the two
-          books I&rsquo;m writing: <strong>Laid Off and Lost</strong>, a
-          narrative nonfiction book on identity and rebuilding after job
-          loss, drawn from a year of interviews with 29 people alongside my
-          own story of being laid off from a decade at the Department of
-          Defense; and <strong>Halfway Light</strong>, a memoir breaking my
-          family&rsquo;s decades-long silence about surviving the Khmer
-          Rouge genocide.
+          function inside a large, complex organization.
+        </p>
+        <p className={styles.intro}>
+          I explore career transitions and reinvention on my podcast,{" "}
+          <strong>Life Between Titles</strong>, and draw on themes from{" "}
+          <strong>Laid Off and Lost</strong>, my narrative nonfiction book on
+          identity and rebuilding after job loss, based on a year of
+          interviews with 29 people alongside my own story of being laid off
+          from a decade at the Department of Defense. I&rsquo;m also writing{" "}
+          <strong>Halfway Light</strong>, a memoir breaking my family&rsquo;s
+          decades-long silence about surviving the Khmer Rouge genocide.
         </p>
         <div className={styles.orgsLabel}>Recent Engagements With</div>
         <p className={styles.orgsList}>
@@ -143,38 +143,29 @@ export default function Speaking() {
       </section>
 
       <div className={styles.list}>
-        {engagements.map((item) => (
-          <div key={`${item.event}-${item.date}`} className={styles.row}>
-            {item.photo && (
-              // eslint-disable-next-line @next/next/no-img-element
-              <img
-                className={styles.rowPhoto}
-                src={item.photo}
-                alt={`${item.event} — Savan Kong speaking`}
-              />
-            )}
-            <div className={styles.meta}>
-              <span className={styles.format}>{item.format}</span>
-              {item.date && (
-                <>
-                  <span className={styles.dot}>·</span>
-                  <span className={styles.date}>{item.date}</span>
-                </>
+        <div className={styles.cardsGrid}>
+          {engagements.map((item) => (
+            <div key={`${item.event}-${item.date}`} className={styles.card}>
+              <div className={styles.cardMeta}>
+                {item.format}
+                {item.date && ` · ${item.date}`}
+              </div>
+              <h2 className={styles.cardHeadline}>{item.event}</h2>
+              {item.session && (
+                <p className={styles.cardSession}>{item.session}</p>
               )}
+              <p className={styles.cardDesc}>{item.desc}</p>
+              <a
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.cardLink}
+              >
+                {item.cta}
+              </a>
             </div>
-            <h2 className={styles.event}>{item.event}</h2>
-            {item.session && <p className={styles.session}>{item.session}</p>}
-            <p className={styles.desc}>{item.desc}</p>
-            <a
-              href={item.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={styles.link}
-            >
-              {item.cta}
-            </a>
-          </div>
-        ))}
+          ))}
+        </div>
 
         <p className={styles.note}>
           This list is pulled from public event archives and press coverage,

@@ -77,101 +77,60 @@
   color: #b9c1d6;
 }
 
-/* ---------- ENGAGEMENTS LIST (single column, editorial) ---------- */
+/* ---------- ENGAGEMENTS LIST (press-card grid, matches homepage) ---------- */
 .list {
-  max-width: 800px;
-  margin: 0 auto;
   padding: 0 56px;
 }
 
-.row {
-  padding: 44px 0;
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
+.cardsGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 26px;
 }
 
-.row:first-child {
-  border-top: none;
-  padding-top: 0;
-}
-
-.rowPhoto {
-  display: block;
-  width: 100%;
-  max-height: 340px;
-  object-fit: cover;
+.card {
+  background: var(--card);
+  border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 8px;
-  margin-bottom: 26px;
+  padding: 30px;
+  box-shadow: 5px 5px 0 rgba(0, 212, 255, 0.25);
 }
 
-.meta {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  margin-bottom: 12px;
-  flex-wrap: wrap;
-}
-
-.format {
+.cardMeta {
   font: 800 11px var(--font-inter), sans-serif;
   color: var(--neon);
   letter-spacing: 0.1em;
   text-transform: uppercase;
+  margin-bottom: 10px;
 }
 
-.dot {
-  color: #8b93a8;
-}
-
-.date {
-  font: 700 12px var(--font-inter), sans-serif;
-  color: #8b93a8;
-  letter-spacing: 0.04em;
-  text-transform: uppercase;
-}
-
-.event {
-  margin: 0 0 8px;
-  font: 400 28px/1.15 var(--font-anton), sans-serif;
+.cardHeadline {
+  margin: 0 0 10px;
+  font: 400 24px var(--font-anton), sans-serif;
   color: #fff;
   text-transform: uppercase;
 }
 
-.session {
-  margin: 0 0 14px;
-  font: 600 14px/1.5 var(--font-inter), sans-serif;
-  color: #8b93a8;
-}
-
-.desc {
-  margin: 0 0 22px;
-  max-width: 620px;
-  font: 400 16px/1.7 var(--font-inter), sans-serif;
+.cardSession {
+  margin: 0 0 10px;
+  font: 700 13px/1.5 var(--font-inter), sans-serif;
   color: #b9c1d6;
 }
 
-.link {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
+.cardDesc {
+  margin: 0 0 14px;
+  font: 400 14px/1.6 var(--font-inter), sans-serif;
+  color: #8b93a8;
+}
+
+.cardLink {
   font: 800 12px var(--font-inter), sans-serif;
   color: var(--neon);
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 11px 22px;
-  border: 2px solid var(--neon);
-  border-radius: 4px;
-  transition: background 0.15s, color 0.15s, box-shadow 0.15s;
-}
-
-.link:hover {
-  background: var(--neon);
-  color: #04070d;
-  box-shadow: 0 0 24px rgba(0, 212, 255, 0.5);
 }
 
 .note {
-  margin: 8px 0 0;
-  padding-top: 32px;
+  margin: 32px 0 0;
   font: 400 14px/1.7 var(--font-inter), sans-serif;
   color: #8b93a8;
 }
@@ -196,20 +155,7 @@
     padding: 0 24px;
   }
 
-  .row {
-    text-align: center;
-  }
-
-  .meta {
-    justify-content: center;
-  }
-
-  .desc {
-    margin-left: auto;
-    margin-right: auto;
-  }
-
-  .event {
-    font-size: 24px;
+  .cardsGrid {
+    grid-template-columns: 1fr;
   }
 }
