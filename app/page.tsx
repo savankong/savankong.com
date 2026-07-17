@@ -136,6 +136,34 @@ export default async function Home() {
             <strong>Life Between Titles</strong>, a show exploring identity,
             purpose, and the uncertain space between titles and jobs.
           </p>
+          <div className={styles.bookHighlight}>
+            <Image
+              src="https://www.lifebetweentitles.com/Cover-LaidOff.jpg"
+              alt="Laid Off and Lost book cover"
+              width={84}
+              height={126}
+              className={styles.bookHighlightCover}
+            />
+            <div>
+              <div className={styles.bookHighlightLabel}>Now Available</div>
+              <div className={styles.bookHighlightTitle}>
+                Laid Off and Lost.
+              </div>
+              <div className={styles.bookHighlightCtas}>
+                <a
+                  href="https://www.amazon.com/dp/B0H7P4DGHX?tag=lifebetweenti-20"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="pill-filled"
+                >
+                  Buy the Book
+                </a>
+                <Link href="/books/laid-off-and-lost" className="pill-outline">
+                  Learn More
+                </Link>
+              </div>
+            </div>
+          </div>
         </div>
         <div className={styles.heroImageWrap}>
           <Image

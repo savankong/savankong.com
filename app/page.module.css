@@ -51,6 +51,45 @@
   color: #fff;
 }
 
+.bookHighlight {
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  margin-top: 32px;
+  padding-top: 28px;
+  max-width: 560px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.bookHighlightCover {
+  flex: none;
+  width: 84px;
+  height: auto;
+  border-radius: 3px;
+  box-shadow: -4px 4px 0 rgba(0, 212, 255, 0.85), 4px -4px 0 rgba(47, 107, 255, 0.85);
+}
+
+.bookHighlightLabel {
+  font: 800 11px var(--font-inter), sans-serif;
+  color: var(--neon);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.bookHighlightTitle {
+  font: 400 24px var(--font-anton), sans-serif;
+  color: #fff;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+
+.bookHighlightCtas {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .heroImageWrap {
   position: absolute;
   right: clamp(0px, 3vw, 40px);
@@ -352,6 +391,16 @@
 
   .heroBio {
     max-width: 100%;
+  }
+
+  .bookHighlight {
+    max-width: 100%;
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .bookHighlightCtas {
+    justify-content: center;
   }
 
   .heroImageWrap {
