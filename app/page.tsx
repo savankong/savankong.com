@@ -299,36 +299,35 @@ export default async function Home() {
       </section>
 
       <section id="journal" className="section glow-bg">
-        <div className="section-head-row">
-          <div>
-            <div className="eyebrow">
-              <span className="eyebrow-rule" />
-              <span className="eyebrow-label">The Journal</span>
+        <div className={styles.journalPaper}>
+          <div className={styles.journalHeadRow}>
+            <div>
+              <div className="eyebrow">
+                <span className="eyebrow-rule" />
+                <span className="eyebrow-label">The Journal</span>
+              </div>
+              <h2 className="h2">Journal.</h2>
             </div>
-            <h2 className="h2">Journal.</h2>
+            <Link href="/the-latest" className="view-all">
+              View all entries →
+            </Link>
           </div>
-          <Link href="/the-latest" className="view-all">
-            View all entries →
-          </Link>
-        </div>
-        <div className={styles.journalList}>
-          {latestPosts.map((post, i) => (
-            <div
-              key={post.slug}
-              className={`${styles.entry} ${i === 0 ? styles.entryFirst : ""}`}
-            >
-              <div className={styles.entryNum}>
-                Entry No. {String(latestPosts.length - i).padStart(2, "0")}
+          <div className={styles.journalList}>
+            {latestPosts.map((post, i) => (
+              <div key={post.slug} className={styles.entry}>
+                <div className={styles.entryNum}>
+                  Entry No. {String(latestPosts.length - i).padStart(2, "0")}
+                </div>
+                <div>
+                  <div className={styles.entryTitle}>{post.title}</div>
+                  <p className={styles.entryExcerpt}>{post.excerpt}</p>
+                  <Link href={`/the-latest/${post.slug}`} className={styles.entryLink}>
+                    Continue reading →
+                  </Link>
+                </div>
               </div>
-              <div>
-                <div className={styles.entryTitle}>{post.title}</div>
-                <p className={styles.entryExcerpt}>{post.excerpt}</p>
-                <Link href={`/the-latest/${post.slug}`} className={styles.entryLink}>
-                  Continue reading →
-                </Link>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
