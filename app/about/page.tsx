@@ -30,46 +30,6 @@ export default function About() {
         </div>
       </section>
 
-      <section className="section black-bg top-border">
-        <div className={styles.body}>
-          <h2 className={styles.h2}>How My Work Will Benefit You</h2>
-          <p className={styles.question}>
-            How do you know who you are when the title is gone?
-          </p>
-          <p className={styles.p}>
-            That question sits underneath almost everything I make. I write
-            and talk about:
-          </p>
-          <ul className={styles.list}>
-            <li>Surviving a layoff without losing your sense of self</li>
-            <li>Rebuilding identity and purpose after a career ends</li>
-            <li>The leadership skills that no algorithm can replace</li>
-            <li>
-              Translating government, military, and public-sector experience
-              into private-sector success
-            </li>
-            <li>
-              The family history and inherited silence that shape who we
-              become, long before any job title does
-            </li>
-          </ul>
-          <p className={styles.p}>
-            I don&rsquo;t come at any of this as a theorist. I write from
-            inside the transitions I cover &mdash; I was unemployed for a
-            year after leaving the DoD, received an ADHD diagnosis at 46, and
-            wrote my first book while still figuring it out. The podcast
-            exists because I went looking for other people going through the
-            same thing and couldn&rsquo;t find enough honest conversations
-            about it.
-          </p>
-          <p className={styles.disclaimer}>
-            I don&rsquo;t claim to have all the answers. What I can offer is
-            what I&rsquo;ve lived, what nearly thirty guests have told me on
-            the record, and what I&rsquo;m still learning in real time.
-          </p>
-        </div>
-      </section>
-
       <section className="section glow-bg">
         <div className={styles.body}>
           <h2 className={styles.h2}>About Me</h2>

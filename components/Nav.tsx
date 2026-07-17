@@ -5,7 +5,7 @@ const navLinks = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Speaking", href: "/speaking" },
-  { label: "LBT Podcast", href: "/#podcast" },
+  { label: "LBT Podcast", href: "/lbt-podcast" },
   { label: "Books", href: "/books" },
   { label: "The Journal", href: "/the-latest" },
   { label: "Apps", href: "/apps" },

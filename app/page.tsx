@@ -3,7 +3,7 @@ import Link from "next/link";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { getPublishedPosts } from "@/lib/posts";
-import { getFeaturedShows } from "@/lib/lbt-spotlight";
+import { getFeaturedShow } from "@/lib/lbt-spotlight";
 import styles from "./page.module.css";
 
 export const dynamic = "force-dynamic";
@@ -95,7 +95,7 @@ const bookTeasers = [
 
 export default async function Home() {
   const latestPosts = (await getPublishedPosts()).slice(0, 4);
-  const featuredShows = (await getFeaturedShows()).slice(0, 2);
+  const featuredShow = await getFeaturedShow();
 
   return (
     <>
@@ -220,22 +220,40 @@ export default async function Home() {
             </div>
           </div>
           <div className={styles.episodeCards}>
-            {featuredShows.length > 0 ? (
-              featuredShows.map((show, i) => (
-                <a
-                  key={show.slug}
-                  href={`https://www.lifebetweentitles.com/shows/${show.slug}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={styles.episodeCard}
-                >
-                  <div className={styles.episodeMeta}>
-                    {i === 0 ? "Featured · " : ""}
-                    {show.show}
+            {featuredShow ? (
+              <a
+                href={`https://www.lifebetweentitles.com/shows/${featuredShow.slug}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={styles.spotlightCard}
+              >
+                <div className={styles.spotlightPhotoWrap}>
+                  <Image
+                    src={`https://www.lifebetweentitles.com${featuredShow.photo}`}
+                    alt={featuredShow.guest}
+                    fill
+                    sizes="160px"
+                    className={styles.spotlightPhoto}
+                  />
+                </div>
+                <div className={styles.spotlightContent}>
+                  <div className={styles.spotlightMeta}>
+                    <span className={styles.spotlightBadge}>Spotlight</span>
+                    <span className={styles.spotlightShow}>
+                      {featuredShow.show}
+                      {featuredShow.season && featuredShow.episode
+                        ? ` · S${String(featuredShow.season).padStart(2, "0")} E${String(featuredShow.episode).padStart(2, "0")}`
+                        : ""}
+                    </span>
                   </div>
-                  <div className={styles.episodeTitle}>{show.youtubeTitle}</div>
-                </a>
-              ))
+                  <div className={styles.spotlightTitle}>
+                    {featuredShow.youtubeTitle}
+                  </div>
+                  <div className={styles.spotlightGuest}>
+                    With {featuredShow.guest}
+                  </div>
+                </div>
+              </a>
             ) : (
               <div className={styles.episodeCard}>
                 <div className={styles.episodeMeta}>Life Between Titles</div>
