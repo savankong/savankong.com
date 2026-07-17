@@ -28,28 +28,30 @@ export default async function TheLatest() {
       </section>
 
       <section className="section black-bg top-border">
-        <div className={styles.list}>
-          {posts.length === 0 && <p className={styles.empty}>No entries yet.</p>}
-          {posts.map((post, i) => (
-            <div key={post.slug} className={`${styles.entry} ${i === 0 ? styles.entryFirst : ''}`}>
-              <div className={styles.entryDate}>
-                {post.publishedAt
-                  ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-                      month: 'short',
-                      day: 'numeric',
-                      year: 'numeric',
-                    })
-                  : ''}
+        <div className={styles.listPaper}>
+          <div className={styles.list}>
+            {posts.length === 0 && <p className={styles.empty}>No entries yet.</p>}
+            {posts.map((post) => (
+              <div key={post.slug} className={styles.entry}>
+                <div className={styles.entryDate}>
+                  {post.publishedAt
+                    ? new Date(post.publishedAt).toLocaleDateString('en-US', {
+                        month: 'short',
+                        day: 'numeric',
+                        year: 'numeric',
+                      })
+                    : ''}
+                </div>
+                <div>
+                  <div className={styles.entryTitle}>{post.title}</div>
+                  <p className={styles.entryExcerpt}>{post.excerpt}</p>
+                  <Link href={`/the-latest/${post.slug}`} className={styles.entryLink}>
+                    Continue reading →
+                  </Link>
+                </div>
               </div>
-              <div>
-                <div className={styles.entryTitle}>{post.title}</div>
-                <p className={styles.entryExcerpt}>{post.excerpt}</p>
-                <Link href={`/the-latest/${post.slug}`} className={styles.entryLink}>
-                  Continue reading →
-                </Link>
-              </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 

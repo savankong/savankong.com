@@ -56,9 +56,11 @@ export default async function PostPage({
       </section>
 
       <section className={`${styles.postBody} black-bg`}>
-        {paragraphs.map((p, i) => (
-          <p key={i}>{p}</p>
-        ))}
+        <div className={styles.postBodyPaper}>
+          {paragraphs.map((p, i) => (
+            <p key={i}>{p}</p>
+          ))}
+        </div>
       </section>
 
       <Footer />
