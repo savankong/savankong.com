@@ -57,7 +57,7 @@ export default function LbtPodcast() {
         </p>
         <div className={styles.links}>
           <a
-            href="https://open.spotify.com"
+            href="https://open.spotify.com/show/1olZo0VDvHh9w0F2D2vEir"
             target="_blank"
             rel="noopener noreferrer"
             className="pill-filled"
@@ -65,7 +65,7 @@ export default function LbtPodcast() {
             Spotify
           </a>
           <a
-            href="https://podcasts.apple.com"
+            href="https://podcasts.apple.com/us/podcast/life-between-titles/id1844748787"
             target="_blank"
             rel="noopener noreferrer"
             className="pill-outline"
