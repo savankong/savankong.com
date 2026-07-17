@@ -132,20 +132,6 @@
   max-width: 460px;
 }
 
-.podcastLinks {
-  display: flex;
-  gap: 14px;
-  flex-wrap: wrap;
-}
-
-.podcastLinkFilled {
-  padding: 13px 24px;
-}
-
-.podcastLinkOutline {
-  padding: 11px 24px;
-}
-
 .episodeCards {
   display: flex;
   flex-direction: column;

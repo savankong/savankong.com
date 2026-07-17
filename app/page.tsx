@@ -198,26 +198,6 @@ export default async function Home() {
               pivots, burnout, and identity shifts. Three shows. 40+
               conversations and counting — free everywhere you listen.
             </p>
-            <div className={styles.podcastLinks}>
-              <a
-                href="https://open.spotify.com"
-                className={`pill-filled ${styles.podcastLinkFilled}`}
-              >
-                Spotify
-              </a>
-              <a
-                href="https://podcasts.apple.com"
-                className={`pill-outline ${styles.podcastLinkOutline}`}
-              >
-                Apple
-              </a>
-              <a
-                href="https://youtube.com"
-                className={`pill-outline ${styles.podcastLinkOutline}`}
-              >
-                YouTube
-              </a>
-            </div>
           </div>
           <div className={styles.episodeCards}>
             {featuredShow ? (
