@@ -3,6 +3,7 @@ import Link from "next/link";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import { getPublishedPosts } from "@/lib/posts";
+import { getFeaturedShows } from "@/lib/lbt-spotlight";
 import styles from "./page.module.css";
 
 export const dynamic = "force-dynamic";
@@ -94,6 +95,7 @@ const bookTeasers = [
 
 export default async function Home() {
   const latestPosts = (await getPublishedPosts()).slice(0, 4);
+  const featuredShows = (await getFeaturedShows()).slice(0, 2);
 
   return (
     <>
@@ -218,18 +220,30 @@ export default async function Home() {
             </div>
           </div>
           <div className={styles.episodeCards}>
-            <div className={styles.episodeCard}>
-              <div className={styles.episodeMeta}>Latest · S03 E01</div>
-              <div className={styles.episodeTitle}>
-                The &lsquo;F*** Yes&rsquo; Philosophy
+            {featuredShows.length > 0 ? (
+              featuredShows.map((show, i) => (
+                <a
+                  key={show.slug}
+                  href={`https://www.lifebetweentitles.com/shows/${show.slug}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={styles.episodeCard}
+                >
+                  <div className={styles.episodeMeta}>
+                    {i === 0 ? "Featured · " : ""}
+                    {show.show}
+                  </div>
+                  <div className={styles.episodeTitle}>{show.youtubeTitle}</div>
+                </a>
+              ))
+            ) : (
+              <div className={styles.episodeCard}>
+                <div className={styles.episodeMeta}>Life Between Titles</div>
+                <div className={styles.episodeTitle}>
+                  New episodes every week.
+                </div>
               </div>
-            </div>
-            <div className={styles.episodeCard}>
-              <div className={styles.episodeMeta}>Work, Unscripted</div>
-              <div className={styles.episodeTitle}>
-                He Booked Kim Kardashian at 15
-              </div>
-            </div>
+            )}
           </div>
         </div>
       </section>

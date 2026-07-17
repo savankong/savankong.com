@@ -153,11 +153,18 @@
 }
 
 .episodeCard {
+  display: block;
   background: var(--card);
   border: 1px solid rgba(0, 212, 255, 0.3);
   border-radius: 8px;
   padding: 24px 28px;
   box-shadow: 4px 4px 0 rgba(47, 107, 255, 0.4);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.episodeCard:hover {
+  border-color: rgba(0, 212, 255, 0.6);
+  box-shadow: 4px 4px 0 rgba(47, 107, 255, 0.6);
 }
 
 .episodeMeta {
