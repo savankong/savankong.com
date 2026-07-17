@@ -38,28 +38,27 @@ export default async function PostPage({
     <>
       <Nav active="The Journal" />
 
-      <section className={`${styles.postHero} glow-bg`}>
-        <Link href="/the-latest" className="back-link">
-          ← Journal
-        </Link>
-        <span className={styles.postDate}>
-          {post.publishedAt
-            ? new Date(post.publishedAt).toLocaleDateString('en-US', {
-                month: 'long',
-                day: 'numeric',
-                year: 'numeric',
-              })
-            : ''}
-        </span>
-        <h1 className={styles.postTitle}>{post.title}</h1>
-        <p className={styles.postExcerpt}>{post.excerpt}</p>
-      </section>
-
-      <section className={`${styles.postBody} black-bg`}>
-        <div className={styles.postBodyPaper}>
-          {paragraphs.map((p, i) => (
-            <p key={i}>{p}</p>
-          ))}
+      <section className={`${styles.page} glow-bg`}>
+        <div className={styles.postPaper}>
+          <Link href="/the-latest" className={styles.backLink}>
+            ← Journal
+          </Link>
+          <span className={styles.postDate}>
+            {post.publishedAt
+              ? new Date(post.publishedAt).toLocaleDateString('en-US', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric',
+                })
+              : ''}
+          </span>
+          <h1 className={styles.postTitle}>{post.title}</h1>
+          <p className={styles.postExcerpt}>{post.excerpt}</p>
+          <div className={styles.postBodyText}>
+            {paragraphs.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+          </div>
         </div>
       </section>
 

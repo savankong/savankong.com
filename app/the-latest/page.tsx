@@ -19,16 +19,13 @@ export default async function TheLatest() {
     <>
       <Nav active="The Journal" />
 
-      <section className={`${styles.hero} glow-bg`}>
-        <h1 className={styles.h1}>Journal.</h1>
-        <p className={styles.intro}>
-          Writing on identity, leadership, and the space between titles — from
-          the Pentagon to the podcast mic.
-        </p>
-      </section>
-
-      <section className="section black-bg top-border">
+      <section className={`${styles.page} glow-bg`}>
         <div className={styles.listPaper}>
+          <h1 className={styles.h1}>Journal.</h1>
+          <p className={styles.intro}>
+            Writing on identity, leadership, and the space between titles —
+            from the Pentagon to the podcast mic.
+          </p>
           <div className={styles.list}>
             {posts.length === 0 && <p className={styles.empty}>No entries yet.</p>}
             {posts.map((post) => (
