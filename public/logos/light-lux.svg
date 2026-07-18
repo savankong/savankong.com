@@ -1,6 +1,11 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Light Lux icon">
-  <line x1="18" y1="60" x2="102" y2="60" stroke="#26262A" stroke-opacity="0.82" stroke-width="3"></line>
-  <line x1="60" y1="18" x2="60" y2="102" stroke="#26262A" stroke-opacity="0.82" stroke-width="3"></line>
-  <circle cx="60" cy="60" r="15" fill="none" stroke="#A8824A" stroke-width="3"></circle>
-  <circle cx="60" cy="60" r="6.5" fill="#A8824A"></circle>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Light Lux symbol">
+  <g stroke="#26262A" stroke-opacity="0.38" stroke-width="0.75">
+    <line x1="16" y1="16" x2="104" y2="16"></line><line x1="16" y1="38" x2="104" y2="38"></line><line x1="16" y1="60" x2="104" y2="60"></line><line x1="16" y1="82" x2="104" y2="82"></line><line x1="16" y1="104" x2="104" y2="104"></line>
+    <line x1="16" y1="16" x2="16" y2="104"></line><line x1="38" y1="16" x2="38" y2="104"></line><line x1="60" y1="16" x2="60" y2="104"></line><line x1="82" y1="16" x2="82" y2="104"></line><line x1="104" y1="16" x2="104" y2="104"></line>
+  </g>
+  <g stroke="#26262A" stroke-opacity="0.82" stroke-width="1">
+    <line x1="16" y1="38" x2="104" y2="38"></line><line x1="82" y1="16" x2="82" y2="104"></line>
+  </g>
+  <circle cx="82" cy="38" r="8.2" fill="none" stroke="#A8824A" stroke-width="1.4"></circle>
+  <circle cx="82" cy="38" r="3.5" fill="#A8824A"></circle>
 </svg>

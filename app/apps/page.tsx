@@ -48,8 +48,7 @@ const apps = [
         desc: "Full command hierarchy mapped — see exactly who reports to whom.",
       },
     ],
-    href: "https://warroomusa.com",
-    cta: "Visit War Room →",
+    ctas: [{ href: "https://warroomusa.com", label: "Visit War Room →", style: "pill-filled" }],
   },
   {
     logo: "/logos/light-lux.svg",
@@ -63,8 +62,14 @@ const apps = [
       { label: "Dual Market", text: "Built for federal and commercial targeting alike." },
       { label: "Auto Outreach", text: "Signal-triggered sequences, no manual triggers." },
     ],
-    href: "https://light-lux.com",
-    cta: "Visit Light-Lux →",
+    ctas: [
+      { href: "https://www.light-lux.com", label: "Learn More →", style: "pill-filled" },
+      {
+        href: "https://savankong.gumroad.com/l/groundwork",
+        label: "Buy the Tutorial →",
+        style: "pill-outline",
+      },
+    ],
   },
 ];
 
@@ -108,14 +113,17 @@ export default function Apps() {
               <p className={styles.appTagline}>{app.tagline}</p>
               <p className={styles.appDesc}>{app.desc}</p>
               <div className={styles.appCtaRow}>
-                <a
-                  href={app.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="pill-filled"
-                >
-                  {app.cta}
-                </a>
+                {app.ctas.map((cta) => (
+                  <a
+                    key={cta.href}
+                    href={cta.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={cta.style}
+                  >
+                    {cta.label}
+                  </a>
+                ))}
               </div>
             </div>
 
