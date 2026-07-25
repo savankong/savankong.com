@@ -6,10 +6,27 @@ import styles from "./apps.module.css";
 export const metadata: Metadata = {
   title: "Apps — Savan Kong",
   description:
-    "War Room and Light-Lux — defense intelligence and B2B sales tools built by Savan Kong.",
+    "War Room, Light-Lux, and Cambo — defense intelligence, B2B sales, and tutoring tools built by Savan Kong.",
 };
 
 const apps = [
+  {
+    logo: "/logos/cambo.svg",
+    badge: "AI Answer Camera for Tutors",
+    title: "Cambo.",
+    tagline: "Point, tap, keep moving.",
+    desc: "Cambo turns a phone camera into an instant answer key for tutoring sessions — point at any practice question, get an AI-read answer back in seconds, and stay focused on the student instead of working the problem out by hand. It runs right in the browser on any phone, no app store required, with a free tier to start and paid plans for daily use.",
+    pillars: [
+      { label: "Instant Answers", text: "Point, capture, and get an AI-read answer back in seconds." },
+      { label: "Works Everywhere", text: "Runs in the browser on any iPhone or Android — no install." },
+      { label: "Hands-Free Mode", text: "Pair a Bluetooth keyboard to trigger capture without touching the screen." },
+      { label: "Free to Start", text: "20 free captures a month, no card required — paid plans from $4.99/mo." },
+    ],
+    ctas: [
+      { href: "https://camboapp.com", label: "Try Cambo Free →", style: "pill-filled" },
+      { href: "https://camboapp.com/pricing", label: "See Pricing →", style: "pill-outline" },
+    ],
+  },
   {
     logo: "/logos/war-room.svg",
     badge: "Defense Intelligence Platform",
@@ -83,10 +100,12 @@ export default function Apps() {
           <h1 className={styles.h1}>Apps.</h1>
           <p className={styles.intro}>
             Tools born out of the same problem the podcast talks about — too
-            much noise, not enough signal. <strong>War Room</strong> maps the
-            Department of Defense so business development teams stop
-            guessing. <strong>Light-Lux</strong> turns buying signals into a
-            real pipeline. Both started as ways to solve my own problem
+            much noise, not enough signal. <strong>Cambo</strong> turns a
+            phone camera into an instant answer key for tutors.{" "}
+            <strong>War Room</strong> maps the Department of Defense so
+            business development teams stop guessing.{" "}
+            <strong>Light-Lux</strong> turns buying signals into a real
+            pipeline. All three started as ways to solve my own problem
             first.
           </p>
         </div>
