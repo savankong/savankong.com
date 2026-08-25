@@ -4,13 +4,20 @@ let _pool: Pool | null = null
 
 function getPool(): Pool {
   if (!_pool) {
-    const connectionString = process.env.DATABASE_URL
-    if (!connectionString) throw new Error('DATABASE_URL is not set')
+    const raw = process.env.DATABASE_URL
+    if (!raw) throw new Error('DATABASE_URL is not set')
+
+    // pg's connection-string parser overrides an explicit `ssl` option with
+    // whatever `sslmode` is in the URL, so a bare `{ rejectUnauthorized: false }`
+    // here is silently ignored while `sslmode=require` is present. Strip it and
+    // control TLS verification explicitly instead.
+    const url = new URL(raw)
+    const sslMode = url.searchParams.get('sslmode')
+    url.searchParams.delete('sslmode')
+
     _pool = new Pool({
-      connectionString,
-      ssl: connectionString.includes('sslmode=disable')
-        ? false
-        : { rejectUnauthorized: false },
+      connectionString: url.toString(),
+      ssl: sslMode === 'disable' ? false : { rejectUnauthorized: false },
     })
   }
   return _pool
