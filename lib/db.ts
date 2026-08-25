@@ -1,12 +1,29 @@
-import { getDatabase } from '@netlify/database'
+import { Pool } from 'pg'
 
-type DbSql = ReturnType<typeof getDatabase>['sql']
+let _pool: Pool | null = null
 
-let _sql: DbSql | null = null
-
-function getSql(): DbSql {
-  if (!_sql) _sql = getDatabase().sql
-  return _sql
+function getPool(): Pool {
+  if (!_pool) {
+    const connectionString = process.env.DATABASE_URL
+    if (!connectionString) throw new Error('DATABASE_URL is not set')
+    _pool = new Pool({
+      connectionString,
+      ssl: connectionString.includes('sslmode=disable')
+        ? false
+        : { rejectUnauthorized: false },
+    })
+  }
+  return _pool
 }
 
-export const sql: DbSql = ((...args: Parameters<DbSql>) => getSql()(...args)) as DbSql
+export async function sql(
+  strings: TemplateStringsArray,
+  ...values: unknown[]
+): Promise<Record<string, unknown>[]> {
+  let text = strings[0]
+  for (let i = 0; i < values.length; i++) {
+    text += `$${i + 1}${strings[i + 1]}`
+  }
+  const result = await getPool().query(text, values)
+  return result.rows
+}

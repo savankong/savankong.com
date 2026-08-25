@@ -1,0 +1,28 @@
+name: savankong-com
+region: nyc
+
+services:
+  - name: web
+    github:
+      repo: savankong/savankong.com
+      branch: main
+      deploy_on_push: true
+    environment_slug: node-js
+    build_command: npm run build
+    run_command: npm run start
+    http_port: 8080
+    instance_size_slug: basic-xxs
+    instance_count: 1
+    envs:
+      - key: DATABASE_URL
+        scope: RUN_AND_BUILD_TIME
+        value: ${savankong-db.DATABASE_URL}
+      - key: NEXT_PUBLIC_ADMIN_PASSWORD
+        scope: RUN_AND_BUILD_TIME
+        type: SECRET
+
+databases:
+  - name: savankong-db
+    engine: PG
+    version: "16"
+    production: true
