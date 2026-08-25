@@ -153,13 +153,6 @@ export default function About() {
               where his family survived the Khmer Rouge genocide — to the
               executive suite
             </li>
-            <li>
-              Also working on{" "}
-              <Link href="/books/right-sized" className={styles.inlineLink}>
-                Right-Sized: A Corporate Jargon Coloring Book
-              </Link>
-              , part of the Life Between Titles book series
-            </li>
           </ul>
 
           <h3 className={styles.h3}>Podcast Host</h3>
@@ -180,8 +173,16 @@ export default function About() {
           <p className={styles.p}>
             He currently serves as a Principal at Deep Water Point &amp;
             Associates (DWPA), a PE-backed GovCon advisory firm, and as a
-            Strategic Advisor to Deep Fathom, an AI compliance platform for
-            the Defense Industrial Base.
+            Strategic Advisor to{" "}
+            <a
+              href="https://deepfathom.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.inlineLink}
+            >
+              Deep Fathom
+            </a>
+            , an AI compliance platform for the Defense Industrial Base.
           </p>
         </div>
       </section>

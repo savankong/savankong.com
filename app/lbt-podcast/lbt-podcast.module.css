@@ -68,7 +68,7 @@
 
 .showTagline {
   margin: 0 0 16px;
-  font: italic 400 15px var(--font-lora), serif;
+  font: italic 400 15px var(--font-inter), sans-serif;
   color: #b9c1d6;
 }
 

@@ -47,7 +47,7 @@
 
 .featuredTagline {
   margin: 0 0 22px;
-  font: italic 400 19px/1.5 var(--font-lora), serif;
+  font: italic 400 19px/1.5 var(--font-inter), sans-serif;
   color: var(--neon);
 }
 

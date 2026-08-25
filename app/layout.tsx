@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Anton, Inter, Lora } from "next/font/google";
+import { Anton, Inter } from "next/font/google";
 import ScrollWatcher from "@/components/ScrollWatcher";
 import "./globals.css";
 
@@ -12,13 +12,6 @@ const anton = Anton({
 const inter = Inter({
   variable: "--font-inter",
   weight: ["400", "500", "600", "700", "800"],
-  subsets: ["latin"],
-});
-
-const lora = Lora({
-  variable: "--font-lora",
-  weight: ["400", "500"],
-  style: ["normal", "italic"],
   subsets: ["latin"],
 });
 
@@ -35,7 +28,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${anton.variable} ${inter.variable} ${lora.variable}`}>
+      <body className={`${anton.variable} ${inter.variable}`}>
         <ScrollWatcher />
         {children}
       </body>

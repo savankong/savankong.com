@@ -85,12 +85,6 @@ const bookTeasers = [
     desc: "A standalone memoir tracing his family's survival of the Khmer Rouge genocide and resettlement in America.",
     href: "/books/halfway-light",
   },
-  {
-    status: "Coming Soon",
-    title: "Right-Sized.",
-    desc: "A corporate jargon coloring book, part of the Life Between Titles book series.",
-    href: "/books/right-sized",
-  },
 ];
 
 export default async function Home() {
@@ -262,7 +256,7 @@ export default async function Home() {
         <p className={styles.authorshipIntro}>
           A book series under the Life Between Titles name — starting with the
           practical guide for surviving a layoff, and expanding into a
-          standalone memoir and a coloring book for the same in-between space.
+          standalone memoir for the same in-between space.
         </p>
         <div className={styles.booksTeaserGrid}>
           {bookTeasers.map((book) => (

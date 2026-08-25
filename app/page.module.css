@@ -254,7 +254,7 @@
 
 .booksTeaserGrid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 26px;
 }
 
@@ -398,7 +398,7 @@
 
 .entryExcerpt {
   margin: 0 0 32px;
-  font: italic 400 17px/32px var(--font-lora), serif;
+  font: italic 400 17px/32px var(--font-inter), sans-serif;
   color: #c7cbd6;
 }
 
@@ -451,10 +451,6 @@
 @media (max-width: 1100px) {
   .podcastGrid {
     grid-template-columns: 1fr;
-  }
-
-  .booksTeaserGrid {
-    grid-template-columns: 1fr 1fr;
   }
 }
 
