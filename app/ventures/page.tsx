@@ -13,20 +13,20 @@ const ventures = [
   {
     id: "your-roster",
     logo: "/logos/your-roster.svg",
-    badge: "Job Search & Talent Network",
+    badge: "Network-Powered Job Search",
     title: "Your Roster.",
-    tagline: "Turn your network into your next job.",
+    tagline: "The first thing people tell you when you lose a job: network.",
     desc: [
       "Losing my job taught me something I wish I'd known sooner.",
       "The jobs that actually came through weren't from applications I sent into a black hole. They came from people. Someone I'd worked with three jobs ago. A former teammate who remembered my work before I even had to explain it. The network I already had, sitting right there the whole time, was more powerful than any job board I scrolled through at 2am.",
       "So I started building something.",
       "It's called Roster, and the idea is simple: your job search shouldn't be a solo climb through hundreds of applications, hoping an algorithm notices you. It should start with the people who already know you, already trust you, and might be exactly the warm connection that gets your foot in the door somewhere new.",
-      "It's now pivoting into a verified talent pipeline — giving job seekers access to vetted opportunities, and helping employers cut through resume noise to find qualified candidates faster.",
+      "It surfaces who in your existing network — friends, former teammates, old managers — is already connected to a company you want in at, and makes it easy to ask them for the intro that actually gets you the interview.",
     ],
     pillars: [
+      { label: "Your Network, Mapped", text: "See who you already know at the companies you're targeting." },
       { label: "Warm Intros", text: "Leads sourced from people who already know your work, not a black-hole application queue." },
-      { label: "Verified Pipeline", text: "A vetted talent pipeline connecting job seekers to real, verified opportunities." },
-      { label: "Cut the Noise", text: "Employers skip resume noise and get to qualified candidates faster." },
+      { label: "Easy to Ask", text: "Makes it simple to ask friends and former teammates for the intro, without the awkwardness." },
       { label: "Built From It", text: "Built while living the job search firsthand, not theorized from the outside." },
     ],
     ctas: [

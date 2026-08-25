@@ -116,21 +116,31 @@ export default async function Home() {
             </span>
           </div>
           <p className={styles.heroBio}>
-            Savanrith &ldquo;Savan&rdquo; Kong is an award-winning executive and the
-            Department of Defense&rsquo;s first Customer Experience Officer, leading
-            enterprise-wide customer experience transformation. After being laid
-            off, he founded <strong>War Room</strong> and{" "}
-            <strong>Light-Lux</strong>. He is the author of{" "}
+            Savanrith &ldquo;Savan&rdquo; Kong is a product, UX, and CX
+            executive with 20+ years scaling customer-facing platforms across
+            government and the private sector. He served as the inaugural
+            Customer Experience Officer for the U.S. Department of Defense,
+            work that earned him the 2024 DefenseScoop Industry Leadership
+            Award, and was previously General Manager at{" "}
+            <strong>Rebellion Defense</strong> and a Digital Service Expert at
+            the <strong>Defense Digital Service</strong>. In the private
+            sector, he was a founding employee at Redfin, co-inventing its
+            map-based search technology, and later led design for Kindle at
+            Amazon. After being laid off, he built a portfolio of ventures —{" "}
+            <strong>Your Roster</strong>, <strong>War Room</strong>,{" "}
+            <strong>Cambo</strong>, and <strong>Light-Lux</strong> — each
+            solving a problem he lived firsthand. He is the author of{" "}
             <strong>
               Laid Off and Lost: How to Survive a Job Loss, Rediscover Your
               Identity, and Rebuild Yourself After Being Let Go
             </strong>
-            , with an upcoming memoir, <strong>Halfway Light</strong>, tracing his
-            family&rsquo;s survival of the Khmer Rouge genocide and their
-            resettlement in America, and the silence passed down between
-            generations. He also hosts the podcast{" "}
-            <strong>Life Between Titles</strong>, a show exploring identity,
-            purpose, and the uncertain space between titles and jobs.
+            , with an upcoming memoir, <strong>Halfway Light</strong>, tracing
+            his path from a refugee camp in Thailand to the executive suite.
+            He also hosts the podcast <strong>Life Between Titles</strong>, a
+            show exploring identity, purpose, and the uncertain space between
+            titles and jobs, and currently advises{" "}
+            <strong>Deep Water Point &amp; Associates</strong> and{" "}
+            <strong>Deep Fathom</strong>.
           </p>
           <div className={styles.bookHighlight}>
             <Image

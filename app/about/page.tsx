@@ -100,10 +100,10 @@ export default function About() {
               <Link href="/ventures#your-roster" className={styles.inlineLink}>
                 Your Roster
               </Link>
-              : a job search platform pivoting into a verified talent
-              pipeline, giving job seekers access to vetted opportunities and
-              helping employers cut through resume noise to find qualified
-              candidates faster.
+              : a job search platform built on the same advice everyone gets
+              after a layoff — network — surfacing who in your existing
+              network can get you a warm intro and an interview, instead of
+              another application into a black hole.
             </li>
             <li>
               <Link href="/ventures#war-room" className={styles.inlineLink}>
