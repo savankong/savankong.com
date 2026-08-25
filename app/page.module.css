@@ -47,6 +47,12 @@
   color: #e4e7f0;
 }
 
+.heroBioLink {
+  color: var(--neon);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
 .heroBio strong {
   color: #fff;
 }

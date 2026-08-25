@@ -122,25 +122,117 @@ export default async function Home() {
             Customer Experience Officer for the U.S. Department of Defense,
             work that earned him the 2024 DefenseScoop Industry Leadership
             Award, and was previously General Manager at{" "}
-            <strong>Rebellion Defense</strong> and a Digital Service Expert at
-            the <strong>Defense Digital Service</strong>. In the private
-            sector, he was a founding employee at Redfin, co-inventing its
-            map-based search technology, and later led design for Kindle at
-            Amazon. After being laid off, he built a portfolio of ventures —{" "}
-            <strong>Your Roster</strong>, <strong>War Room</strong>,{" "}
-            <strong>Cambo</strong>, and <strong>Light-Lux</strong> — each
-            solving a problem he lived firsthand. He is the author of{" "}
-            <strong>
+            <a
+              href="https://rebelliondefense.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.heroBioLink}
+            >
+              Rebellion Defense
+            </a>{" "}
+            and a Digital Service Expert at the{" "}
+            <a
+              href="https://www.dds.mil"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.heroBioLink}
+            >
+              Defense Digital Service
+            </a>
+            . In the private sector, he was a founding employee at{" "}
+            <a
+              href="https://www.redfin.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.heroBioLink}
+            >
+              Redfin
+            </a>
+            , co-inventing its map-based search technology, and later led
+            design for Kindle at{" "}
+            <a
+              href="https://www.amazon.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.heroBioLink}
+            >
+              Amazon
+            </a>
+            . After being laid off, he built a portfolio of ventures —{" "}
+            <a
+              href="https://yourrosterapp.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.heroBioLink}
+            >
+              Your Roster
+            </a>
+            ,{" "}
+            <a
+              href="https://warroomusa.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.heroBioLink}
+            >
+              War Room
+            </a>
+            ,{" "}
+            <a
+              href="https://www.camboapp.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.heroBioLink}
+            >
+              Cambo
+            </a>
+            , and{" "}
+            <a
+              href="https://www.light-lux.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.heroBioLink}
+            >
+              Light-Lux
+            </a>{" "}
+            — each solving a problem he lived firsthand. He is the author of{" "}
+            <Link href="/books/laid-off-and-lost" className={styles.heroBioLink}>
               Laid Off and Lost: How to Survive a Job Loss, Rediscover Your
               Identity, and Rebuild Yourself After Being Let Go
-            </strong>
-            , with an upcoming memoir, <strong>Halfway Light</strong>, tracing
-            his path from a refugee camp in Thailand to the executive suite.
-            He also hosts the podcast <strong>Life Between Titles</strong>, a
-            show exploring identity, purpose, and the uncertain space between
-            titles and jobs, and currently advises{" "}
-            <strong>Deep Water Point &amp; Associates</strong> and{" "}
-            <strong>Deep Fathom</strong>.
+            </Link>
+            , with an upcoming memoir,{" "}
+            <Link href="/books/halfway-light" className={styles.heroBioLink}>
+              Halfway Light
+            </Link>
+            , tracing his path from a refugee camp in Thailand to the
+            executive suite. He also hosts the podcast{" "}
+            <a
+              href="https://lifebetweentitles.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.heroBioLink}
+            >
+              Life Between Titles
+            </a>
+            , a show exploring identity, purpose, and the uncertain space
+            between titles and jobs, and currently advises{" "}
+            <a
+              href="https://www.dwpassociates.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.heroBioLink}
+            >
+              Deep Water Point &amp; Associates
+            </a>{" "}
+            and{" "}
+            <a
+              href="https://deepfathom.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles.heroBioLink}
+            >
+              Deep Fathom
+            </a>
+            .
           </p>
           <div className={styles.bookHighlight}>
             <Image
