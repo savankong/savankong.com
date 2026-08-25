@@ -32,15 +32,25 @@ export async function getPosts(): Promise<Post[]> {
 }
 
 export async function getPublishedPosts(): Promise<Post[]> {
-  const rows = await sql`
-    SELECT * FROM posts WHERE status = 'published' ORDER BY published_at DESC
-  `
-  return rows.map(rowToPost)
+  try {
+    const rows = await sql`
+      SELECT * FROM posts WHERE status = 'published' ORDER BY published_at DESC
+    `
+    return rows.map(rowToPost)
+  } catch (err) {
+    console.error('getPublishedPosts', err)
+    return []
+  }
 }
 
 export async function getPost(slug: string): Promise<Post | null> {
-  const rows = await sql`SELECT * FROM posts WHERE slug = ${slug} LIMIT 1`
-  return rows[0] ? rowToPost(rows[0]) : null
+  try {
+    const rows = await sql`SELECT * FROM posts WHERE slug = ${slug} LIMIT 1`
+    return rows[0] ? rowToPost(rows[0]) : null
+  } catch (err) {
+    console.error('getPost', err)
+    return null
+  }
 }
 
 export async function createPost(p: Post): Promise<Post> {
