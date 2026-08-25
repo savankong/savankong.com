@@ -19,7 +19,7 @@ const seriesBooks = [
     title: "Laid Off and Lost.",
     desc: "The identity crisis, the isolation, and the process of rebuilding after a layoff.",
     href: "/books/laid-off-and-lost",
-    cover: "https://www.lifebetweentitles.com/Cover-LaidOff.jpg",
+    cover: "https://m.media-amazon.com/images/I/61fs-JDYw8L._SL1499_.jpg",
   },
   {
     status: "Coming Soon",
@@ -57,7 +57,7 @@ export default function BooksHub() {
         <div className={styles.featuredGrid}>
           <div className={styles.featuredCoverWrap}>
             <Image
-              src="https://www.lifebetweentitles.com/Cover-LaidOff.jpg"
+              src="https://m.media-amazon.com/images/I/61fs-JDYw8L._SL1499_.jpg"
               alt="Laid Off and Lost book cover"
               width={300}
               height={450}

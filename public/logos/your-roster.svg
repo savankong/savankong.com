@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" role="img" aria-label="Your Roster symbol">
+  <rect x="14" y="14" width="92" height="92" rx="14" fill="none" stroke="#26262A" stroke-opacity="0.3" stroke-width="1.5"></rect>
+  <g stroke-linecap="round">
+    <line x1="30" y1="38" x2="90" y2="38" stroke="#26262A" stroke-opacity="0.35" stroke-width="6"></line>
+    <line x1="30" y1="60" x2="90" y2="60" stroke="#26262A" stroke-opacity="0.35" stroke-width="6"></line>
+    <line x1="30" y1="82" x2="66" y2="82" stroke="#2F6FC4" stroke-width="6"></line>
+  </g>
+  <circle cx="90" cy="82" r="9" fill="none" stroke="#2F6FC4" stroke-width="2.4"></circle>
+  <path d="M86 82L89 85L95 78" fill="none" stroke="#2F6FC4" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"></path>
+</svg>

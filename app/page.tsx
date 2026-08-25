@@ -140,7 +140,7 @@ export default async function Home() {
           </p>
           <div className={styles.bookHighlight}>
             <Image
-              src="https://www.lifebetweentitles.com/Cover-LaidOff.jpg"
+              src="https://m.media-amazon.com/images/I/61fs-JDYw8L._SL1499_.jpg"
               alt="Laid Off and Lost book cover"
               width={84}
               height={126}

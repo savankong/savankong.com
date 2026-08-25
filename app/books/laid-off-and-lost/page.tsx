@@ -62,7 +62,7 @@ export default function LaidOffAndLost() {
       <section className={`${styles.heroGrid} glow-bg`}>
         <div className={styles.coverWrap}>
           <Image
-            src="https://www.lifebetweentitles.com/Cover-LaidOff.jpg"
+            src="https://m.media-amazon.com/images/I/61fs-JDYw8L._SL1499_.jpg"
             alt="Laid Off and Lost book cover"
             width={300}
             height={450}

@@ -7,7 +7,7 @@ import styles from "./about.module.css";
 export const metadata: Metadata = {
   title: "About — Savan Kong",
   description:
-    "Savanrith \"Savan\" Kong is an award-winning executive, author, and podcast host writing about identity, leadership, and the space between titles.",
+    "Savan Kong is a product, UX, and CX executive with 20+ years of experience building and scaling customer-facing platforms across government and private sector organizations.",
 };
 
 export default function About() {
@@ -19,9 +19,12 @@ export default function About() {
         <div className={styles.intro}>
           <h1 className={styles.h1}>Hi, I&rsquo;m Savan.</h1>
           <p className={styles.lede}>
-            I&rsquo;m an award-winning executive, the Department of
-            Defense&rsquo;s first Customer Experience Officer, the author of{" "}
-            <strong>Laid Off and Lost</strong>, and the host of the{" "}
+            I&rsquo;m a product, UX, and CX executive with 20+ years scaling
+            customer-facing platforms across government and the private
+            sector — including a run as the Department of Defense&rsquo;s
+            first Customer Experience Officer, work that earned me the 2024
+            DefenseScoop Industry Leadership Award. I&rsquo;m also the author
+            of <strong>Laid Off and Lost</strong>, and the host of the{" "}
             <strong>Life Between Titles</strong> podcast network. Most of what
             I write and talk about comes from the same place: figuring out
             who you are when the title, the role, or the certainty you built
@@ -34,23 +37,98 @@ export default function About() {
         <div className={styles.body}>
           <h2 className={styles.h2}>About Me</h2>
 
-          <h3 className={styles.h3}>Executive &amp; Public Servant</h3>
+          <h3 className={styles.h3}>Executive &amp; Product Leader</h3>
+          <p className={styles.p}>
+            Savan Kong is a product, UX, and CX executive with 20+ years of
+            experience building and scaling customer-facing platforms across
+            government and private sector organizations.
+          </p>
+          <p className={styles.p}>
+            He served as the inaugural Customer Experience Officer (CXO) for
+            the U.S. Department of Defense, work that earned him the 2024
+            DefenseScoop Industry Leadership Award. Prior to that, he was
+            General Manager at Rebellion Defense, a venture-backed defense AI
+            company, where he owned product strategy for IRIS, an AI-driven
+            ISR platform, and led the launch of Dispatch, an autonomous
+            readiness platform, from concept to shipped product.
+          </p>
+
+          <h3 className={styles.h3}>Defense Digital Service</h3>
+          <p className={styles.p}>
+            Before Rebellion Defense, he spent over three years as a Digital
+            Service Expert at the Defense Digital Service (DDS), a posting
+            worth explaining on its own. DDS was established by the Secretary
+            of Defense in November 2015 as a small, handpicked team of
+            designers, engineers, and data scientists pulled in from
+            industry, and it reports directly to the secretary of defense
+            rather than through the normal DoD IT chain of command. It became
+            known, including in coverage by the U.S. Army&rsquo;s own news
+            service, as the &ldquo;swat team of nerds&rdquo; brought in to
+            work on some of the hardest problems in the Defense Department.
+            Being selected into DDS means being pulled into one of the most
+            elite, fast-moving technical units in the federal government.
+          </p>
+          <p className={styles.p}>
+            While there, Savan designed BOBA, a biometric data collection
+            platform deployed across 10+ field sites including Afghanistan.
+            During Operation Allies Refuge in August 2021, he led design and
+            delivery for Project Oscar, building interfaces under extreme
+            time pressure that helped support the evacuation of 120,000+
+            Afghan allies. He also designed Project Rabbit, a data matching
+            system for Special Immigrant Visa processing that replaced a
+            manual, error-prone workflow and helped clear a backlog of
+            10,000+ cases, and co-authored the DoD Digital Hiring Playbook,
+            later adopted across 15+ federal agencies to modernize technical
+            recruiting.
+          </p>
+
+          <h3 className={styles.h3}>Private Sector</h3>
+          <p className={styles.p}>
+            In the private sector, he was a founding employee at Redfin,
+            where he co-invented the company&rsquo;s map-based search
+            technology (US Patent 9436945B2). He later led design for Kindle
+            at Amazon and served as Director of UX and Product at Kareo.
+          </p>
+
+          <h3 className={styles.h3}>Founder</h3>
+          <p className={styles.p}>
+            He&rsquo;s also built a portfolio of his own ventures, each
+            solving a concrete problem for its users:
+          </p>
           <ul className={styles.bulletList}>
             <li>
-              First Customer Experience Officer in the history of the U.S.
-              Department of Defense
+              <Link href="/ventures#your-roster" className={styles.inlineLink}>
+                Your Roster
+              </Link>
+              : a job search platform pivoting into a verified talent
+              pipeline, giving job seekers access to vetted opportunities and
+              helping employers cut through resume noise to find qualified
+              candidates faster.
             </li>
             <li>
-              Led enterprise-wide customer experience transformation across
-              the Pentagon
+              <Link href="/ventures#war-room" className={styles.inlineLink}>
+                WarRoom USA
+              </Link>
+              : a federal business development intelligence platform mapping
+              DoD program offices, helping contractors and consultants target
+              the right offices and decision makers and shorten federal BD
+              cycles.
             </li>
             <li>
-              Served almost a decade in federal government across three
-              administrations
+              <Link href="/ventures#cambo" className={styles.inlineLink}>
+                Cambo
+              </Link>
+              : an AI-powered compliance test prep tool covering DoD Cyber
+              Awareness, OPSEC, CUI, HIPAA, and other certifications, helping
+              individuals and teams pass required exams more efficiently.
             </li>
             <li>
-              Early team member at Redfin, helping build trust in a real
-              estate model that didn&rsquo;t exist yet
+              <Link href="/ventures#light-lux" className={styles.inlineLink}>
+                Light-Lux
+              </Link>
+              : a B2B sales consultancy and playbook run under his personal
+              site, savankong.com, helping companies build and execute
+              repeatable outbound sales strategies.
             </li>
           </ul>
 
@@ -62,6 +140,8 @@ export default function About() {
                 Laid Off and Lost: How to Survive a Job Loss, Rediscover Your
                 Identity, and Rebuild Yourself After Being Let Go
               </Link>
+              , released in July 2026 across paperback, hardcover, and Kindle
+              editions
             </li>
             <li>Interviewed 29 people over a year of reporting to write it</li>
             <li>
@@ -69,8 +149,9 @@ export default function About() {
               <Link href="/books/halfway-light" className={styles.inlineLink}>
                 Halfway Light
               </Link>
-              , a memoir tracing his family&rsquo;s survival of the Khmer
-              Rouge genocide and their resettlement in America
+              , a memoir tracing his path from a refugee camp in Thailand —
+              where his family survived the Khmer Rouge genocide — to the
+              executive suite
             </li>
             <li>
               Also working on{" "}
@@ -84,8 +165,9 @@ export default function About() {
           <h3 className={styles.h3}>Podcast Host</h3>
           <ul className={styles.bulletList}>
             <li>
-              Hosts Life Between Titles, a podcast network of three shows:
-              Life Between Titles, Work Unscripted, and Office Hours
+              Hosts Life Between Titles, a podcast and platform on career
+              reinvention, with a network of three shows: Life Between
+              Titles, Work Unscripted, and Office Hours
             </li>
             <li>40+ conversations and counting, free everywhere you listen</li>
             <li>
@@ -94,11 +176,13 @@ export default function About() {
             </li>
           </ul>
 
-          <h3 className={styles.h3}>Founder</h3>
-          <ul className={styles.bulletList}>
-            <li>Founded War Room after leaving the Department of Defense</li>
-            <li>Founded Light-Lux</li>
-          </ul>
+          <h3 className={styles.h3}>Advisor</h3>
+          <p className={styles.p}>
+            He currently serves as a Principal at Deep Water Point &amp;
+            Associates (DWPA), a PE-backed GovCon advisory firm, and as a
+            Strategic Advisor to Deep Fathom, an AI compliance platform for
+            the Defense Industrial Base.
+          </p>
         </div>
       </section>
 

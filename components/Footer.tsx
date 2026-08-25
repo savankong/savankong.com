@@ -37,8 +37,8 @@ export default function Footer() {
           <Link href="/speaking" className="footer-link">
             Speaking
           </Link>
-          <Link href="/apps" className="footer-link">
-            Apps
+          <Link href="/ventures" className="footer-link">
+            Ventures
           </Link>
         </div>
       </div>

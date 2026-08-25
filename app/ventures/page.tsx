@@ -1,16 +1,45 @@
 import type { Metadata } from "next";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
-import styles from "./apps.module.css";
+import styles from "./ventures.module.css";
 
 export const metadata: Metadata = {
-  title: "Apps — Savan Kong",
+  title: "Ventures — Savan Kong",
   description:
-    "War Room and Light-Lux — defense intelligence and B2B sales tools built by Savan Kong.",
+    "Your Roster, War Room, Cambo, and Light-Lux — the ventures, platforms, and communities built by Savan Kong.",
 };
 
-const apps = [
+const ventures = [
   {
+    id: "your-roster",
+    logo: "/logos/your-roster.svg",
+    badge: "Job Search & Talent Network",
+    title: "Your Roster.",
+    tagline: "Turn your network into your next job.",
+    desc: [
+      "Losing my job taught me something I wish I'd known sooner.",
+      "The jobs that actually came through weren't from applications I sent into a black hole. They came from people. Someone I'd worked with three jobs ago. A former teammate who remembered my work before I even had to explain it. The network I already had, sitting right there the whole time, was more powerful than any job board I scrolled through at 2am.",
+      "So I started building something.",
+      "It's called Roster, and the idea is simple: your job search shouldn't be a solo climb through hundreds of applications, hoping an algorithm notices you. It should start with the people who already know you, already trust you, and might be exactly the warm connection that gets your foot in the door somewhere new.",
+      "It's now pivoting into a verified talent pipeline — giving job seekers access to vetted opportunities, and helping employers cut through resume noise to find qualified candidates faster.",
+    ],
+    pillars: [
+      { label: "Warm Intros", text: "Leads sourced from people who already know your work, not a black-hole application queue." },
+      { label: "Verified Pipeline", text: "A vetted talent pipeline connecting job seekers to real, verified opportunities." },
+      { label: "Cut the Noise", text: "Employers skip resume noise and get to qualified candidates faster." },
+      { label: "Built From It", text: "Built while living the job search firsthand, not theorized from the outside." },
+    ],
+    ctas: [
+      { href: "https://yourrosterapp.com", label: "Visit Your Roster →", style: "pill-filled" },
+      {
+        href: "https://docs.google.com/document/d/1QIGYNCbGhlpM0EvIFalWzWlm7UgMSmVt0nnOSznv6K4/edit?usp=sharing",
+        label: "Read the Manifesto →",
+        style: "pill-outline",
+      },
+    ],
+  },
+  {
+    id: "war-room",
     logo: "/logos/war-room.svg",
     badge: "Defense Intelligence Platform",
     title: "War Room.",
@@ -51,6 +80,22 @@ const apps = [
     ctas: [{ href: "https://warroomusa.com", label: "Visit War Room →", style: "pill-filled" }],
   },
   {
+    id: "cambo",
+    logo: "/logos/cambo.svg",
+    badge: "AI Compliance Test Prep",
+    title: "Cambo.",
+    tagline: "Pass your compliance exams faster.",
+    desc: "Cambo is an AI-powered compliance test prep tool built for the certifications that gate access to real work — DoD Cyber Awareness, OPSEC, CUI, HIPAA, and more. It surfaces the concepts you're actually weak on and turns study time into exam-ready confidence, for individuals and teams alike.",
+    pillars: [
+      { label: "Compliance Coverage", text: "DoD Cyber Awareness, OPSEC, CUI, HIPAA, and more certification tracks." },
+      { label: "AI-Guided Prep", text: "Adaptive practice that focuses on what you actually need to review." },
+      { label: "Individuals or Teams", text: "Built for solo learners and compliance teams tracking certs at scale." },
+      { label: "Faster Pass Rates", text: "Structured prep that cuts study time without cutting corners." },
+    ],
+    ctas: [{ href: "https://www.camboapp.com", label: "Try Cambo →", style: "pill-filled" }],
+  },
+  {
+    id: "light-lux",
     logo: "/logos/light-lux.svg",
     badge: "B2B Sales Intelligence",
     title: "Light-Lux.",
@@ -73,47 +118,60 @@ const apps = [
   },
 ];
 
-export default function Apps() {
+export default function Ventures() {
   return (
     <>
-      <Nav active="Apps" />
+      <Nav active="Ventures" />
 
       <section className={`${styles.hero} glow-bg`}>
         <div className={styles.container}>
-          <h1 className={styles.h1}>Apps.</h1>
+          <h1 className={styles.h1}>Ventures.</h1>
           <p className={styles.intro}>
-            Tools born out of the same problem the podcast talks about — too
-            much noise, not enough signal. <strong>War Room</strong> maps the
-            Department of Defense so business development teams stop
-            guessing. <strong>Light-Lux</strong> turns buying signals into a
-            real pipeline. Both started as ways to solve my own problem
-            first.
+            These aren&rsquo;t just apps — they&rsquo;re places and
+            communities built to solve problems I&rsquo;ve lived myself.{" "}
+            <strong>Your Roster</strong> turns your job search into warm
+            introductions instead of a black hole of applications.{" "}
+            <strong>War Room</strong> maps the Department of Defense so
+            business development teams stop guessing. <strong>Cambo</strong>{" "}
+            helps people and teams pass required compliance certifications
+            faster. <strong>Light-Lux</strong> turns buying signals into a
+            real pipeline. Every one of them started as a way to solve my own
+            problem first.
           </p>
         </div>
       </section>
 
-      {apps.map((app, i) => (
+      {ventures.map((venture, i) => (
         <section
-          key={app.title}
+          key={venture.title}
+          id={venture.id}
           className={`section ${i % 2 === 0 ? "black-bg" : "glow-bg"} top-border`}
         >
           <div className={styles.container}>
             <div className={styles.appHero}>
               <div className="eyebrow">
                 <span className="eyebrow-rule" />
-                <span className="eyebrow-label">{app.badge}</span>
+                <span className="eyebrow-label">{venture.badge}</span>
               </div>
               <div className={styles.titleRow}>
                 <span className={styles.logoBadge}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src={app.logo} alt={`${app.title} logo`} />
+                  <img src={venture.logo} alt={`${venture.title} logo`} />
                 </span>
-                <h2 className={styles.appTitle}>{app.title}</h2>
+                <h2 className={styles.appTitle}>{venture.title}</h2>
               </div>
-              <p className={styles.appTagline}>{app.tagline}</p>
-              <p className={styles.appDesc}>{app.desc}</p>
+              <p className={styles.appTagline}>{venture.tagline}</p>
+              {Array.isArray(venture.desc) ? (
+                venture.desc.map((p, idx) => (
+                  <p key={idx} className={styles.appDesc}>
+                    {p}
+                  </p>
+                ))
+              ) : (
+                <p className={styles.appDesc}>{venture.desc}</p>
+              )}
               <div className={styles.appCtaRow}>
-                {app.ctas.map((cta) => (
+                {venture.ctas.map((cta) => (
                   <a
                     key={cta.href}
                     href={cta.href}
@@ -128,7 +186,7 @@ export default function Apps() {
             </div>
 
             <div className={styles.pillarsRow}>
-              {app.pillars.map((pillar, idx) => (
+              {venture.pillars.map((pillar, idx) => (
                 <div key={pillar.label} className={styles.pillar}>
                   <div className={styles.pillarNum}>
                     {String(idx + 1).padStart(2, "0")}
@@ -139,9 +197,9 @@ export default function Apps() {
               ))}
             </div>
 
-            {app.screenshots && (
+            {venture.screenshots && (
               <div className={styles.screenshotsRow}>
-                {app.screenshots.map((shot) => (
+                {venture.screenshots.map((shot) => (
                   <div key={shot.label}>
                     <div className={styles.browserFrame}>
                       <div className={styles.browserChrome}>
