@@ -102,6 +102,10 @@ export default async function Home() {
           </h1>
           <div className={styles.heroTagline}>
             <span className={styles.heroTaglineItem}>
+              CEO &amp; Co-Founder, Your Roster
+            </span>
+            <span className={styles.heroTaglineDot}>·</span>
+            <span className={styles.heroTaglineItem}>
               First CXO, Department of War
             </span>
             <span className={styles.heroTaglineDot}>·</span>
@@ -166,8 +170,8 @@ export default async function Home() {
               className={styles.heroBioLink}
             >
               Your Roster
-            </a>
-            ,{" "}
+            </a>{" "}
+            (where he serves as CEO and co-founder),{" "}
             <a
               href="https://warroomusa.com"
               target="_blank"
