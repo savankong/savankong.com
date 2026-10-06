@@ -1,45 +1,65 @@
 import Image from "next/image";
 import Link from "next/link";
+import ShaderCanvas from "./ShaderCanvas";
 
 export default function Footer() {
   return (
-    <footer id="about" className="footer glow-bg top-border">
-      <div className="footer-top">
-        <div>
-          <h2 className="footer-h2">
-            Let&rsquo;s <span className="glitch">connect.</span>
-          </h2>
-          <p className="footer-blurb">
-            Reach out about speaking, press, sponsorships, or just to say hi.
-          </p>
-        </div>
-        <div className="footer-photo">
-          <Image
-            src="https://images.squarespace-cdn.com/content/v1/67d45a59e5abd35cf0bf7d15/1750d3c6-517b-4d55-9972-7e34ab46cdcb/9999396F-17FA-4133-B6F1-B99D197B02D7_1_105_c.jpeg"
-            alt="Savan Kong"
-            width={110}
-            height={110}
-          />
-        </div>
+    <footer id="contact" className="footer top-border">
+      <div className="footer-glow" aria-hidden="true">
+        <ShaderCanvas shader="aurora" speed={0.6} maxDpr={1} />
       </div>
-      <div className="footer-bottom">
-        <span className="footer-made">Made with ❤️ in Longview, WA</span>
-        <div className="footer-links">
-          <a href="https://linkedin.com" className="footer-link">
-            LinkedIn
-          </a>
-          <a href="https://lifebetweentitles.com" className="footer-link">
-            Life Between Titles
-          </a>
-          <Link href="/the-latest" className="footer-link">
-            The Journal
-          </Link>
-          <Link href="/speaking" className="footer-link">
-            Speaking
-          </Link>
-          <Link href="/ventures" className="footer-link">
-            Ventures
-          </Link>
+      <div className="footer-inner">
+        <div className="footer-top">
+          <div data-reveal>
+            <h2 className="footer-h2">
+              Let&rsquo;s <span className="lit">talk.</span>
+            </h2>
+            <p className="footer-blurb">
+              Speaking, press, podcast guests, Your Roster or Light-Lux, or
+              just to say hi.
+            </p>
+            <a href="https://www.linkedin.com/in/savankong" target="_blank" rel="noopener noreferrer" className="pill-filled">
+              Message me on LinkedIn →
+            </a>
+          </div>
+          <div className="footer-photo" data-reveal="scale">
+            <Image
+              src="/savan-cutout.png"
+              alt="Savan Kong"
+              width={140}
+              height={140}
+            />
+          </div>
+        </div>
+        <div className="footer-cols">
+          <div className="footer-col">
+            <div className="footer-col-title">Building</div>
+            <Link href="/your-roster">Your Roster</Link>
+            <Link href="/light-lux">Light-Lux</Link>
+            <Link href="/ventures">All ventures</Link>
+          </div>
+          <div className="footer-col">
+            <div className="footer-col-title">Hosting</div>
+            <Link href="/lbt-podcast">Life Between Titles</Link>
+            <a href="https://www.youtube.com/@LifeBetweenTitles" target="_blank" rel="noopener noreferrer">YouTube</a>
+            <a href="https://open.spotify.com/show/1olZo0VDvHh9w0F2D2vEir" target="_blank" rel="noopener noreferrer">Spotify</a>
+          </div>
+          <div className="footer-col">
+            <div className="footer-col-title">Writing</div>
+            <Link href="/books">Books</Link>
+            <Link href="/the-latest">The Journal</Link>
+            <a href="https://lifebetweentitles.substack.com" target="_blank" rel="noopener noreferrer">Newsletter</a>
+          </div>
+          <div className="footer-col">
+            <div className="footer-col-title">Me</div>
+            <Link href="/about">About</Link>
+            <Link href="/speaking">Speaking</Link>
+            <a href="https://www.linkedin.com/in/savankong" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+          </div>
+        </div>
+        <div className="footer-bottom">
+          <span className="footer-made">Made in Longview, WA · © {new Date().getFullYear()} Savan Kong</span>
+          <span className="footer-made">CEO &amp; Co-Founder, Your Roster · Creator, Light-Lux · Host, Life Between Titles</span>
         </div>
       </div>
     </footer>

@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Anton, Inter } from "next/font/google";
+import { Instrument_Serif, Inter } from "next/font/google";
 import ScrollWatcher from "@/components/ScrollWatcher";
 import "./globals.css";
 
-const anton = Anton({
-  variable: "--font-anton",
+const display = Instrument_Serif({
+  variable: "--font-display",
   weight: "400",
+  style: ["normal", "italic"],
   subsets: ["latin"],
 });
 
@@ -18,7 +19,7 @@ const inter = Inter({
 export const metadata: Metadata = {
   title: "Savan Kong",
   description:
-    "Savanrith “Savan” Kong — award-winning executive, the Department of Defense's first Customer Experience Officer, author of Laid Off and Lost, and host of Life Between Titles.",
+    "Savan Kong is CEO and co-founder of Your Roster, creator of Light-Lux, and host of the Life Between Titles podcast. Previously the Department of Defense's first Customer Experience Officer.",
 };
 
 export default function RootLayout({
@@ -28,7 +29,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${anton.variable} ${inter.variable}`}>
+      <body className={`${display.variable} ${inter.variable}`}>
         <ScrollWatcher />
         {children}
       </body>

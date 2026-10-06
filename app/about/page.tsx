@@ -19,13 +19,14 @@ export default function About() {
         <div className={styles.intro}>
           <h1 className={styles.h1}>Hi, I&rsquo;m Savan.</h1>
           <p className={styles.lede}>
-            I&rsquo;m a product, UX, and CX executive with 20+ years scaling
+            I&rsquo;m the CEO and co-founder of Your Roster, the creator of
+            Light-Lux, and the host of Life Between Titles. Before that I was
+            a product, UX, and CX executive with 20+ years scaling
             customer-facing platforms across government and the private
             sector — including a run as the Department of Defense&rsquo;s
             first Customer Experience Officer, work that earned me the 2024
             DefenseScoop Industry Leadership Award. I&rsquo;m also the author
-            of <strong>Laid Off and Lost</strong>, and the host of the{" "}
-            <strong>Life Between Titles</strong> podcast network. Most of what
+            of <strong>Laid Off and Lost</strong>. Most of what
             I write and talk about comes from the same place: figuring out
             who you are when the title, the role, or the certainty you built
             your identity on is suddenly gone.
@@ -97,7 +98,7 @@ export default function About() {
           </p>
           <ul className={styles.bulletList}>
             <li>
-              <Link href="/ventures#your-roster" className={styles.inlineLink}>
+              <Link href="/your-roster" className={styles.inlineLink}>
                 Your Roster
               </Link>
               , where he serves as CEO and co-founder: a job search platform built on the same advice everyone gets
@@ -115,20 +116,12 @@ export default function About() {
               cycles.
             </li>
             <li>
-              <Link href="/ventures#cambo" className={styles.inlineLink}>
-                Cambo
-              </Link>
-              : an AI-powered compliance test prep tool covering DoD Cyber
-              Awareness, OPSEC, CUI, HIPAA, and other certifications, helping
-              individuals and teams pass required exams more efficiently.
-            </li>
-            <li>
-              <Link href="/ventures#light-lux" className={styles.inlineLink}>
+              <Link href="/light-lux" className={styles.inlineLink}>
                 Light-Lux
               </Link>
-              : a B2B sales consultancy and playbook run under his personal
-              site, savankong.com, helping companies build and execute
-              repeatable outbound sales strategies.
+              , which he created: meeting notes with no bot in the call, live
+              transcripts, minutes that lead with decisions and action items,
+              briefs before every meeting, and answers across every meeting.
             </li>
           </ul>
 

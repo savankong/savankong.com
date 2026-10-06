@@ -1,0 +1,296 @@
+/* The minutes book, drawn in the page: paper, ink, a Carolina highlight. */
+.doc {
+  position: relative;
+  border-radius: 22px;
+  background: #fffdf5;
+  color: #14150e;
+  padding: 26px 28px 22px;
+  box-shadow: 0 50px 120px -40px rgba(123, 175, 212, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.08);
+}
+
+.docTop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  margin-bottom: 18px;
+  border-bottom: 1px solid #e3ddcb;
+}
+
+.rec {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font: 600 12px var(--font-inter), sans-serif;
+  color: #c2362f;
+  padding: 5px 10px;
+  border: 2px solid #c2362f;
+  border-radius: 6px;
+}
+
+.rec span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #c2362f;
+  animation: blink 1.2s var(--ease) infinite alternate;
+}
+
+@keyframes blink {
+  to {
+    opacity: 0.25;
+  }
+}
+
+.clock {
+  font: 600 13px var(--font-inter), sans-serif;
+  font-variant-numeric: tabular-nums;
+  color: #5e5f55;
+}
+
+.wave {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  height: 26px;
+}
+
+.wave i {
+  display: block;
+  width: 3px;
+  height: 100%;
+  border-radius: 2px;
+  background: #7bafd4;
+  transform-origin: center;
+  animation: wave 0.9s var(--ease) infinite alternate;
+  animation-delay: calc(var(--i) * -73ms);
+}
+
+.wave i:nth-child(3n) {
+  background: #d99b3c;
+}
+
+.wave i:nth-child(5n) {
+  background: #c4566a;
+}
+
+@keyframes wave {
+  0% {
+    transform: scaleY(0.15);
+  }
+  100% {
+    transform: scaleY(1);
+  }
+}
+
+.docTitle {
+  font: 400 32px / 1.1 var(--font-display), serif;
+  margin-bottom: 6px;
+}
+
+.docMeta {
+  font: 400 13px var(--font-inter), sans-serif;
+  color: #6b6c61;
+  margin-bottom: 18px;
+}
+
+.lines > div {
+  opacity: 0;
+  translate: -10px 0;
+  transition: opacity 0.6s var(--ease-out), translate 0.6s var(--ease-out);
+  transition-delay: calc(var(--i) * 260ms + 500ms);
+}
+
+:global(.in) .lines > div {
+  opacity: 1;
+  translate: none;
+}
+
+.lineHead {
+  font: 400 20px var(--font-display), serif;
+  padding: 10px 0 6px;
+  border-bottom: 1px solid #e3ddcb;
+  margin-bottom: 6px;
+}
+
+.lineDecision {
+  font: 400 14px / 1.5 var(--font-inter), sans-serif;
+  padding: 6px 0 6px 14px;
+  position: relative;
+}
+
+.lineDecision::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 13px;
+  width: 6px;
+  height: 6px;
+  background: #14150e;
+}
+
+.cite {
+  font: 600 11px var(--font-inter), sans-serif;
+  color: #1f5d8c;
+  background: rgba(123, 175, 212, 0.22);
+  padding: 2px 6px;
+  border-radius: 4px;
+  margin-left: 4px;
+}
+
+.lineAction {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font: 400 14px / 1.5 var(--font-inter), sans-serif;
+  padding: 7px 0;
+  border-bottom: 1px solid #efe9d8;
+}
+
+.box {
+  width: 15px;
+  height: 15px;
+  border: 1.5px solid #14150e;
+  border-radius: 3px;
+  flex: none;
+  position: relative;
+}
+
+/* the first action ticks itself after it writes in */
+.lineAction:nth-of-type(5) .box::after {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: 0;
+  width: 4px;
+  height: 9px;
+  border: solid #14150e;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  transition: transform 0.4s var(--ease-out) 2.8s;
+}
+
+:global(.in) .lineAction:nth-of-type(5) .box::after {
+  transform: rotate(45deg) scale(1);
+}
+
+.mine {
+  background: linear-gradient(transparent 55%, rgba(123, 175, 212, 0.55) 55%);
+}
+
+.transcript {
+  margin-top: 18px;
+  padding: 14px 16px;
+  border-radius: 12px;
+  background: #f3efe2;
+  font: 400 13px / 1.6 var(--font-inter), sans-serif;
+}
+
+.tLine b {
+  font-weight: 600;
+  padding-left: 9px;
+  margin-right: 6px;
+  position: relative;
+}
+
+.tLine b::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 3px;
+  bottom: 3px;
+  width: 3px;
+  border-radius: 2px;
+}
+
+.v0::before {
+  background: #7bafd4;
+}
+
+.v1::before {
+  background: #d99b3c;
+}
+
+/* ---------- Before / during / after ---------- */
+.flow {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 56px;
+}
+
+.flow::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 41px;
+  height: 1px;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2), #ff7389);
+  opacity: 0.5;
+}
+
+.flowStep {
+  position: relative;
+  padding: 26px 26px 32px;
+  border-radius: 22px;
+  border: 1px solid var(--line);
+  background: var(--ink-2);
+}
+
+.flowWhen {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font: 600 12px var(--font-inter), sans-serif;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 26px;
+}
+
+.flowDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 5px color-mix(in srgb, var(--accent) 20%, transparent), 0 0 20px var(--accent);
+}
+
+/* ---------- Privacy band ---------- */
+.privacy {
+  overflow: hidden;
+}
+
+.privacyGlow {
+  position: absolute;
+  inset: 0;
+  opacity: 0.5;
+}
+
+.privacyGlow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, var(--ink), rgba(7, 7, 10, 0.55) 50%, var(--ink));
+}
+
+.privacyInner {
+  position: relative;
+}
+
+@media (max-width: 860px) {
+  .flow {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .flow::before {
+    display: none;
+  }
+
+  .doc {
+    padding: 20px;
+  }
+}

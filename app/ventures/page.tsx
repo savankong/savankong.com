@@ -6,7 +6,7 @@ import styles from "./ventures.module.css";
 export const metadata: Metadata = {
   title: "Ventures — Savan Kong",
   description:
-    "Your Roster, War Room, Cambo, and Light-Lux — the ventures, platforms, and communities built by Savan Kong.",
+    "Your Roster, Light-Lux and War Room: the ventures built by Savan Kong.",
 };
 
 const ventures = [
@@ -30,12 +30,31 @@ const ventures = [
       { label: "Built From It", text: "Built while living the job search firsthand, not theorized from the outside." },
     ],
     ctas: [
-      { href: "https://yourrosterapp.com", label: "Visit Your Roster →", style: "pill-filled" },
+      { href: "/your-roster", label: "Explore Your Roster →", style: "pill-filled" },
+      { href: "https://yourrosterapp.com/waitlist", label: "Request access →", style: "pill-outline" },
       {
         href: "https://docs.google.com/document/d/1QIGYNCbGhlpM0EvIFalWzWlm7UgMSmVt0nnOSznv6K4/edit?usp=sharing",
         label: "Read the Manifesto →",
         style: "pill-outline",
       },
+    ],
+  },
+  {
+    id: "light-lux",
+    logo: "/logos/light-lux.svg",
+    badge: "Meeting Notes, Illuminated",
+    title: "Light-Lux.",
+    tagline: "Meetings, notes, conversations. Illuminated.",
+    desc: "Light-Lux takes your meeting notes with no bot in the call. It transcribes as you talk, writes minutes that lead with decisions and action items, briefs you before your next meeting, and answers questions across everything you've discussed. Audio is never kept.",
+    pillars: [
+      { label: "No Bot", text: "Records your mic and the call's sound on your own device." },
+      { label: "Minutes", text: "Decisions and action items first, every point cited to its moment." },
+      { label: "Briefs", text: "A goal-led brief before every meeting with other people." },
+      { label: "Ask", text: "Answers across every meeting, with citations." },
+    ],
+    ctas: [
+      { href: "/light-lux", label: "Explore Light-Lux →", style: "pill-filled" },
+      { href: "https://www.light-lux.com", label: "Start free →", style: "pill-outline" },
     ],
   },
   {
@@ -79,43 +98,6 @@ const ventures = [
     ],
     ctas: [{ href: "https://warroomusa.com", label: "Visit War Room →", style: "pill-filled" }],
   },
-  {
-    id: "cambo",
-    logo: "/logos/cambo.svg",
-    badge: "AI Compliance Test Prep",
-    title: "Cambo.",
-    tagline: "Pass your compliance exams faster.",
-    desc: "Cambo is an AI-powered compliance test prep tool built for the certifications that gate access to real work — DoD Cyber Awareness, OPSEC, CUI, HIPAA, and more. It surfaces the concepts you're actually weak on and turns study time into exam-ready confidence, for individuals and teams alike.",
-    pillars: [
-      { label: "Compliance Coverage", text: "DoD Cyber Awareness, OPSEC, CUI, HIPAA, and more certification tracks." },
-      { label: "AI-Guided Prep", text: "Adaptive practice that focuses on what you actually need to review." },
-      { label: "Individuals or Teams", text: "Built for solo learners and compliance teams tracking certs at scale." },
-      { label: "Faster Pass Rates", text: "Structured prep that cuts study time without cutting corners." },
-    ],
-    ctas: [{ href: "https://www.camboapp.com", label: "Try Cambo →", style: "pill-filled" }],
-  },
-  {
-    id: "light-lux",
-    logo: "/logos/light-lux.svg",
-    badge: "B2B Sales Intelligence",
-    title: "Light-Lux.",
-    tagline: "Turn buying signals into real pipeline.",
-    desc: "Light-Lux turns a flat contact list into automated, signal-triggered campaigns — scoring every prospect across contract history, spending trajectory, organizational fit, and engagement recency. It blends federal procurement data with your CRM to hand sales and marketing teams a ranked, ready-to-work pipeline.",
-    pillars: [
-      { label: "Intent Scoring", text: "Every prospect ranked across four signal dimensions." },
-      { label: "Live Feed", text: "Buying signals surfaced the moment they happen." },
-      { label: "Dual Market", text: "Built for federal and commercial targeting alike." },
-      { label: "Auto Outreach", text: "Signal-triggered sequences, no manual triggers." },
-    ],
-    ctas: [
-      { href: "https://www.light-lux.com", label: "Learn More →", style: "pill-filled" },
-      {
-        href: "https://savankong.gumroad.com/l/groundwork",
-        label: "Buy the Tutorial →",
-        style: "pill-outline",
-      },
-    ],
-  },
 ];
 
 export default function Ventures() {
@@ -132,10 +114,8 @@ export default function Ventures() {
             <strong>Your Roster</strong> turns your job search into warm
             introductions instead of a black hole of applications.{" "}
             <strong>War Room</strong> maps the Department of Defense so
-            business development teams stop guessing. <strong>Cambo</strong>{" "}
-            helps people and teams pass required compliance certifications
-            faster. <strong>Light-Lux</strong> turns buying signals into a
-            real pipeline. Every one of them started as a way to solve my own
+            business development teams stop guessing. <strong>Light-Lux</strong>{" "}
+            takes your meeting notes with no bot in the call. Every one of them started as a way to solve my own
             problem first.
           </p>
         </div>
@@ -175,8 +155,8 @@ export default function Ventures() {
                   <a
                     key={cta.href}
                     href={cta.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target={cta.href.startsWith("http") ? "_blank" : undefined}
+                    rel={cta.href.startsWith("http") ? "noopener noreferrer" : undefined}
                     className={cta.style}
                   >
                     {cta.label}

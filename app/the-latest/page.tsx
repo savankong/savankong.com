@@ -17,7 +17,7 @@ export default async function TheLatest() {
 
   return (
     <>
-      <Nav active="The Journal" />
+      <Nav active="Journal" />
 
       <section className={`${styles.page} glow-bg`}>
         <div className={styles.listPaper}>

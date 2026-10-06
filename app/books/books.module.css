@@ -27,7 +27,7 @@
 .featuredCoverWrap {
   width: 100%;
   max-width: 300px;
-  box-shadow: -8px 8px 0 rgba(0, 212, 255, 0.85), 8px -8px 0 rgba(47, 107, 255, 0.85);
+  box-shadow: -8px 8px 0 rgba(242, 196, 109, 0.85), 8px -8px 0 rgba(140, 123, 255, 0.85);
   border-radius: 4px;
   overflow: hidden;
   display: block;
@@ -76,7 +76,7 @@
 .seriesLabelLine {
   height: 1px;
   width: 60px;
-  background: rgba(0, 212, 255, 0.35);
+  background: rgba(242, 196, 109, 0.35);
 }
 
 .seriesLabel {
@@ -88,10 +88,10 @@
 }
 
 .seriesBox {
-  border: 1px solid rgba(0, 212, 255, 0.3);
+  border: 1px solid rgba(242, 196, 109, 0.3);
   border-radius: 12px;
   padding: 44px;
-  box-shadow: 0 0 40px rgba(0, 212, 255, 0.08);
+  box-shadow: 0 0 40px rgba(242, 196, 109, 0.08);
 }
 
 .seriesGrid {
@@ -112,7 +112,7 @@
   height: 165px;
   border-radius: 4px;
   overflow: hidden;
-  box-shadow: -4px 4px 0 rgba(0, 212, 255, 0.85), 4px -4px 0 rgba(47, 107, 255, 0.85);
+  box-shadow: -4px 4px 0 rgba(242, 196, 109, 0.85), 4px -4px 0 rgba(140, 123, 255, 0.85);
   flex: none;
 }
 
@@ -128,7 +128,7 @@
   height: 165px;
   border-radius: 4px;
   flex: none;
-  border: 1px dashed rgba(0, 212, 255, 0.35);
+  border: 1px dashed rgba(242, 196, 109, 0.35);
   background: var(--card);
   display: flex;
   align-items: center;
@@ -197,7 +197,7 @@
   height: 270px;
   border-radius: 4px;
   overflow: hidden;
-  box-shadow: -6px 6px 0 rgba(0, 212, 255, 0.85), 6px -6px 0 rgba(47, 107, 255, 0.85);
+  box-shadow: -6px 6px 0 rgba(242, 196, 109, 0.85), 6px -6px 0 rgba(140, 123, 255, 0.85);
   flex: none;
 }
 
@@ -213,7 +213,7 @@
   height: 270px;
   border-radius: 4px;
   flex: none;
-  border: 1px dashed rgba(0, 212, 255, 0.35);
+  border: 1px dashed rgba(242, 196, 109, 0.35);
   background: var(--card);
   display: flex;
   align-items: center;

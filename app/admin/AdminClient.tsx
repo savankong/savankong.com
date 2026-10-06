@@ -123,7 +123,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
             type="checkbox"
             checked={remember}
             onChange={e => setRemember(e.target.checked)}
-            style={{ width: 15, height: 15, accentColor: '#00d4ff', cursor: 'pointer' }}
+            style={{ width: 15, height: 15, accentColor: '#f2c46d', cursor: 'pointer' }}
           />
           Keep me logged in
         </label>
@@ -311,7 +311,7 @@ export default function AdminClient() {
                       font: '800 10px var(--font-inter), sans-serif',
                       letterSpacing: '.08em',
                       textTransform: 'uppercase',
-                      color: post.status === 'published' ? '#00d4ff' : '#8b93a8',
+                      color: post.status === 'published' ? '#f2c46d' : '#8b93a8',
                     }}
                   >
                     {post.status}

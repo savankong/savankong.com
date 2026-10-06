@@ -36,7 +36,7 @@ export default async function PostPage({
 
   return (
     <>
-      <Nav active="The Journal" />
+      <Nav active="Journal" />
 
       <section className={`${styles.page} glow-bg`}>
         <div className={styles.postPaper}>
