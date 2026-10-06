@@ -3,280 +3,165 @@ import Link from "next/link";
 import Nav from "@/components/Nav";
 import Footer from "@/components/Footer";
 import ShaderCanvas from "@/components/ShaderCanvas";
-import RiseWords from "@/components/RiseWords";
 import { getPublishedPosts } from "@/lib/posts";
 import { getFeaturedShow } from "@/lib/lbt-spotlight";
-import styles from "./page.module.css";
+import s from "./page.module.css";
 
 export const dynamic = "force-dynamic";
 
-const credentials = [
-  "CEO & Co-Founder, Your Roster",
-  "Creator of Light-Lux",
-  "Host, Life Between Titles",
-  "DoD’s first Customer Experience Officer",
-  "2024 DefenseScoop Industry Leadership Award",
-  "Defense Digital Service",
-  "Founding team, Redfin",
-  "Design lead, Amazon Kindle",
-  "Author, Laid Off and Lost",
+const roles = [
+  { role: "CEO & Co-Founder", name: "Your Roster", href: "/your-roster", color: "var(--roster)" },
+  { role: "Creator", name: "Light-Lux", href: "/light-lux", color: "var(--lux)" },
+  { role: "Host", name: "Life Between Titles", href: "/lbt-podcast", color: "var(--lbt)" },
 ];
 
-const pressItems = [
+const products = [
   {
-    source: "Defense Scoop",
-    headline: "Reflections from Savan Kong, DoD’s First Ever Customer Experience Officer",
+    no: "01",
+    name: "Your Roster",
+    role: "CEO & Co-Founder",
+    color: "var(--roster)",
+    text: "The largest network of government experts, giving human feedback that makes AI models better at government work. Program managers, contracting officers and policy analysts judge what models get right and wrong, and why.",
+    primary: { label: "See Your Roster", href: "/your-roster" },
+    secondary: { label: "Join as an expert", href: "https://yourrosterapp.com/experts" },
+    shader: "expertsCentred" as const,
+    caption: "Model answer · experts judging",
   },
   {
-    source: "311 Public Service Podcast",
-    headline: "Design at Scale with Savan Kong",
+    no: "02",
+    name: "Light-Lux",
+    role: "Creator",
+    color: "var(--lux)",
+    text: "Meeting notes with no bot in the call. It transcribes as you talk, writes minutes that open with decisions and action items, and briefs you before the next meeting. Audio is never kept.",
+    primary: { label: "See Light-Lux", href: "/light-lux" },
+    secondary: { label: "Start free", href: "https://www.light-lux.com" },
+    shader: "voices" as const,
   },
   {
-    source: "Khmer Voices",
-    headline: "Seeing the Power of Privilege at Play",
-  },
-  {
-    source: "Federal News Network",
-    headline: "Building the First Pentagon CX Office from the Ground Up",
-    href: "https://federalnewsnetwork.com/defense-main/2025/03/dod-modernization-exchange-2025-savan-kong-on-building-first-pentagon-cx-office-from-the-ground-up/",
-  },
-];
-
-const testimonials = [
-  {
-    quote:
-      "The Department is incredibly fortunate that Savan chose to share his expertise with us. His quiet strength, generosity, and deep expertise made a lasting impact.",
-    name: "Leslie Beavers",
-    role: "CIO, Department of Defense",
-    photo:
-      "https://images.squarespace-cdn.com/content/v1/67d45a59e5abd35cf0bf7d15/3e9e1522-ed68-4b63-884c-3da9d34c3245/leslie.jpeg",
-  },
-  {
-    quote:
-      "He is an energy-giver who is absolutely one of the most innovative thinkers, and doers, with whom I’ve ever served.",
-    name: "John Sherman",
-    role: "Dean, Bush School, Texas A&M",
-    photo:
-      "https://images.squarespace-cdn.com/content/v1/67d45a59e5abd35cf0bf7d15/2d8a37e4-301f-4959-a952-9078320e4f33/1718256736673.jpeg",
-  },
-  {
-    quote:
-      "Savan is one of my favorite people and an incredible teammate: a leader, mentor, and source of strength through a leadership transition.",
-    name: "Katie Savage",
-    role: "Secretary, Maryland Dept. of IT",
-    photo:
-      "https://images.squarespace-cdn.com/content/v1/67d45a59e5abd35cf0bf7d15/d6febe68-45ae-49da-a62f-c66a0d381b3d/1693429869562.jpeg",
-  },
-  {
-    quote:
-      "Quite simply, Savan is one of the best user experience and design experts I’ve ever had the pleasure to work with.",
-    name: "Dan Rodrigues",
-    role: "Co-Founder & CEO, Tebra",
-    photo:
-      "https://images.squarespace-cdn.com/content/v1/67d45a59e5abd35cf0bf7d15/32bd3edf-2468-4d99-9648-a581a355de56/1666042614022+%281%29.jpeg",
+    no: "03",
+    name: "Life Between Titles",
+    role: "Host",
+    color: "var(--lbt)",
+    text: "A podcast network for career transitions. Three shows and 40+ unscripted conversations with people navigating layoffs, pivots and burnout.",
+    primary: { label: "Listen", href: "/lbt-podcast" },
+    secondary: { label: "Every episode", href: "https://www.lifebetweentitles.com" },
+    shader: "waveform" as const,
   },
 ];
 
 const shows = [
-  { name: "Life Between Titles", note: "The flagship. Long, unscripted conversations with people mid-transition." },
+  { name: "Life Between Titles", note: "The flagship. Long conversations with people mid-transition." },
   { name: "Work Unscripted", note: "Unusual careers, from a pro disc golfer to a Marine general." },
   { name: "Office Hours", note: "Short, focused answers from coaches and experts." },
 ];
 
+const career = [
+  { title: "First Customer Experience Officer, U.S. Department of Defense", note: "2023 to 2025. 2024 DefenseScoop Industry Leadership Award." },
+  { title: "General Manager, Rebellion Defense", note: "Product for IRIS; launched Dispatch from concept to shipped." },
+  { title: "Digital Service Expert, Defense Digital Service", note: "Project Oscar during the 2021 Afghan evacuation; the DoD Digital Hiring Playbook." },
+  { title: "Design lead, Kindle at Amazon", note: "Then Director of UX and Product at Kareo." },
+  { title: "Founding employee, Redfin", note: "Co-inventor of its map-based search, US Patent 9,436,945." },
+];
+
+const press = [
+  { source: "Federal News Network", headline: "Building the first Pentagon CX office from the ground up", href: "https://federalnewsnetwork.com/defense-main/2025/03/dod-modernization-exchange-2025-savan-kong-on-building-first-pentagon-cx-office-from-the-ground-up/" },
+  { source: "Defense Scoop", headline: "Reflections from DoD’s first Customer Experience Officer" },
+  { source: "311 Public Service Podcast", headline: "Design at scale" },
+  { source: "Khmer Voices", headline: "Seeing the power of privilege at play" },
+];
+
+const quotes = [
+  { quote: "The Department is incredibly fortunate that Savan chose to share his expertise with us.", who: "Leslie Beavers, CIO, Department of Defense" },
+  { quote: "One of the most innovative thinkers, and doers, with whom I’ve ever served.", who: "John Sherman, Dean, Bush School, Texas A&M" },
+];
+
+function external(href: string) {
+  return href.startsWith("http") ? { target: "_blank", rel: "noopener noreferrer" } : {};
+}
+
 export default async function Home() {
-  const latestPosts = (await getPublishedPosts()).slice(0, 3);
-  const featuredShow = await getFeaturedShow();
+  const posts = (await getPublishedPosts()).slice(0, 3);
+  const episode = await getFeaturedShow();
 
   return (
     <>
-      <Nav active="Home" overlay />
+      <Nav active="Home" />
 
-      {/* ---------- Hero ---------- */}
-      <section className={styles.hero}>
-        <ShaderCanvas shader="aurora" />
-        <div className={styles.heroInner}>
-          <div className={styles.heroText}>
-            <div className={styles.heroKicker} data-reveal>
-              <span className={styles.liveDot} /> Building in Longview, WA
-            </div>
-            <h1 className={styles.heroH1}>
-              <RiseWords text="Savan" />
+      <section className={s.hero}>
+        <ShaderCanvas shader="field" />
+        <div className={`wrap stack ${s.heroGrid}`}>
+          <div className={s.heroText}>
+            <h1 className={`display ${s.name}`} data-reveal>
+              Savan
               <br />
-              <RiseWords text="Kong" start={1} className="lit" />
+              Kong
             </h1>
-            <ul className={styles.roles}>
-              <li data-reveal style={{ "--d": 3 } as React.CSSProperties}>
-                <Link href="/your-roster">
-                  <span className={styles.roleKey}>CEO &amp; Co-Founder</span>
-                  <span className={styles.roleVal}>Your Roster</span>
+            <div className="rows" style={{ borderTopColor: "var(--line-2)" }}>
+              {roles.map((r, i) => (
+                <Link key={r.name} href={r.href} className={s.role} data-reveal style={{ "--d": i + 1 } as React.CSSProperties}>
+                  <span className={s.roleKey}>{r.role}</span>
+                  <span className={s.roleName}>{r.name}</span>
+                  <span className={s.arrow} style={{ color: r.color }}>→</span>
                 </Link>
-              </li>
-              <li data-reveal style={{ "--d": 4 } as React.CSSProperties}>
-                <Link href="/light-lux">
-                  <span className={styles.roleKey}>Creator</span>
-                  <span className={styles.roleVal}>Light-Lux</span>
-                </Link>
-              </li>
-              <li data-reveal style={{ "--d": 5 } as React.CSSProperties}>
-                <Link href="/lbt-podcast">
-                  <span className={styles.roleKey}>Host</span>
-                  <span className={styles.roleVal}>Life Between Titles</span>
-                </Link>
-              </li>
-            </ul>
-            <p className={styles.heroBio} data-reveal style={{ "--d": 6 } as React.CSSProperties}>
-              I build products for the moments when work changes. Your Roster
-              turns the people who already know your work into your way in.
-              Light-Lux takes your meeting notes so you can be in the room.
-              And every week on Life Between Titles, I talk with people about
-              who they are between jobs. Before this, I was the Department of
-              Defense&rsquo;s first Customer Experience Officer.
-            </p>
-            <div className={styles.heroCtas} data-reveal style={{ "--d": 7 } as React.CSSProperties}>
-              <a href="#building" className="pill-filled">
-                See what I&rsquo;m building ↓
-              </a>
-              <Link href="/lbt-podcast" className="pill-outline">
-                ▶ Listen to the podcast
-              </Link>
+              ))}
             </div>
+            <p className={`lede ${s.bio}`} data-reveal style={{ "--d": 4 } as React.CSSProperties}>
+              I&rsquo;m building Your Roster, the largest network of government
+              experts giving the human feedback that makes AI models work for
+              government. I created Light-Lux, meeting notes with no bot in the
+              call. And every week I host Life Between Titles, conversations
+              about who we are between jobs. Before this, I was the Department
+              of Defense&rsquo;s first Customer Experience Officer.
+            </p>
           </div>
-          <div className={styles.heroPortrait} data-reveal="scale">
-            <div className={styles.portraitHalo} aria-hidden="true" />
-            <Image
-              src="/savan-cutout.png"
-              alt="Savan Kong"
-              width={353}
-              height={755}
-              className={styles.heroImage}
-              priority
-            />
+          <div className={`hide-s ${s.portrait}`} data-reveal style={{ "--d": 2 } as React.CSSProperties}>
+            <Image src="/savan-cutout.png" alt="Savan Kong" width={353} height={755} priority className={s.portraitImg} />
           </div>
-        </div>
-        <div className={styles.scrollCue} aria-hidden="true">
-          <span />
         </div>
       </section>
 
-      {/* ---------- Credentials marquee ---------- */}
-      <div className={styles.marquee} aria-label="Credentials">
-        <div className={styles.marqueeTrack}>
-          {[...credentials, ...credentials].map((c, i) => (
-            <span key={i} className={styles.marqueeItem} aria-hidden={i >= credentials.length}>
-              {c}
-              <span className={styles.marqueeStar}>✦</span>
-            </span>
+      <section className={s.work}>
+        <div className="wrap">
+          <h2 className="h2" style={{ marginBottom: 64 }} data-reveal>
+            What I&rsquo;m working on.
+          </h2>
+          {products.map((p) => (
+            <article key={p.name} className={`stack ${s.product}`} style={{ "--c": p.color } as React.CSSProperties}>
+              <div className={`hide-s ${s.productNo}`}>{p.no}</div>
+              <div data-reveal>
+                <h3 className={s.productName}>{p.name}</h3>
+                <p className={s.productRole}>{p.role}</p>
+                <p className={s.productText}>{p.text}</p>
+                <div className="btn-row">
+                  <Link href={p.primary.href} className="btn">
+                    {p.primary.label}
+                  </Link>
+                  <a href={p.secondary.href} className="pill-outline" {...external(p.secondary.href)}>
+                    {p.secondary.label}
+                  </a>
+                </div>
+              </div>
+              <div className={s.strip} data-reveal style={{ "--d": 2 } as React.CSSProperties}>
+                <ShaderCanvas shader={p.shader} maxDpr={1.5} />
+                {p.caption && <span className={s.stripCaption}>{p.caption}</span>}
+              </div>
+            </article>
           ))}
         </div>
-      </div>
-
-      {/* ---------- What I'm building ---------- */}
-      <section id="building" className={`section ${styles.building}`}>
-        <div className={styles.sectionHead} data-reveal>
-          <div className="eyebrow">
-            <span className="eyebrow-rule" />
-            <span className="eyebrow-label">What I&rsquo;m building</span>
-          </div>
-          <h2 className="h2">
-            Two products. <span className="lit">One idea:</span>
-            <br />
-            the people around your work matter most.
-          </h2>
-        </div>
-
-        <div className={styles.productGrid}>
-          <article className={`${styles.productCard} ${styles.cardRoster}`} data-tilt data-reveal>
-            <div className={styles.productCanvas}>
-              <ShaderCanvas shader="network" maxDpr={1.25} />
-            </div>
-            <div className={styles.productBody}>
-              <div className={styles.productTop}>
-                <span className={styles.productLogo}>
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img src="/logos/your-roster.svg" alt="" />
-                </span>
-                <span className={styles.productRole}>CEO &amp; Co-Founder</span>
-              </div>
-              <h3 className={styles.productName}>Your Roster</h3>
-              <p className={styles.productPitch}>
-                Your next role arrives with someone who can vouch for you.
-              </p>
-              <p className={styles.productDesc}>
-                Bring in your LinkedIn connections and see who you already
-                know inside the companies hiring right now, with an intro
-                drafted for you to send yourself. Your verified record then
-                opens the door to paid expert work.
-              </p>
-              <div className={styles.productCtas}>
-                <Link href="/your-roster" className="pill-filled">
-                  Explore Your Roster →
-                </Link>
-                <a href="https://www.yourrosterapp.com/waitlist" target="_blank" rel="noopener noreferrer" className="pill-outline">
-                  Request access
-                </a>
-              </div>
-            </div>
-          </article>
-
-          <article className={`${styles.productCard} ${styles.cardLux}`} data-tilt data-reveal style={{ "--d": 2 } as React.CSSProperties}>
-            <div className={styles.productCanvas}>
-              <ShaderCanvas shader="lightshafts" maxDpr={1.25} />
-            </div>
-            <div className={styles.productBody}>
-              <div className={styles.productTop}>
-                <span className={`${styles.productLogo} ${styles.luxLogo}`}>
-                  <span />
-                  <span />
-                  <span />
-                </span>
-                <span className={styles.productRole}>Creator</span>
-              </div>
-              <h3 className={styles.productName}>Light-Lux</h3>
-              <p className={styles.productPitch}>
-                Meetings, notes, conversations. Illuminated.
-              </p>
-              <p className={styles.productDesc}>
-                Meeting notes with no bot in your call. Light-Lux transcribes
-                as you talk, writes the minutes with decisions and action
-                items, briefs you before the next meeting, and answers
-                questions across everything you&rsquo;ve discussed.
-              </p>
-              <div className={styles.productCtas}>
-                <Link href="/light-lux" className="pill-filled">
-                  Explore Light-Lux →
-                </Link>
-                <a href="https://www.light-lux.com" target="_blank" rel="noopener noreferrer" className="pill-outline">
-                  Start free
-                </a>
-              </div>
-            </div>
-          </article>
-        </div>
       </section>
 
-      {/* ---------- Host: Life Between Titles ---------- */}
-      <section id="podcast" className={styles.host}>
-        <div className={styles.hostCanvas}>
-          <ShaderCanvas shader="waveform" />
-        </div>
-        <div className={styles.hostInner}>
-          <div className={styles.hostText} data-reveal>
-            <div className="eyebrow">
-              <span className="eyebrow-rule" />
-              <span className="eyebrow-label">Your host</span>
-            </div>
-            <h2 className={styles.hostH2}>
-              Life Between <span className="lit">Titles.</span>
-            </h2>
-            <p className={styles.hostBody}>
-              I started this show from my home office in the middle of my own
-              job search. Every week I sit down with people navigating
-              layoffs, pivots, burnout and the question underneath all of
-              them: who am I without the title? Three shows, 40+ honest
-              conversations, free everywhere you listen.
+      <section className={`band ${s.host}`} id="podcast">
+        <div className="wrap stack" style={{ display: "grid", gridTemplateColumns: "minmax(0, 1fr) minmax(0, 1fr)", gap: 64 }}>
+          <div data-reveal>
+            <h2 className={`display ${s.hostH2}`}>I host Life Between Titles.</h2>
+            <p className="lede" style={{ marginBottom: 32 }}>
+              I started the show from my home office in Longview, Washington,
+              in the middle of my own job search. Every guest gets the same
+              question underneath the career story: who are you without the
+              title?
             </p>
-            <div className={styles.listenRow}>
-              <a href="https://open.spotify.com/show/1olZo0VDvHh9w0F2D2vEir" target="_blank" rel="noopener noreferrer" className="pill-filled">
+            <div className="btn-row">
+              <a href="https://open.spotify.com/show/1olZo0VDvHh9w0F2D2vEir" target="_blank" rel="noopener noreferrer" className="btn" style={{ background: "var(--lbt)" }}>
                 Spotify
               </a>
               <a href="https://podcasts.apple.com/us/podcast/life-between-titles/id1844748787" target="_blank" rel="noopener noreferrer" className="pill-outline">
@@ -287,89 +172,69 @@ export default async function Home() {
               </a>
             </div>
           </div>
-
-          <div className={styles.hostSide}>
-            {featuredShow ? (
-              <a
-                href={`https://www.lifebetweentitles.com/shows/${featuredShow.slug}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={styles.spotlight}
-                data-tilt
-                data-reveal="scale"
-              >
-                <div className={styles.spotlightPhoto}>
-                  <Image
-                    src={`https://www.lifebetweentitles.com${featuredShow.photo}`}
-                    alt={featuredShow.guest}
-                    fill
-                    sizes="(max-width: 900px) 100vw, 420px"
-                  />
-                  <span className={styles.playBtn} aria-hidden="true">▶</span>
+          <div className="rows" data-reveal style={{ "--d": 2 } as React.CSSProperties}>
+            {episode ? (
+              <a href={`https://www.lifebetweentitles.com/shows/${episode.slug}`} target="_blank" rel="noopener noreferrer" className={s.episode}>
+                <div className={s.episodePhoto}>
+                  <Image src={`https://www.lifebetweentitles.com${episode.photo}`} alt={episode.guest} fill sizes="(max-width: 960px) 100vw, 600px" />
                 </div>
-                <div className={styles.spotlightMeta}>
-                  <span className={styles.badge}>Latest spotlight</span>
-                  <span>
-                    {featuredShow.show}
-                    {featuredShow.season && featuredShow.episode
-                      ? ` · S${String(featuredShow.season).padStart(2, "0")} E${String(featuredShow.episode).padStart(2, "0")}`
-                      : ""}
-                  </span>
+                <div className={s.episodeMeta}>
+                  Latest · {episode.show}
+                  {episode.season && episode.episode
+                    ? ` · S${String(episode.season).padStart(2, "0")} E${String(episode.episode).padStart(2, "0")}`
+                    : ""}
                 </div>
-                <div className={styles.spotlightTitle}>{featuredShow.youtubeTitle}</div>
-                <div className={styles.spotlightGuest}>With {featuredShow.guest}</div>
+                <div className={s.episodeTitle}>{episode.youtubeTitle}</div>
+                <div className="row-text">With {episode.guest}</div>
               </a>
-            ) : (
-              <Link href="/lbt-podcast" className={styles.spotlight} data-tilt data-reveal="scale">
-                <div className={styles.spotlightTitle}>New conversations every week.</div>
-                <div className={styles.spotlightGuest}>See every show →</div>
-              </Link>
-            )}
-            <ol className={styles.showList}>
-              {shows.map((s, i) => (
-                <li key={s.name} data-reveal style={{ "--d": i + 1 } as React.CSSProperties}>
-                  <span className={styles.showNum}>{String(i + 1).padStart(2, "0")}</span>
-                  <div>
-                    <div className={styles.showName}>{s.name}</div>
-                    <div className={styles.showNote}>{s.note}</div>
-                  </div>
-                </li>
-              ))}
-            </ol>
+            ) : null}
+            {shows.map((sh) => (
+              <div key={sh.name} className={`row ${s.showRow}`}>
+                <span>{sh.name}</span>
+                <span className="row-text">{sh.note}</span>
+              </div>
+            ))}
           </div>
         </div>
       </section>
 
-      {/* ---------- Book ---------- */}
-      <section id="books" className={`section ${styles.bookBand}`}>
-        <div className={styles.bookGrid}>
-          <div className={styles.bookCoverWrap} data-reveal="scale">
-            <Image
-              src="https://m.media-amazon.com/images/I/61fs-JDYw8L._SL1499_.jpg"
-              alt="Laid Off and Lost book cover"
-              width={300}
-              height={450}
-              className={styles.bookCover}
-            />
+      <section className="band">
+        <div className="wrap">
+          <h2 className="h2" style={{ marginBottom: 48 }} data-reveal>
+            Before this.
+          </h2>
+          <div className="rows">
+            {career.map((c, i) => (
+              <div key={c.title} className={`row stack ${s.careerRow}`} data-reveal style={{ "--d": i } as React.CSSProperties}>
+                <span className="row-title">{c.title}</span>
+                <span className="row-text">{c.note}</span>
+              </div>
+            ))}
           </div>
-          <div data-reveal>
-            <div className="eyebrow">
-              <span className="eyebrow-rule" />
-              <span className="eyebrow-label">The book</span>
-            </div>
-            <h2 className="h2">Laid Off and Lost.</h2>
-            <p className={styles.bookDesc}>
+        </div>
+      </section>
+
+      <section className="band" id="books">
+        <div className={`wrap stack ${s.book}`}>
+          <div className={s.coverWrap} data-reveal>
+            <Image src="https://m.media-amazon.com/images/I/61fs-JDYw8L._SL1499_.jpg" alt="Laid Off and Lost book cover" width={300} height={450} className={s.cover} />
+          </div>
+          <div data-reveal style={{ "--d": 1 } as React.CSSProperties}>
+            <h2 className="display" style={{ fontSize: "clamp(44px, 5vw, 72px)", lineHeight: 0.98, marginBottom: 20 }}>
+              Laid Off and Lost.
+            </h2>
+            <p className="lede" style={{ marginBottom: 28 }}>
               How to survive a job loss, rediscover your identity, and rebuild
-              yourself after being let go. Written from my own year out of
-              work and 29 interviews with people who lived it. Next up:{" "}
-              <Link href="/books/halfway-light" className={styles.inline}>
+              yourself after being let go. Written from my own year out of work
+              and 29 interviews. Next:{" "}
+              <Link href="/books/halfway-light" className={s.inline}>
                 Halfway Light
               </Link>
               , a memoir of my family&rsquo;s path from a refugee camp in
-              Thailand to here.
+              Thailand.
             </p>
-            <div className={styles.heroCtas}>
-              <a href="https://www.amazon.com/dp/B0H7P4DGHX?tag=lifebetweenti-20" target="_blank" rel="noopener noreferrer" className="pill-filled">
+            <div className="btn-row">
+              <a href="https://www.amazon.com/dp/B0H7P4DGHX?tag=lifebetweenti-20" target="_blank" rel="noopener noreferrer" className="btn">
                 Buy the book
               </a>
               <Link href="/books" className="pill-outline">
@@ -380,94 +245,59 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ---------- Press ---------- */}
-      <section className={`section top-border ${styles.press}`}>
-        <div className="section-head-row" data-reveal>
-          <div>
-            <div className="eyebrow">
-              <span className="eyebrow-rule" />
-              <span className="eyebrow-label">In the press</span>
-            </div>
-            <h2 className="h2">Featured conversations.</h2>
+      <section className="band">
+        <div className="wrap">
+          <div className={`stack ${s.quotes}`}>
+            {quotes.map((q, i) => (
+              <figure key={q.who} data-reveal style={{ "--d": i } as React.CSSProperties}>
+                <blockquote className={s.quote}>&ldquo;{q.quote}&rdquo;</blockquote>
+                <figcaption className="row-text">{q.who}</figcaption>
+              </figure>
+            ))}
           </div>
-          <Link href="/speaking" className="view-all">
-            Speaking &amp; press →
-          </Link>
-        </div>
-        <div className={styles.pressGrid}>
-          {pressItems.map((item, i) => {
-            const inner = (
-              <>
-                <div className={styles.pressSource}>{item.source}</div>
-                <div className={styles.pressHeadline}>{item.headline}</div>
-                {item.href && <span className={styles.pressGo}>Read / watch →</span>}
-              </>
-            );
-            return item.href ? (
-              <a key={item.source} href={item.href} target="_blank" rel="noopener noreferrer" className={styles.pressCard} data-reveal style={{ "--d": i } as React.CSSProperties}>
-                {inner}
-              </a>
-            ) : (
-              <div key={item.source} className={styles.pressCard} data-reveal style={{ "--d": i } as React.CSSProperties}>
-                {inner}
-              </div>
-            );
-          })}
+          <div className="rows" style={{ marginTop: 64 }}>
+            {press.map((p, i) => {
+              const inner = (
+                <>
+                  <span className="row-text">{p.source}</span>
+                  <span>{p.headline}</span>
+                  <span className={s.go}>{p.href ? "→" : ""}</span>
+                </>
+              );
+              return p.href ? (
+                <a key={p.source} href={p.href} target="_blank" rel="noopener noreferrer" className={`row stack ${s.pressRow}`} data-reveal style={{ "--d": i } as React.CSSProperties}>
+                  {inner}
+                </a>
+              ) : (
+                <div key={p.source} className={`row stack ${s.pressRow}`} data-reveal style={{ "--d": i } as React.CSSProperties}>
+                  {inner}
+                </div>
+              );
+            })}
+          </div>
         </div>
       </section>
 
-      {/* ---------- Journal ---------- */}
-      {latestPosts.length > 0 && (
-        <section id="journal" className="section top-border">
-          <div className="section-head-row" data-reveal>
-            <div>
-              <div className="eyebrow">
-                <span className="eyebrow-rule" />
-                <span className="eyebrow-label">The journal</span>
-              </div>
-              <h2 className="h2">Notes from the in-between.</h2>
-            </div>
-            <Link href="/the-latest" className="view-all">
-              All entries →
-            </Link>
-          </div>
-          <div className={styles.journalList}>
-            {latestPosts.map((post, i) => (
-              <Link key={post.slug} href={`/the-latest/${post.slug}`} className={styles.entry} data-reveal style={{ "--d": i } as React.CSSProperties}>
-                <span className={styles.entryNum}>{String(i + 1).padStart(2, "0")}</span>
-                <span className={styles.entryTitle}>{post.title}</span>
-                <span className={styles.entryExcerpt}>{post.excerpt}</span>
-                <span className={styles.entryArrow}>→</span>
+      {posts.length > 0 && (
+        <section className="band" id="journal">
+          <div className="wrap">
+            <div className="section-head-row">
+              <h2 className="h2">From the journal.</h2>
+              <Link href="/the-latest" className="view-all">
+                All entries →
               </Link>
-            ))}
+            </div>
+            <div className="rows">
+              {posts.map((post, i) => (
+                <Link key={post.slug} href={`/the-latest/${post.slug}`} className={`row stack ${s.careerRow}`} data-reveal style={{ "--d": i } as React.CSSProperties}>
+                  <span className="row-title">{post.title}</span>
+                  <span className="row-text">{post.excerpt}</span>
+                </Link>
+              ))}
+            </div>
           </div>
         </section>
       )}
-
-      {/* ---------- Testimonials ---------- */}
-      <section className="section top-border">
-        <div className="eyebrow" data-reveal>
-          <span className="eyebrow-rule" />
-          <span className="eyebrow-label">What people say</span>
-        </div>
-        <h2 className="h2" style={{ marginBottom: 56 }} data-reveal>
-          Trusted by leaders.
-        </h2>
-        <div className={styles.testimonialsGrid}>
-          {testimonials.map((t, i) => (
-            <figure key={t.name} className={styles.testimonial} data-tilt data-reveal style={{ "--d": i } as React.CSSProperties}>
-              <blockquote className={styles.testimonialQuote}>&ldquo;{t.quote}&rdquo;</blockquote>
-              <figcaption className={styles.testimonialWho}>
-                <Image src={t.photo} alt={t.name} width={44} height={44} className={styles.testimonialPhoto} />
-                <span>
-                  <span className={styles.testimonialName}>{t.name}</span>
-                  <span className={styles.testimonialRole}>{t.role}</span>
-                </span>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
 
       <Footer />
     </>

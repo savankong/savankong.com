@@ -101,10 +101,9 @@ export default function About() {
               <Link href="/your-roster" className={styles.inlineLink}>
                 Your Roster
               </Link>
-              , where he serves as CEO and co-founder: a job search platform built on the same advice everyone gets
-              after a layoff — network — surfacing who in your existing
-              network can get you a warm intro and an interview, instead of
-              another application into a black hole.
+              , where he serves as CEO and co-founder: the largest network of
+              government experts giving AI models the human feedback that makes
+              them work for government.
             </li>
             <li>
               <Link href="/ventures#war-room" className={styles.inlineLink}>

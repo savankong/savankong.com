@@ -32,10 +32,6 @@ export default function BooksHub() {
       </section>
 
       <section className="section black-bg top-border">
-        <div className="eyebrow">
-          <span className="eyebrow-rule" />
-          <span className="eyebrow-label">Now Available</span>
-        </div>
         <div className={styles.featuredGrid}>
           <div className={styles.featuredCoverWrap}>
             <Image
@@ -77,10 +73,6 @@ export default function BooksHub() {
 
       <section className="section glow-bg top-border">
         <div className={styles.standaloneLabelRow}>
-          <div className="eyebrow" style={{ marginBottom: 0 }}>
-            <span className="eyebrow-rule" />
-            <span className="eyebrow-label">A Standalone Memoir</span>
-          </div>
         </div>
         <div className={styles.list}>
           <div className={styles.row}>

@@ -112,10 +112,6 @@ export default function LaidOffAndLost() {
       </section>
 
       <section className="section glow-bg">
-        <div className="eyebrow" style={{ justifyContent: "center" }}>
-          <span className="eyebrow-rule" />
-          <span className="eyebrow-label">What This Book Is About</span>
-        </div>
         <div className={styles.proseSection}>
           <p className={styles.proseP}>
             It took a year of interviews with 29 people to write it. A
@@ -146,10 +142,6 @@ export default function LaidOffAndLost() {
       </section>
 
       <section className="section black-bg top-border">
-        <div className="eyebrow" style={{ justifyContent: "center" }}>
-          <span className="eyebrow-rule" />
-          <span className="eyebrow-label">Three Problems Nobody Warned You About</span>
-        </div>
         <div className={styles.problemsGrid}>
           {problems.map((p) => (
             <div key={p.num} className={styles.problemCard}>
@@ -162,10 +154,6 @@ export default function LaidOffAndLost() {
       </section>
 
       <section className="section black-bg top-border">
-        <div className="eyebrow" style={{ justifyContent: "center" }}>
-          <span className="eyebrow-rule" />
-          <span className="eyebrow-label">Voices From the Book</span>
-        </div>
         <div className={styles.voicesGrid}>
           <div className={styles.voiceCard}>
             <p className={styles.voiceQuote}>
@@ -185,10 +173,6 @@ export default function LaidOffAndLost() {
       </section>
 
       <section className="section glow-bg">
-        <div className="eyebrow" style={{ justifyContent: "center" }}>
-          <span className="eyebrow-rule" />
-          <span className="eyebrow-label">Inside the Book</span>
-        </div>
         <div className={styles.chapterList}>
           {parts.map((part) => (
             <div key={part.label}>

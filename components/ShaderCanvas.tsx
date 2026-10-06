@@ -73,8 +73,9 @@ export default function ShaderCanvas({ shader, className, speed = 1, maxDpr = 1.
     let raf = 0
     let last = performance.now()
     let t = Math.random() * 40
-    const target = { x: 0.5, y: 0.5 }
-    const mouse = { x: 0.5, y: 0.5 }
+    // off the canvas until the pointer arrives, so nothing lights up on its own
+    const target = { x: -2, y: -2 }
+    const mouse = { x: -2, y: -2 }
 
     const resize = () => {
       const dpr = Math.min(window.devicePixelRatio || 1, maxDpr)

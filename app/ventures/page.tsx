@@ -13,30 +13,19 @@ const ventures = [
   {
     id: "your-roster",
     logo: "/logos/your-roster.svg",
-    badge: "Network-Powered Job Search",
+    badge: "Government Experts for AI",
     title: "Your Roster.",
-    tagline: "The first thing people tell you when you lose a job: network.",
-    desc: [
-      "Losing my job taught me something I wish I'd known sooner.",
-      "The jobs that actually came through weren't from applications I sent into a black hole. They came from people. Someone I'd worked with three jobs ago. A former teammate who remembered my work before I even had to explain it. The network I already had, sitting right there the whole time, was more powerful than any job board I scrolled through at 2am.",
-      "So I started building something.",
-      "It's called Roster, and the idea is simple: your job search shouldn't be a solo climb through hundreds of applications, hoping an algorithm notices you. It should start with the people who already know you, already trust you, and might be exactly the warm connection that gets your foot in the door somewhere new.",
-      "It surfaces who in your existing network — friends, former teammates, old managers — is already connected to a company you want in at, and makes it easy to ask them for the intro that actually gets you the interview.",
-    ],
+    tagline: "Government experts, making AI work for government.",
+    desc: "Your Roster is building the largest network of government experts to give AI models the human feedback they need. Program managers, contracting officers, policy analysts and congressional staffers write the questions, judge what models get right and wrong, and explain why.",
     pillars: [
-      { label: "Your Network, Mapped", text: "See who you already know at the companies you're targeting." },
-      { label: "Warm Intros", text: "Leads sourced from people who already know your work, not a black-hole application queue." },
-      { label: "Easy to Ask", text: "Makes it simple to ask friends and former teammates for the intro, without the awkwardness." },
-      { label: "Built From It", text: "Built while living the job search firsthand, not theorized from the outside." },
+      { label: "Write", text: "Real tasks from the field, the kind a model will be asked on the job." },
+      { label: "Judge", text: "Model answers graded against a rubric written for the domain." },
+      { label: "Explain", text: "The reasoning behind each judgment, recorded." },
+      { label: "Verified", text: "Employment and credentials checked, and colleagues vouch for the work." },
     ],
     ctas: [
-      { href: "/your-roster", label: "Explore Your Roster →", style: "pill-filled" },
-      { href: "https://yourrosterapp.com/waitlist", label: "Request access →", style: "pill-outline" },
-      {
-        href: "https://docs.google.com/document/d/1QIGYNCbGhlpM0EvIFalWzWlm7UgMSmVt0nnOSznv6K4/edit?usp=sharing",
-        label: "Read the Manifesto →",
-        style: "pill-outline",
-      },
+      { href: "/your-roster", label: "See Your Roster", style: "pill-filled" },
+      { href: "https://yourrosterapp.com/experts", label: "Join as an expert", style: "pill-outline" },
     ],
   },
   {
@@ -53,8 +42,8 @@ const ventures = [
       { label: "Ask", text: "Answers across every meeting, with citations." },
     ],
     ctas: [
-      { href: "/light-lux", label: "Explore Light-Lux →", style: "pill-filled" },
-      { href: "https://www.light-lux.com", label: "Start free →", style: "pill-outline" },
+      { href: "/light-lux", label: "See Light-Lux", style: "pill-filled" },
+      { href: "https://www.light-lux.com", label: "Start free", style: "pill-outline" },
     ],
   },
   {
@@ -96,7 +85,7 @@ const ventures = [
         desc: "Full command hierarchy mapped — see exactly who reports to whom.",
       },
     ],
-    ctas: [{ href: "https://warroomusa.com", label: "Visit War Room →", style: "pill-filled" }],
+    ctas: [{ href: "https://warroomusa.com", label: "Visit War Room", style: "pill-filled" }],
   },
 ];
 
@@ -111,8 +100,8 @@ export default function Ventures() {
           <p className={styles.intro}>
             These aren&rsquo;t just apps — they&rsquo;re places and
             communities built to solve problems I&rsquo;ve lived myself.{" "}
-            <strong>Your Roster</strong> turns your job search into warm
-            introductions instead of a black hole of applications.{" "}
+            <strong>Your Roster</strong> is building the largest network of
+            government experts giving AI models the human feedback they need.{" "}
             <strong>War Room</strong> maps the Department of Defense so
             business development teams stop guessing. <strong>Light-Lux</strong>{" "}
             takes your meeting notes with no bot in the call. Every one of them started as a way to solve my own
@@ -129,10 +118,6 @@ export default function Ventures() {
         >
           <div className={styles.container}>
             <div className={styles.appHero}>
-              <div className="eyebrow">
-                <span className="eyebrow-rule" />
-                <span className="eyebrow-label">{venture.badge}</span>
-              </div>
               <div className={styles.titleRow}>
                 <span className={styles.logoBadge}>
                   {/* eslint-disable-next-line @next/next/no-img-element */}

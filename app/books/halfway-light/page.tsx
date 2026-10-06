@@ -79,10 +79,6 @@ export default function HalfwayLight() {
       </section>
 
       <section className="section glow-bg">
-        <div className="eyebrow" style={{ justifyContent: "center" }}>
-          <span className="eyebrow-rule" />
-          <span className="eyebrow-label">What&rsquo;s Inside</span>
-        </div>
         <div className={styles.chapterList}>
           {chapters.map((title, i) => (
             <div key={title} className={styles.chapterRow}>
@@ -94,10 +90,6 @@ export default function HalfwayLight() {
       </section>
 
       <section className="section black-bg top-border">
-        <div className="eyebrow" style={{ justifyContent: "center" }}>
-          <span className="eyebrow-rule" />
-          <span className="eyebrow-label">In Their Own Words</span>
-        </div>
         <div className={styles.voicesGrid}>
           <div className={styles.voiceCard}>
             <p className={styles.voiceQuote}>
