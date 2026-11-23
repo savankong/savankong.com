@@ -1,3 +1,5 @@
+import { EventEmitter } from 'node:events'
+import { spawn } from 'node:child_process'
 import fs from 'node:fs/promises'
 import path from 'node:path'
 import { firstValueFrom } from 'rxjs'
@@ -10,11 +12,15 @@ const log = (...args) => console.log(new Date().toISOString(), ...args)
  * One recording per camera at a time; events that arrive while a camera is
  * already recording are added to that recording's metadata instead.
  */
-export class Recorder {
-  constructor(config, onFinished) {
+export class Recorder extends EventEmitter {
+  constructor(config) {
+    super()
     this.config = config
-    this.onFinished = onFinished
     this.active = new Map() // camera.id -> { meta }
+  }
+
+  isRecording(cameraId) {
+    return this.active.has(cameraId)
   }
 
   get busyCount() {
@@ -51,6 +57,7 @@ export class Recorder {
     const tmpFile = path.join(tmpDir, `${camera.id}-${startedAt.getTime()}.mp4`)
 
     log(`[${camera.name}] ${event.kind} → recording ${seconds}s`)
+    this.emit('started', { cameraId: camera.id, kind: event.kind })
     let session
     try {
       session = await camera.streamVideo({
@@ -84,17 +91,33 @@ export class Recorder {
       await fs.rename(tmpFile, mp4)
       meta.endedAt = new Date().toISOString()
       meta.bytes = stat.size
+      const hasPoster = await this.makePoster(mp4, path.join(this.config.recordingsDir, `${base}.jpg`))
+      meta.poster = hasPoster
       await fs.writeFile(json, JSON.stringify(meta, null, 2))
       log(`[${camera.name}] saved ${base}.mp4 (${(stat.size / 1e6).toFixed(1)} MB)`)
 
-      this.onFinished?.([`${base}.mp4`, `${base}.json`])
+      const files = [`${base}.mp4`, ...(hasPoster ? [`${base}.jpg`] : []), `${base}.json`]
+      this.emit('finished', { cameraId: camera.id, base, files })
     } catch (err) {
       log(`[${camera.name}] recording failed: ${err.message}`)
       session?.stop()
       await fs.rm(tmpFile, { force: true })
     } finally {
-      this.active.delete(camera.id)
+      if (this.active.get(camera.id)?.meta === meta) this.active.delete(camera.id)
+      this.emit('idle', { cameraId: camera.id })
     }
+  }
+
+  /** Grab a frame ~1s in as a thumbnail. Failure is not fatal. */
+  makePoster(mp4, jpg) {
+    return new Promise((resolve) => {
+      const ff = spawn(this.config.ffmpegPath, [
+        '-loglevel', 'error', '-y', '-ss', '1', '-i', mp4,
+        '-frames:v', '1', '-vf', 'scale=640:-2', '-q:v', '5', jpg,
+      ])
+      ff.on('error', () => resolve(false))
+      ff.on('exit', (code) => resolve(code === 0))
+    })
   }
 
   stopAll() {

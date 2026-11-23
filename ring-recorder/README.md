@@ -46,7 +46,9 @@ Test it: press a doorbell. Within a few seconds you should see
 | `MAX_CONCURRENT` | `4` | Max simultaneous recordings |
 | `TIMEZONE` | system | Timezone for folder and file names |
 | `NEXTCLOUD_*` | off | Upload to Nextcloud over WebDAV (use an app password) |
-| `DELETE_LOCAL_AFTER_UPLOAD` | `true` | Remove the local copy once it's on Nextcloud |
+| `DELETE_LOCAL_AFTER_UPLOAD` | `false` | Remove the local copy once it's on Nextcloud (keep `false` for the web app) |
+| `CAM_PASSWORD` | off | Turns on the web app; 12+ characters |
+| `RETENTION_DAYS` | `30` | Days of clips kept on the server (only deleted once on Nextcloud) |
 
 Each clip has a `.json` next to it with the camera, start time, and every event that happened
 during the clip. If a doorbell is pressed while a motion clip is already recording, the ring is
@@ -65,6 +67,33 @@ sudo cp ring-recorder.service /etc/systemd/system/
 sudo systemctl daemon-reload && sudo systemctl enable --now ring-recorder
 journalctl -u ring-recorder -f
 ```
+
+## Web app: cam.savankong.com
+
+Set `CAM_PASSWORD` and the recorder also serves a web app on `127.0.0.1:8080`:
+
+- **Cameras** across the top with their latest snapshot, battery, and a red *Recording* badge
+  while a clip is being captured. Tap a camera to show only its clips.
+- **Clips** grouped by day, filterable by Rings / People / Motion. New clips appear instantly.
+- **Player** with markers for every event in the clip (click to jump), ↑/↓ to step through,
+  and Download.
+- **Live** view in the browser (WebRTC straight from Ring), up to 10 minutes per session.
+- Works on phones; *Add to Home Screen* gives it an app icon.
+
+Sign-in is a single password, with a 30-day cookie and lockout after 10 wrong tries in 15 minutes.
+
+### Putting it online
+
+1. **DNS:** add an `A` record `cam` → `165.227.112.116` (the Nextcloud droplet) wherever
+   savankong.com's DNS is managed.
+2. **nginx + HTTPS** on the droplet:
+   ```bash
+   sudo cp nginx-cam.savankong.com.conf /etc/nginx/sites-available/cam.savankong.com
+   sudo ln -s /etc/nginx/sites-available/cam.savankong.com /etc/nginx/sites-enabled/
+   sudo nginx -t && sudo systemctl reload nginx
+   sudo certbot --nginx -d cam.savankong.com
+   ```
+3. Set `CAM_PASSWORD` in `.env` and `sudo systemctl restart ring-recorder`.
 
 ## Limitations of recording without Ring Protect
 

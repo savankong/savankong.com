@@ -5,6 +5,8 @@ import { loadConfig } from './config.js'
 import { TokenStore } from './token-store.js'
 import { Recorder } from './recorder.js'
 import { NextcloudUploader } from './uploader.js'
+import { Library } from './library.js'
+import { startServer } from './server.js'
 
 const log = (...args) => console.log(new Date().toISOString(), ...args)
 
@@ -34,7 +36,9 @@ async function main() {
   const uploader = config.nextcloud
     ? new NextcloudUploader(config.nextcloud, config.recordingsDir, config.dataDir)
     : null
-  const recorder = new Recorder(config, (files) => uploader?.enqueue(files))
+  const recorder = new Recorder(config)
+  recorder.on('finished', ({ files }) => uploader?.enqueue(files))
+  const library = new Library(config.recordingsDir)
 
   const ring = new RingApi({
     refreshToken,
@@ -86,6 +90,30 @@ async function main() {
   }
 
   await uploader?.start()
+
+  const web = config.web
+    ? await startServer({
+        config,
+        library,
+        recorder,
+        cameras: () =>
+          cameras.map((c) => ({
+            id: c.id,
+            name: c.name,
+            model: c.model,
+            hasBattery: c.hasBattery,
+            batteryLevel: c.batteryLevel,
+            isOffline: c.isOffline,
+            camera: c,
+          })),
+      })
+    : null
+
+  // Local retention: delete old clips (only ones already on Nextcloud, if it's configured).
+  const canDelete = (rel) => !uploader || uploader.uploaded.has(rel)
+  const runCleanup = () => library.cleanup(config.retentionDays, canDelete).catch((e) => log(`cleanup failed: ${e.message}`))
+  runCleanup()
+  const cleanupTimer = setInterval(runCleanup, 6 * 3600_000)
   log(
     `ready: ${cameras.length} camera(s), dings=${config.recordDings} motion=${config.recordMotion}, ` +
       `saving to ${config.recordingsDir}${uploader ? ` and Nextcloud (${config.nextcloud.folder}/)` : ''}`,
@@ -93,6 +121,8 @@ async function main() {
 
   const shutdown = () => {
     log('shutting down')
+    clearInterval(cleanupTimer)
+    web?.close()
     uploader?.stop()
     recorder.stopAll()
     ring.disconnect()

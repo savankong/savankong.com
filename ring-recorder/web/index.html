@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b0d10">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Cam</title>
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="apple-touch-icon" href="/icon.svg">
+  <link rel="stylesheet" href="/app.css">
+</head>
+<body>
+  <!-- Login -->
+  <main id="login" class="login" hidden>
+    <form id="login-form" class="login-card">
+      <div class="brand brand-lg"><span class="brand-dot"></span>Cam</div>
+      <p class="muted">Your doorbells, your recordings.</p>
+      <label class="field">
+        <span>Password</span>
+        <input id="password" type="password" autocomplete="current-password" required autofocus>
+      </label>
+      <p id="login-error" class="error" role="alert"></p>
+      <button class="btn btn-primary btn-block" type="submit">Sign in</button>
+    </form>
+  </main>
+
+  <!-- App -->
+  <div id="app" class="app" hidden>
+    <header class="topbar">
+      <div class="brand"><span class="brand-dot"></span>Cam</div>
+      <div class="topbar-right">
+        <span id="conn" class="conn" title="Live updates"><span class="conn-dot"></span><span class="conn-label">Connecting</span></span>
+        <button id="logout" class="btn btn-ghost btn-sm" type="button">Sign out</button>
+      </div>
+    </header>
+
+    <section class="cameras" aria-label="Cameras">
+      <div id="cameras" class="camera-strip"></div>
+    </section>
+
+    <div class="workspace">
+      <aside class="library" aria-label="Recordings">
+        <div class="library-head">
+          <div id="chips" class="chips" role="tablist">
+            <button class="chip" role="tab" data-kind="" aria-selected="true">All</button>
+            <button class="chip" role="tab" data-kind="ding" aria-selected="false">Rings</button>
+            <button class="chip" role="tab" data-kind="person" aria-selected="false">People</button>
+            <button class="chip" role="tab" data-kind="motion" aria-selected="false">Motion</button>
+          </div>
+          <select id="camera-filter" class="select" aria-label="Filter by camera">
+            <option value="">All cameras</option>
+          </select>
+        </div>
+        <div id="list" class="list"></div>
+        <div class="list-foot">
+          <button id="more" class="btn btn-ghost btn-block" type="button" hidden>Load older</button>
+        </div>
+      </aside>
+
+      <section id="player" class="player" aria-label="Player">
+        <div class="player-empty" id="player-empty">
+          <svg viewBox="0 0 24 24" width="40" height="40" aria-hidden="true"><path fill="currentColor" d="M4 6.5A2.5 2.5 0 0 1 6.5 4h7A2.5 2.5 0 0 1 16 6.5v.9l3.4-2.1A1 1 0 0 1 21 6.2v11.6a1 1 0 0 1-1.6.9L16 16.6v.9a2.5 2.5 0 0 1-2.5 2.5h-7A2.5 2.5 0 0 1 4 17.5z"/></svg>
+          <p>Pick a clip to play it here.</p>
+        </div>
+        <div class="player-body" id="player-body" hidden>
+          <div class="video-wrap">
+            <video id="video" controls playsinline preload="metadata"></video>
+          </div>
+          <div id="markers" class="markers" aria-label="Events in this clip"></div>
+          <div class="player-meta">
+            <div>
+              <h2 id="p-title" class="p-title"></h2>
+              <p id="p-sub" class="muted"></p>
+            </div>
+            <div class="player-actions">
+              <button id="prev" class="btn btn-icon" type="button" title="Newer (↑)" aria-label="Newer clip">
+                <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M12 7.4 5.7 13.7l1.4 1.4L12 10.2l4.9 4.9 1.4-1.4z"/></svg>
+              </button>
+              <button id="next" class="btn btn-icon" type="button" title="Older (↓)" aria-label="Older clip">
+                <svg viewBox="0 0 24 24" width="18" height="18"><path fill="currentColor" d="M12 16.6 5.7 10.3l1.4-1.4 4.9 4.9 4.9-4.9 1.4 1.4z"/></svg>
+              </button>
+              <a id="download" class="btn" download>
+                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true"><path fill="currentColor" d="M11 4h2v8.2l3.3-3.3 1.4 1.4L12 16l-5.7-5.7 1.4-1.4 3.3 3.3zM5 18h14v2H5z"/></svg>
+                Download
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Live view -->
+  <div id="live" class="live" hidden role="dialog" aria-modal="true" aria-labelledby="live-title">
+    <div class="live-bar">
+      <div class="live-title"><span class="badge badge-live">LIVE</span><span id="live-title"></span></div>
+      <span id="live-timer" class="muted mono"></span>
+    </div>
+    <div class="live-stage">
+      <video id="live-video" autoplay playsinline muted></video>
+      <div id="live-status" class="live-status">Connecting…</div>
+    </div>
+    <div class="live-controls">
+      <button id="live-mute" class="btn" type="button">Unmute</button>
+      <button id="live-end" class="btn btn-danger" type="button">End</button>
+    </div>
+  </div>
+
+  <div id="toasts" class="toasts" aria-live="polite"></div>
+
+  <script src="/app.js" type="module"></script>
+</body>
+</html>
