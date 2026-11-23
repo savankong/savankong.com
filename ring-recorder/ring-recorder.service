@@ -1,0 +1,19 @@
+# Install:  sudo cp ring-recorder.service /etc/systemd/system/ && sudo systemctl daemon-reload
+#           sudo systemctl enable --now ring-recorder
+# Logs:     journalctl -u ring-recorder -f
+[Unit]
+Description=Ring doorbell recorder
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ringrec
+WorkingDirectory=/opt/ring-recorder
+ExecStart=/usr/bin/node --env-file=/opt/ring-recorder/.env src/index.js
+Restart=always
+RestartSec=10
+# Ring streams arrive over UDP on random high ports; no inbound firewall rules are needed.
+
+[Install]
+WantedBy=multi-user.target
