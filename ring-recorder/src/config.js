@@ -61,8 +61,8 @@ export function loadConfig() {
   if (config.nextcloud && (!config.nextcloud.user || !config.nextcloud.password)) {
     throw new Error('NEXTCLOUD_URL is set, so NEXTCLOUD_USER and NEXTCLOUD_APP_PASSWORD are required')
   }
-  if (config.web && config.web.password.length < 12) {
-    throw new Error('CAM_PASSWORD must be at least 12 characters (the app is on the public internet)')
+  if (config.web && config.web.password.length < 8) {
+    throw new Error('CAM_PASSWORD must be at least 8 characters (the app is on the public internet)')
   }
   if (config.web && config.nextcloud?.deleteLocal) {
     throw new Error('The web app plays recordings from local disk: set DELETE_LOCAL_AFTER_UPLOAD=false (RETENTION_DAYS controls disk use)')

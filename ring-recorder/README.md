@@ -47,7 +47,7 @@ Test it: press a doorbell. Within a few seconds you should see
 | `TIMEZONE` | system | Timezone for folder and file names |
 | `NEXTCLOUD_*` | off | Upload to Nextcloud over WebDAV (use an app password) |
 | `DELETE_LOCAL_AFTER_UPLOAD` | `false` | Remove the local copy once it's on Nextcloud (keep `false` for the web app) |
-| `CAM_PASSWORD` | off | Turns on the web app; 12+ characters |
+| `CAM_PASSWORD` | off | Turns on the web app; 8+ characters |
 | `RETENTION_DAYS` | `30` | Days of clips kept on the server (only deleted once on Nextcloud) |
 
 Each clip has a `.json` next to it with the camera, start time, and every event that happened
@@ -82,7 +82,18 @@ Set `CAM_PASSWORD` and the recorder also serves a web app on `127.0.0.1:8080`:
 
 Sign-in is a single password, with a 30-day cookie and lockout after 10 wrong tries in 15 minutes.
 
-### Putting it online
+### One-command install (DigitalOcean Droplet Console, as root)
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/savankong/savankong.com/claude/trusting-cerf-mkkb87/ring-recorder/deploy/install.sh \
+  | CAM_PASSWORD='your password' bash
+cam-login   # Ring email, password, 2FA code; starts the recorder
+```
+
+Re-run the same install command any time to update; it keeps your settings, Ring login and
+recordings. It turns on HTTPS automatically once `cam.savankong.com` points at the server.
+
+### Putting it online (manual)
 
 1. **DNS:** add an `A` record `cam` → `165.227.112.116` (the Nextcloud droplet) wherever
    savankong.com's DNS is managed.
