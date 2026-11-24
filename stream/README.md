@@ -72,6 +72,14 @@ get a full-screen app icon.
 - **Samsung TV (2017).** That TV's browser is too old to run this app. Use
   the Jellyfin TV app with `jellyfin-theme.css` there.
 
+## Brand
+
+Stream uses Your Roster's One Roster brand: the Your Roster typeface (in
+`web/public/fonts`), the R mark, and One Roster's dark colour set with the
+blue as the one action colour. Two things are Stream's own and differ from
+One Roster's rules: it is dark throughout, and it keeps large rounded and
+pill shapes for the glass look where One Roster uses a single 4px corner.
+
 ## The Jellyfin theme
 
 `jellyfin-theme.css` gives Jellyfin's own interface Stream's colours, type and

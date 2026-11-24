@@ -1,19 +1,58 @@
-/* Stream: the savankong.com palette and type, with one mint accent. */
+/* Stream in the One Roster brand: the Your Roster typeface and the brand's
+   dark ("capture") colours, with the one blue for the main action. The
+   floating glass shapes are Stream's own. */
+@font-face {
+  font-family: "Your Roster";
+  src: url("/fonts/your-roster-thin.woff2") format("woff2");
+  font-weight: 100;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Your Roster";
+  src: url("/fonts/your-roster-medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Your Roster";
+  src: url("/fonts/your-roster-medium-italic.woff2") format("woff2");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Your Roster";
+  src: url("/fonts/your-roster-black.woff2") format("woff2");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* One Roster tokens, capture theme. The older names are kept so the rest of
+   the stylesheet reads the same: --ink is the page, --paper is the text. */
 :root {
-  --ink: #0d0e10;
-  --ink-2: #111317;
-  --raised: #1b1e24;
-  --raised-2: #23262d;
-  --paper: #edebe6;
-  --body: #cfcdc6;
-  --muted: #a3a19b;
-  --line: #2a2d33;
-  --line-2: #3a3d44;
-  --accent: #6ee0b8;
+  --ink: #000000; /* page */
+  --ink-2: #1d1d1f; /* card */
+  --raised: #1d1d1f;
+  --raised-2: #2c2c2e;
+  --paper: #f5f5f7; /* ink */
+  --body: #e8e8ed;
+  --muted: #a1a1a6;
+  --line: #2c2c2e; /* hairline */
+  --line-2: #37373a; /* rule */
+  --accent: #0071e3; /* primary: fills only, always with white text */
+  --on-accent: #ffffff;
+  --link: #2997ff; /* blue as text on dark */
+  --line-blue: #2997ff; /* progress, sliders; never behind text */
   --r: 4px;
   --gutter: 40px;
-  --display: "Bricolage Grotesque", "Instrument Sans", system-ui, sans-serif;
-  --sans: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --display: "Your Roster", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  --sans: "Your Roster", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
   color-scheme: dark;
 }
 
@@ -26,7 +65,7 @@ body {
   margin: 0;
   background: var(--ink);
   color: var(--paper);
-  font: 400 16px/1.5 var(--sans);
+  font: 500 16px/1.5 var(--sans);
   -webkit-font-smoothing: antialiased;
   -webkit-text-size-adjust: 100%;
 }
@@ -51,17 +90,17 @@ h1,
 h2 {
   margin: 0;
   font-family: var(--display);
-  letter-spacing: -0.03em;
+  letter-spacing: -0.015em;
 }
 
 h1 {
-  font-weight: 600;
-  line-height: 0.98;
-  letter-spacing: -0.045em;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
 }
 
 h2 {
-  font-weight: 500;
+  font-weight: 900;
   font-size: 24px;
 }
 
@@ -108,12 +147,20 @@ p {
   display: flex;
   align-items: center;
   gap: 10px;
-  font: 600 26px/1 var(--display);
-  letter-spacing: -0.03em;
+  font: 900 26px/1 var(--display);
+  letter-spacing: -0.02em;
 }
 
 .wordmark-lg {
   font-size: 40px;
+}
+
+.logo {
+  width: 1.15em;
+  height: 1.15em;
+  min-width: 20px;
+  min-height: 20px;
+  display: block;
 }
 
 .dot {
@@ -142,7 +189,7 @@ p {
 .topnav a.active {
   background: var(--raised);
   color: var(--paper);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .searchbox {
@@ -188,7 +235,7 @@ p {
   border-radius: 50%;
   border: 1px solid var(--line-2);
   background: var(--raised);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .menu {
@@ -238,7 +285,7 @@ p {
   border-radius: var(--r);
   background: transparent;
   color: var(--paper);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .btn:hover {
@@ -258,11 +305,11 @@ p {
 .btn-primary {
   background: var(--accent);
   border-color: var(--accent);
-  color: var(--ink);
+  color: var(--on-accent);
 }
 
 .btn-primary:hover {
-  background: #8cecc9;
+  background: #147ce5;
 }
 
 .icon-btn {
@@ -363,7 +410,7 @@ p {
 
 .progress > div {
   height: 100%;
-  background: var(--accent);
+  background: var(--line-blue);
 }
 
 .progress-line {
@@ -460,7 +507,7 @@ p {
 }
 
 .card-title {
-  font-weight: 600;
+  font-weight: 500;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -506,7 +553,7 @@ p {
 
 .art-title {
   padding: 12px;
-  font: 600 19px/1.05 var(--display);
+  font: 900 19px/1.1 var(--display);
   letter-spacing: -0.02em;
   overflow-wrap: anywhere;
 }
@@ -519,7 +566,7 @@ p {
   height: 24px;
   border-radius: 50%;
   background: var(--accent);
-  color: var(--ink);
+  color: var(--on-accent);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -627,7 +674,7 @@ p {
   background: var(--paper);
   border-color: var(--paper);
   color: var(--ink);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .episodes,
@@ -688,7 +735,7 @@ p {
 
 .track-on .track-name,
 .track-on .track-no {
-  color: var(--accent);
+  color: var(--link);
 }
 
 .track-no {
@@ -767,7 +814,7 @@ p {
 .musicbar-seek input {
   flex-grow: 1;
   min-width: 0;
-  accent-color: var(--accent);
+  accent-color: var(--line-blue);
 }
 
 /* ---------- Watch ---------- */
@@ -831,7 +878,7 @@ p {
 }
 
 .watch-title {
-  font: 600 22px/1.15 var(--display);
+  font: 900 22px/1.15 var(--display);
   letter-spacing: -0.02em;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -867,7 +914,7 @@ p {
   flex-grow: 1;
   min-width: 0;
   height: 28px;
-  accent-color: var(--accent);
+  accent-color: var(--line-blue);
 }
 
 .watch-controls {
@@ -896,7 +943,7 @@ p {
 .skip span {
   position: absolute;
   font-size: 9px;
-  font-weight: 600;
+  font-weight: 500;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -42%);
@@ -946,7 +993,7 @@ p {
 
 .signin-card h1 {
   font-size: 32px;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.02em;
   margin-bottom: 6px;
 }
 
@@ -1030,7 +1077,7 @@ p {
   background: var(--paper);
   border-color: var(--paper);
   color: var(--ink);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .link-btn {
@@ -1073,7 +1120,7 @@ p {
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  background: rgba(13, 14, 16, 0.8);
+  background: rgba(0, 0, 0, 0.8);
   color: var(--paper);
   display: flex;
   align-items: center;
@@ -1082,7 +1129,7 @@ p {
 
 .episode:hover .play-mark {
   background: var(--accent);
-  color: var(--ink);
+  color: var(--on-accent);
 }
 
 .track-head {
@@ -1263,7 +1310,7 @@ p {
 
   .tabbar a.active {
     color: var(--paper);
-    font-weight: 600;
+    font-weight: 500;
   }
 
   .watch-next {
@@ -1325,7 +1372,7 @@ p {
   overflow: hidden;
   pointer-events: none;
   background:
-    radial-gradient(60% 50% at 12% 0%, rgba(110, 224, 184, 0.2), transparent 70%),
+    radial-gradient(60% 50% at 12% 0%, rgba(0, 113, 227, 0.26), transparent 70%),
     radial-gradient(55% 55% at 95% 10%, rgba(90, 120, 190, 0.22), transparent 70%),
     radial-gradient(60% 50% at 50% 110%, rgba(71, 58, 92, 0.35), transparent 70%),
     var(--ink);
@@ -1345,7 +1392,7 @@ p {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(to bottom, rgba(13, 14, 16, 0.25), rgba(13, 14, 16, 0.78) 70%, var(--ink));
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.25), rgba(0, 0, 0, 0.78) 70%, var(--ink));
 }
 
 @keyframes ambient-in {
@@ -1457,7 +1504,7 @@ p {
 }
 
 .btn-primary:hover {
-  background: #8cecc9;
+  background: #147ce5;
 }
 
 .chip[aria-pressed="true"],
@@ -1551,7 +1598,7 @@ p {
 
 .field input {
   border-radius: 12px;
-  background: rgba(13, 14, 16, 0.45);
+  background: rgba(0, 0, 0, 0.45);
   border-color: var(--glass-line);
 }
 
@@ -1705,13 +1752,13 @@ p {
 
 .tracks-option[aria-pressed="true"] {
   background: var(--glass-fill-hi);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .tracks-option[aria-pressed="true"]::after {
   content: "✓";
   float: right;
-  color: var(--accent);
+  color: var(--link);
 }
 
 video::cue {
@@ -1759,9 +1806,9 @@ video::cue {
 
 .btn-danger,
 .btn-danger:hover {
-  background: #c8381f;
+  background: var(--paper);
   border-color: transparent;
-  color: #fff;
+  color: var(--ink);
 }
 
 a.chip {
@@ -1773,7 +1820,7 @@ a.chip.active {
   background: var(--paper);
   border-color: var(--paper);
   color: var(--ink);
-  font-weight: 600;
+  font-weight: 500;
 }
 
 .dialog {
@@ -1814,7 +1861,7 @@ a.chip.active {
   min-width: 0;
   height: 48px;
   padding: 0 14px;
-  background: rgba(13, 14, 16, 0.45);
+  background: rgba(0, 0, 0, 0.45);
   border: 1px solid var(--glass-line);
   border-radius: 12px;
   font-size: 16px;

@@ -63,7 +63,7 @@ export function SignIn() {
   return (
     <div className="signin">
       <div className="wordmark wordmark-lg">
-        <span className="dot" aria-hidden="true" />
+        <img className="logo" src="./r-tile-blue.svg" alt="" />
         Stream
       </div>
       <form className="signin-card" onSubmit={submit}>

@@ -248,7 +248,7 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="shell">
       <header className="topbar">
         <Link to="/" className="wordmark">
-          <span className="dot" aria-hidden="true" />
+          <img className="logo" src="./r-tile-blue.svg" alt="" />
           Stream
         </Link>
         <nav className="topnav" aria-label="Library">
