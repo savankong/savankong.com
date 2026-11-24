@@ -46,3 +46,7 @@ next-env.d.ts
 # stream app
 /stream/web/node_modules
 /stream/web/dist
+
+# python
+__pycache__/
+*.pyc
