@@ -43,6 +43,28 @@ const paths: Record<string, ReactNode> = {
   check: <path d="M5 12l5 5 9-10" />,
   heart: <path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.500-7 10-7 10z" />,
   restart: <path d="M4 12a8 8 0 1 0 3-6.200M4 4v4h4" />,
+  forward: <path d="M20 12a8 8 0 1 1-3-6.200M20 4v4h-4" />,
+  eye: (
+    <>
+      <path d="M2 12s3.500-7 10-7 10 7 10 7-3.500 7-10 7S2 12 2 12z" />
+      <circle cx="12" cy="12" r="3" />
+    </>
+  ),
+  eyeOff: (
+    <>
+      <path d="M4 4l16 16M10 6a9 9 0 0 1 2-.200c6.500 0 10 6.200 10 6.200a17 17 0 0 1-3 3.800M6.500 7.500A17 17 0 0 0 2 12s3.500 7 10 7a9 9 0 0 0 4-.900" />
+    </>
+  ),
+  shuffle: <path d="M3 7h3l10 10h5M3 17h3l3-3M13 10l3-3h5M18 4l3 3-3 3M18 14l3 3-3 3" />,
+  volume: <path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6M18.500 6.500a8 8 0 0 1 0 11" />,
+  mute: <path d="M4 9v6h4l5 4V5L8 9zM17 9l5 6M22 9l-5 6" />,
+  fullscreen: <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5" />,
+  captions: (
+    <>
+      <rect x="3" y="5" width="18" height="14" rx="1" />
+      <path d="M7 12h3M7 15h6M14 12h3" />
+    </>
+  ),
 };
 
 export function Icon({ name, size = 20 }: { name: keyof typeof paths | string; size?: number }) {

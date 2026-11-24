@@ -31,8 +31,10 @@ Screen to get a full-screen app icon.
 ## What it does
 
 - Home: pick up where you left off, next episodes, recently added.
-- Movies, Shows and Albums libraries with sorting, plus search.
-- Video: plays files directly when the browser can, and asks the server to
+- Movies, Shows and Albums libraries with sorting and genre filters.
+- Search as you type, with recent searches.
+- Video: its own player controls (skip 10 seconds, next episode, subtitles,
+  fullscreen, keyboard shortcuts). Plays files directly when the browser can, and asks the server to
   convert them when it cannot. Resume position is saved on the server.
 - Shows: seasons, episodes, and a prompt for the next episode.
 - Music: album and song playback with a queue, a player bar that stays while
@@ -46,7 +48,7 @@ Screen to get a full-screen app icon.
   Stream on the home network as above.
 - **Samsung TV (2017).** That TV's browser is too old to run this app. Use the
   Jellyfin TV app with `jellyfin-theme.css` there for now.
-- Not built yet: offline downloads, subtitle and audio-track pickers, playlists.
+- Not built yet: offline downloads, a choice between several subtitle or audio tracks, playlists.
 
 ## How it talks to Jellyfin
 

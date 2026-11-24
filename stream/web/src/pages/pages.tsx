@@ -1,84 +1,11 @@
 import { useEffect, useState } from "react";
-import type { FormEvent } from "react";
-import { Link, useNavigate, useParams, useSearchParams } from "react-router-dom";
-import { ApiError, clock, episodeLabel, normalizeServer, runtime, signIn, timeLeft, TICKS_PER_SECOND } from "../api";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { episodeLabel, runtime, timeLeft } from "../api";
 import type { Item } from "../api";
-import { useAuth, useJellyfin, useLoad, useMusic } from "../app";
-import { Art, Card, Grid, Icon, Message, Row } from "../ui";
-
-// ---------- Sign in ----------
-
-export function SignIn() {
-  const { setSession } = useAuth();
-  const [server, setServer] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const submit = async (e: FormEvent) => {
-    e.preventDefault();
-    setBusy(true);
-    setError(null);
-    try {
-      setSession(await signIn(server, name, password));
-    } catch (err) {
-      const status = err instanceof ApiError ? err.status : -1;
-      if (status === 401) setError("That name or password is not right.");
-      else if (status === 0) {
-        const target = normalizeServer(server);
-        const blocked = location.protocol === "https:" && target.startsWith("http://");
-        setError(
-          blocked
-            ? "This page is secure (https) and your server address is not, so the browser blocks the connection. Use an https address for the server, or open Stream from an http address on your home network."
-            : `Could not reach ${target}. Check the address, that Jellyfin is running, and that this device is on the same network.`,
-        );
-      } else setError("The server could not sign you in. Try again.");
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return (
-    <div className="signin">
-      <form className="signin-card" onSubmit={submit}>
-        <div className="wordmark wordmark-lg">
-          <span className="dot" aria-hidden="true" />
-          Stream
-        </div>
-        <p className="lede">Sign in to your Jellyfin server.</p>
-        <label className="field">
-          <span>Server Address</span>
-          <input
-            value={server}
-            onChange={(e) => setServer(e.target.value)}
-            placeholder="192.168.1.20:8096"
-            autoCapitalize="none"
-            autoCorrect="off"
-            spellCheck={false}
-            required
-          />
-        </label>
-        <label className="field">
-          <span>Name</span>
-          <input value={name} onChange={(e) => setName(e.target.value)} autoCapitalize="none" autoComplete="username" required />
-        </label>
-        <label className="field">
-          <span>Password</span>
-          <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} autoComplete="current-password" />
-        </label>
-        {error && (
-          <p className="error" role="alert">
-            {error}
-          </p>
-        )}
-        <button className="btn btn-primary" disabled={busy}>
-          {busy ? "Signing In" : "Sign In"}
-        </button>
-      </form>
-    </div>
-  );
-}
+import { useJellyfin, useLoad } from "../app";
+import { Art, Card, Icon, Message, Row } from "../ui";
+import { Album } from "./album";
+import { Seasons } from "./show";
 
 // ---------- Home ----------
 
@@ -163,7 +90,7 @@ function Hero({ item }: { item: Item }) {
   );
 }
 
-function ProgressLine({ item }: { item: Item }) {
+export function ProgressLine({ item }: { item: Item }) {
   const pct = item.UserData?.PlayedPercentage ?? 0;
   return (
     <div className="progress-line">
@@ -172,135 +99,6 @@ function ProgressLine({ item }: { item: Item }) {
       </div>
       <span>{timeLeft(item)}</span>
     </div>
-  );
-}
-
-// ---------- Library ----------
-
-const libraries: Record<string, { title: string; types: string }> = {
-  movies: { title: "Movies", types: "Movie" },
-  shows: { title: "Shows", types: "Series" },
-  music: { title: "Albums", types: "MusicAlbum" },
-};
-
-const PAGE = 60;
-
-export function Library() {
-  const jf = useJellyfin();
-  const { kind = "movies" } = useParams();
-  const lib = libraries[kind] ?? libraries.movies;
-  const [sort, setSort] = useState("SortName");
-  const [items, setItems] = useState<Item[]>([]);
-  const [total, setTotal] = useState<number | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-
-  const load = async (start: number) => {
-    setBusy(true);
-    try {
-      const r = await jf.items({
-        includeItemTypes: lib.types,
-        sortBy: sort,
-        sortOrder: sort === "SortName" ? "Ascending" : "Descending",
-        startIndex: start,
-        limit: PAGE,
-      });
-      setItems((prev) => (start === 0 ? r.Items : [...prev, ...r.Items]));
-      setTotal(r.TotalRecordCount);
-      setError(null);
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  useEffect(() => {
-    setItems([]);
-    setTotal(null);
-    load(0);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [kind, sort, jf]);
-
-  return (
-    <>
-      <div className="page-head">
-        <h1>{lib.title}</h1>
-        {total !== null && <span className="count">{total}</span>}
-        <label className="sort">
-          <span className="sr-only">Sort by</span>
-          <select value={sort} onChange={(e) => setSort(e.target.value)}>
-            <option value="SortName">Name</option>
-            <option value="DateCreated">Date Added</option>
-            <option value="ProductionYear,SortName">Year</option>
-          </select>
-        </label>
-      </div>
-      {error && <Message title="Could not load this library" action={<button className="btn" onClick={() => load(0)}>Try Again</button>}>{error}</Message>}
-      {!error && total === 0 && <Message title={`No ${lib.title.toLowerCase()} yet`}>Add a folder for them in Jellyfin's dashboard.</Message>}
-      <Grid items={items} />
-      {total !== null && items.length < total && (
-        <div className="more">
-          <button className="btn" disabled={busy} onClick={() => load(items.length)}>
-            {busy ? "Loading" : "Show More"}
-          </button>
-        </div>
-      )}
-    </>
-  );
-}
-
-// ---------- Search ----------
-
-export function Search() {
-  const jf = useJellyfin();
-  const [params, setParams] = useSearchParams();
-  const q = params.get("q") ?? "";
-  const [term, setTerm] = useState(q);
-  const results = useLoad(() => (q ? jf.search(q) : Promise.resolve([] as Item[])), [jf, q]);
-
-  useEffect(() => setTerm(q), [q]);
-
-  const groups: [string, string[]][] = [
-    ["Movies", ["Movie"]],
-    ["Shows", ["Series"]],
-    ["Episodes", ["Episode"]],
-    ["Albums", ["MusicAlbum"]],
-    ["Artists", ["MusicArtist"]],
-    ["Songs", ["Audio"]],
-  ];
-
-  return (
-    <>
-      <form
-        className="searchbox searchbox-page"
-        role="search"
-        onSubmit={(e) => {
-          e.preventDefault();
-          setParams(term.trim() ? { q: term.trim() } : {});
-        }}
-      >
-        <Icon name="search" size={20} />
-        <label className="sr-only" htmlFor="q2">
-          Search your library
-        </label>
-        <input id="q2" type="search" placeholder="Search your library" value={term} onChange={(e) => setTerm(e.target.value)} autoFocus />
-      </form>
-      {results.error && <Message title="Search did not work">{results.error}</Message>}
-      {q && results.data && results.data.length === 0 && <Message title={`Nothing found for "${q}"`}>Try a shorter or different word.</Message>}
-      {!q && <Message title="Search your library">Movies, shows, episodes, albums, artists and songs.</Message>}
-      {groups.map(([title, types]) => {
-        const found = (results.data ?? []).filter((i) => types.includes(i.Type));
-        return found.length ? (
-          <section className="row" key={title}>
-            <div className="row-head">
-              <h2>{title}</h2>
-            </div>
-            <Grid items={found} />
-          </section>
-        ) : null;
-      })}
-    </>
   );
 }
 
@@ -405,94 +203,6 @@ function Title({ item, reload }: { item: Item; reload: () => void }) {
       </section>
       {isSeries && <Seasons series={item} />}
     </>
-  );
-}
-
-function Seasons({ series }: { series: Item }) {
-  const jf = useJellyfin();
-  const seasons = useLoad(() => jf.seasons(series.Id), [jf, series.Id]);
-  const [seasonId, setSeasonId] = useState<string | null>(null);
-  const active = seasonId ?? seasons.data?.[0]?.Id ?? null;
-  const episodes = useLoad(
-    () => (active ? jf.episodes(series.Id, active) : Promise.resolve([] as Item[])),
-    [jf, series.Id, active],
-  );
-
-  if (seasons.error) return <Message title="Could not load the episodes">{seasons.error}</Message>;
-
-  return (
-    <section className="row">
-      <div className="tabs" role="tablist" aria-label="Seasons">
-        {(seasons.data ?? []).map((s) => (
-          <button key={s.Id} role="tab" aria-selected={s.Id === active} className="tab" onClick={() => setSeasonId(s.Id)}>
-            {s.Name}
-          </button>
-        ))}
-      </div>
-      <ul className="episodes">
-        {(episodes.data ?? []).map((ep) => (
-          <li key={ep.Id}>
-            <Link to={`/watch/${ep.Id}`} className="episode">
-              <Art item={ep} shape="wide" width={480} />
-              <span className="episode-text">
-                <span className="card-title">
-                  {ep.IndexNumber != null ? `${ep.IndexNumber}. ` : ""}
-                  {ep.Name}
-                </span>
-                <span className="card-sub">{[runtime(ep.RunTimeTicks), timeLeft(ep)].filter(Boolean).join(" · ")}</span>
-                {ep.Overview && <span className="episode-overview">{ep.Overview}</span>}
-              </span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </section>
-  );
-}
-
-function Album({ item }: { item: Item }) {
-  const jf = useJellyfin();
-  const music = useMusic();
-  const tracks = useLoad(() => jf.tracks(item.Id), [jf, item.Id]);
-  const list = tracks.data ?? [];
-  const total = list.reduce((sum, t) => sum + (t.RunTimeTicks ?? 0), 0);
-
-  return (
-    <section className="album">
-      <div className="album-head">
-        <div className="album-art">
-          <Art item={item} shape="square" width={600} />
-        </div>
-        <div className="detail-text">
-          <p className="kicker">Album</p>
-          <h1>{item.Name}</h1>
-          <p className="meta">
-            {[item.AlbumArtist, item.ProductionYear, list.length ? `${list.length} songs` : null, runtime(total)].filter(Boolean).join(" · ")}
-          </p>
-          <div className="actions">
-            <button className="btn btn-primary" disabled={!list.length} onClick={() => music.play(list, 0)}>
-              <Icon name="play" size={18} />
-              Play
-            </button>
-          </div>
-        </div>
-      </div>
-      {tracks.error && <Message title="Could not load the songs">{tracks.error}</Message>}
-      <ol className="tracks">
-        {list.map((t, i) => {
-          const playing = music.current?.Id === t.Id;
-          return (
-            <li key={t.Id}>
-              <button className={`track ${playing ? "track-on" : ""}`} onClick={() => music.play(list, i)} aria-current={playing}>
-                <span className="track-no">{playing ? <Icon name="music" size={16} /> : t.IndexNumber ?? i + 1}</span>
-                <span className="track-name">{t.Name}</span>
-                <span className="track-time">{clock((t.RunTimeTicks ?? 0) / TICKS_PER_SECOND)}</span>
-              </button>
-            </li>
-          );
-        })}
-      </ol>
-    </section>
   );
 }
 

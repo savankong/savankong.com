@@ -1,7 +1,10 @@
 import { createRoot } from "react-dom/client";
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AuthProvider, MusicProvider, useAuth } from "./app";
-import { Detail, Home, Library, Search, SignIn } from "./pages/pages";
+import { Library } from "./pages/library";
+import { Detail, Home } from "./pages/pages";
+import { Search } from "./pages/search";
+import { SignIn } from "./pages/signin";
 import { Watch } from "./pages/watch";
 import { Shell } from "./ui";
 import "./styles.css";

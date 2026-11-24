@@ -645,10 +645,6 @@ p {
   border-bottom: 1px solid var(--line);
 }
 
-.episode .art {
-  flex: 0 0 220px;
-  width: 220px;
-}
 
 .episode-text {
   display: flex;
@@ -781,37 +777,140 @@ p {
   background: #000;
   display: flex;
   flex-direction: column;
+  justify-content: center;
 }
 
-.watch-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: calc(8px + env(safe-area-inset-top)) 12px 8px;
-}
-
-.watch-title {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-weight: 600;
+.watch-idle {
+  cursor: none;
 }
 
 .watch-video {
-  flex-grow: 1;
-  min-height: 0;
+  position: absolute;
+  inset: 0;
   width: 100%;
+  height: 100%;
   background: #000;
 }
 
+.watch-loading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.watch-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  transition: opacity 0.2s;
+}
+
+.watch-idle .watch-overlay {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.watch-top {
+  top: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: calc(12px + env(safe-area-inset-top)) 16px 28px;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.watch-heading {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.watch-title {
+  font: 600 22px/1.15 var(--display);
+  letter-spacing: -0.02em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.watch-subtitle {
+  color: var(--body);
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.watch-bottom {
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 20px 20px calc(12px + env(safe-area-inset-bottom));
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.watch-seek {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  font-variant-numeric: tabular-nums;
+}
+
+.watch-seek input {
+  flex-grow: 1;
+  min-width: 0;
+  height: 28px;
+  accent-color: var(--accent);
+}
+
+.watch-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.watch-spacer {
+  flex-grow: 1;
+}
+
+.watch .icon-btn:hover {
+  background: rgba(255, 255, 255, 0.16);
+}
+
+.icon-btn-lg {
+  width: 52px;
+  height: 52px;
+}
+
+.skip {
+  position: relative;
+}
+
+.skip span {
+  position: absolute;
+  font-size: 9px;
+  font-weight: 600;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -42%);
+}
+
 .watch .message {
-  padding: 40px 24px;
+  padding: 96px 24px 40px;
 }
 
 .watch-next {
   position: absolute;
+  z-index: 3;
   right: 24px;
-  bottom: 96px;
+  bottom: 132px;
   display: flex;
   align-items: center;
   gap: 16px;
@@ -826,17 +925,29 @@ p {
   min-height: 100vh;
   min-height: 100dvh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 28px;
   padding: 24px;
 }
 
 .signin-card {
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
+  padding: 32px;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  background: var(--ink-2);
+  border: 1px solid var(--line);
+  border-radius: var(--r);
+}
+
+.signin-card h1 {
+  font-size: 32px;
+  letter-spacing: -0.03em;
+  margin-bottom: 6px;
 }
 
 .lede {
@@ -852,9 +963,10 @@ p {
 }
 
 .field input {
+  width: 100%;
   height: 48px;
   padding: 0 14px;
-  background: var(--ink-2);
+  background: var(--ink);
   border: 1px solid var(--line-2);
   border-radius: var(--r);
   color: var(--paper);
@@ -866,8 +978,143 @@ p {
   outline: 0;
 }
 
+.field-with-button {
+  position: relative;
+}
+
+.field-with-button input {
+  padding-right: 52px;
+}
+
+.field-with-button .icon-btn {
+  position: absolute;
+  right: 2px;
+  top: 2px;
+  color: var(--muted);
+}
+
 .error {
   color: #ff9a8c;
+}
+
+/* ---------- Chips ---------- */
+.chips {
+  display: flex;
+  gap: 8px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+  scrollbar-width: none;
+}
+
+.chips::-webkit-scrollbar {
+  display: none;
+}
+
+.chip {
+  flex-shrink: 0;
+  min-height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--r);
+  background: transparent;
+  color: var(--body);
+  white-space: nowrap;
+}
+
+.chip:hover {
+  color: var(--paper);
+  border-color: var(--paper);
+}
+
+.chip[aria-pressed="true"] {
+  background: var(--paper);
+  border-color: var(--paper);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.link-btn {
+  border: 0;
+  background: transparent;
+  min-height: 44px;
+}
+
+.text-link {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.searchbox .icon-btn {
+  margin-right: -10px;
+  color: var(--muted);
+}
+
+/* ---------- Episode and track details ---------- */
+.row-head .tabs,
+.row-head .sort {
+  flex-grow: 1;
+}
+
+.episode-art {
+  position: relative;
+  flex: 0 0 220px;
+  width: 220px;
+  align-self: flex-start;
+}
+
+.episode .episode-art .art {
+  width: 100%;
+}
+
+.play-mark {
+  position: absolute;
+  left: 10px;
+  bottom: 12px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(13, 14, 16, 0.8);
+  color: var(--paper);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.episode:hover .play-mark {
+  background: var(--accent);
+  color: var(--ink);
+}
+
+.track-head {
+  min-height: 40px;
+  color: var(--muted);
+  font-size: 13px;
+  border-bottom: 0;
+}
+
+.track-head:hover {
+  background: transparent;
+}
+
+.track-name {
+  display: flex;
+  flex-direction: column;
+}
+
+.track-title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.track .card-sub {
+  min-height: 0;
+}
+
+.album-foot {
+  padding: 16px 12px 0;
+  color: var(--muted);
+  font-size: 14px;
 }
 
 /* ---------- Phone ---------- */
@@ -944,9 +1191,40 @@ p {
     gap: 12px;
   }
 
-  .episode .art {
+  .episode-art {
     flex-basis: 132px;
     width: 132px;
+  }
+
+  .play-mark {
+    width: 28px;
+    height: 28px;
+    left: 6px;
+    bottom: 8px;
+  }
+
+  .signin-card {
+    padding: 24px 20px;
+  }
+
+  .album-head {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
+
+  .album-head .detail-text {
+    align-items: center;
+    flex-basis: auto;
+  }
+
+  .album-head .actions {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .album-head .actions .btn {
+    flex: 1 1 0;
   }
 
   .musicbar {
@@ -992,4 +1270,14 @@ p {
     right: 16px;
     flex-wrap: wrap;
   }
+
+  .chips {
+    margin-right: calc(-1 * var(--gutter));
+    padding-right: var(--gutter);
+  }
+}
+
+.row-head .count {
+  flex-grow: 0;
+  white-space: nowrap;
 }

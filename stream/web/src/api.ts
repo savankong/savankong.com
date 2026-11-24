@@ -263,6 +263,15 @@ export class Jellyfin {
     });
   }
 
+  async genres(types: string): Promise<string[]> {
+    const r = await this.get<{ Items: Item[] }>("/Genres", {
+      userId: this.session.userId,
+      includeItemTypes: types,
+      sortBy: "SortName",
+    });
+    return r.Items.map((g) => g.Name);
+  }
+
   item(id: string): Promise<Item> {
     return this.get<Item>(`/Items/${id}`, { userId: this.session.userId });
   }
