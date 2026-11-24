@@ -24,6 +24,8 @@ export type Item = {
   AlbumPrimaryImageTag?: string;
   Artists?: string[];
   ChildCount?: number;
+  PlaylistItemId?: string;
+  MediaType?: string;
   ImageTags?: Record<string, string>;
   BackdropImageTags?: string[];
   ParentBackdropItemId?: string;
@@ -55,6 +57,7 @@ export type MediaSource = {
   SupportsDirectStream?: boolean;
   SupportsTranscoding?: boolean;
   TranscodingUrl?: string;
+  DefaultAudioStreamIndex?: number;
   MediaStreams?: MediaStream[];
 };
 
@@ -71,7 +74,9 @@ export type VideoPlayback = {
   method: "DirectPlay" | "DirectStream" | "Transcode";
   mediaSourceId: string;
   playSessionId: string;
-  subtitles: { label: string; lang: string; url: string }[];
+  subtitles: { index: number; label: string; lang: string; url: string }[];
+  audioTracks: { index: number; label: string }[];
+  audioIndex: number | null;
 };
 
 const SESSION_KEY = "stream.session";
@@ -147,6 +152,8 @@ async function request<T>(
   try {
     res = await fetch(url, {
       method: opts.method ?? "GET",
+      // Always ask the server; a remembered answer would hide changes just made.
+      cache: "no-store",
       headers: {
         Authorization: authHeader(opts.token),
         ...(opts.body !== undefined ? { "Content-Type": "application/json" } : {}),
@@ -301,6 +308,46 @@ export class Jellyfin {
     return r.Items;
   }
 
+  // ---------- Playlists ----------
+
+  async playlists(): Promise<Item[]> {
+    const r = await this.items({ includeItemTypes: "Playlist", sortBy: "SortName" });
+    return r.Items;
+  }
+
+  async playlistItems(id: string): Promise<Item[]> {
+    const r = await this.get<{ Items: Item[] }>(`/Playlists/${id}/Items`, {
+      userId: this.session.userId,
+      fields: FIELDS,
+    });
+    return r.Items;
+  }
+
+  async createPlaylist(name: string, ids: string[]): Promise<string> {
+    const r = await this.send<{ Id: string }>("POST", "/Playlists", {
+      Name: name,
+      Ids: ids,
+      UserId: this.session.userId,
+      MediaType: "Audio",
+    });
+    return r.Id;
+  }
+
+  addToPlaylist(id: string, ids: string[]) {
+    return this.send("POST", `/Playlists/${id}/Items`, undefined, {
+      ids: ids.join(","),
+      userId: this.session.userId,
+    });
+  }
+
+  removeFromPlaylist(id: string, entryIds: string[]) {
+    return this.send("DELETE", `/Playlists/${id}/Items`, undefined, { entryIds: entryIds.join(",") });
+  }
+
+  deleteItem(id: string) {
+    return this.send("DELETE", `/Items/${id}`);
+  }
+
   async search(term: string): Promise<Item[]> {
     const r = await this.items({
       searchTerm: term,
@@ -355,7 +402,12 @@ export class Jellyfin {
   // ---------- Playback ----------
 
   /** Asks the server how this browser should play a video: as-is or converted. */
-  async videoPlayback(itemId: string, canPlayHls: boolean): Promise<VideoPlayback> {
+  async videoPlayback(
+    itemId: string,
+    canPlayHls: boolean,
+    audio?: { index: number; mediaSourceId: string },
+  ): Promise<VideoPlayback> {
+    const audioStreamIndex = audio?.index;
     const profile = {
       MaxStreamingBitrate: 120_000_000,
       DirectPlayProfiles: [
@@ -397,7 +449,12 @@ export class Jellyfin {
         DeviceProfile: profile,
         MaxStreamingBitrate: profile.MaxStreamingBitrate,
         AutoOpenLiveStream: true,
-        EnableDirectPlay: true,
+        // A browser cannot switch audio tracks inside a file it plays as-is,
+        // so choosing a track makes the server send a stream with that one.
+        // The server only honours the track number together with the file's id.
+        AudioStreamIndex: audioStreamIndex,
+        MediaSourceId: audio?.mediaSourceId,
+        EnableDirectPlay: audioStreamIndex === undefined,
         EnableDirectStream: true,
         EnableTranscoding: true,
       },
@@ -410,12 +467,17 @@ export class Jellyfin {
     const subtitles = (source.MediaStreams ?? [])
       .filter((m) => m.Type === "Subtitle" && m.DeliveryMethod === "External" && m.DeliveryUrl)
       .map((m) => ({
+        index: m.Index,
         label: m.DisplayTitle || m.Language || "Subtitles",
         lang: m.Language || "und",
         url: s + m.DeliveryUrl,
       }));
+    const audioTracks = (source.MediaStreams ?? [])
+      .filter((m) => m.Type === "Audio")
+      .map((m) => ({ index: m.Index, label: m.DisplayTitle || m.Language || `Track ${m.Index}` }));
+    const audioIndex = audioStreamIndex ?? source.DefaultAudioStreamIndex ?? audioTracks[0]?.index ?? null;
 
-    const base = { mediaSourceId: source.Id, playSessionId: info.PlaySessionId, subtitles };
+    const base = { mediaSourceId: source.Id, playSessionId: info.PlaySessionId, subtitles, audioTracks, audioIndex };
     if (source.SupportsDirectPlay) {
       const ext = (source.Container || "mp4").split(",")[0];
       const url =

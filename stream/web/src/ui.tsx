@@ -55,6 +55,9 @@ const paths: Record<string, ReactNode> = {
       <path d="M4 4l16 16M10 6a9 9 0 0 1 2-.200c6.500 0 10 6.200 10 6.200a17 17 0 0 1-3 3.800M6.500 7.500A17 17 0 0 0 2 12s3.500 7 10 7a9 9 0 0 0 4-.900" />
     </>
   ),
+  download: <path d="M12 4v11M7 11l5 5 5-5M5 20h14" />,
+  plus: <path d="M12 5v14M5 12h14" />,
+  trash: <path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6" />,
   shuffle: <path d="M3 7h3l10 10h5M3 17h3l3-3M13 10l3-3h5M18 4l3 3-3 3M18 14l3 3-3 3" />,
   volume: <path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 0 1 0 6M18.500 6.500a8 8 0 0 1 0 11" />,
   mute: <path d="M4 9v6h4l5 4V5L8 9zM17 9l5 6M22 9l-5 6" />,
@@ -118,7 +121,7 @@ export function Art({ item, shape, width = 400 }: { item: Item; shape: "poster" 
 }
 
 function shapeFor(item: Item): "poster" | "square" {
-  return item.Type === "MusicAlbum" || item.Type === "Audio" || item.Type === "MusicArtist" ? "square" : "poster";
+  return ["MusicAlbum", "Audio", "MusicArtist", "Playlist"].includes(item.Type) ? "square" : "poster";
 }
 
 function subtitle(item: Item): string {
@@ -129,6 +132,8 @@ function subtitle(item: Item): string {
       return item.ProductionYear ? String(item.ProductionYear) : "";
     case "MusicAlbum":
       return item.AlbumArtist ?? "";
+    case "Playlist":
+      return "Playlist";
     case "Audio":
       return item.Artists?.join(", ") ?? item.AlbumArtist ?? "";
     case "Episode":
@@ -270,6 +275,9 @@ export function Shell({ children }: { children: ReactNode }) {
                 Signed in as <strong>{jf?.session.userName}</strong>
               </p>
               <p className="menu-server">{jf?.session.server}</p>
+              <Link className="btn" to="/downloads" onClick={() => setMenu(false)}>
+                Downloads
+              </Link>
               <button className="btn" onClick={signOut}>
                 Sign Out
               </button>

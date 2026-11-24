@@ -3,6 +3,7 @@ import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
 import { AmbientLayer, AmbientProvider, AuthProvider, MusicProvider, useAuth } from "./app";
 import { Library } from "./pages/library";
 import { Detail, Home } from "./pages/pages";
+import { Downloads } from "./pages/playlist";
 import { Search } from "./pages/search";
 import { SignIn } from "./pages/signin";
 import { Watch } from "./pages/watch";
@@ -24,6 +25,7 @@ function Pages() {
               <Route path="/library/:kind" element={<Library />} />
               <Route path="/item/:id" element={<Detail />} />
               <Route path="/search" element={<Search />} />
+              <Route path="/downloads" element={<Downloads />} />
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </Shell>
@@ -31,6 +33,14 @@ function Pages() {
       />
     </Routes>
   );
+}
+
+// The service worker keeps the app itself available with no connection, so
+// downloaded albums can be played. It only exists on secure pages.
+if (import.meta.env.PROD && "serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("./sw.js").catch(() => undefined);
+  });
 }
 
 // Hash routing keeps every page working from any static host or folder.

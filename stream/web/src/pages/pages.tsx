@@ -5,6 +5,7 @@ import type { Item } from "../api";
 import { useAmbient, useJellyfin, useLoad } from "../app";
 import { Art, Card, Icon, Message, Row, tileColor } from "../ui";
 import { Album } from "./album";
+import { Playlist } from "./playlist";
 import { Seasons } from "./show";
 
 // ---------- Home ----------
@@ -20,8 +21,20 @@ export function Home() {
   const failed = resume.error && movies.error && shows.error;
   if (failed) {
     return (
-      <Message title="Could not load your library" action={<button className="btn" onClick={() => location.reload()}>Try Again</button>}>
-        {movies.error}
+      <Message
+        title="Could not load your library"
+        action={
+          <div className="actions">
+            <button className="btn" onClick={() => location.reload()}>
+              Try Again
+            </button>
+            <Link className="btn" to="/downloads">
+              Open Downloads
+            </Link>
+          </div>
+        }
+      >
+        {movies.error} Albums you downloaded still play.
       </Message>
     );
   }
@@ -114,6 +127,7 @@ export function Detail() {
   if (!item) return <div className="loading">Loading</div>;
 
   if (item.Type === "MusicAlbum") return <Album item={item} />;
+  if (item.Type === "Playlist") return <Playlist item={item} />;
   if (item.Type === "MusicArtist") return <Artist item={item} />;
   if (item.Type === "Season" && item.SeriesId) return <Redirect to={`/item/${item.SeriesId}`} />;
   return <Title item={item} reload={reload} />;

@@ -2,6 +2,7 @@ import { createContext, useCallback, useContext, useEffect, useMemo, useRef, use
 import type { ReactNode } from "react";
 import { Jellyfin, loadSession, saveSession } from "./api";
 import type { Item, Session } from "./api";
+import { offlineAudio } from "./offline";
 
 // ---------- Session ----------
 
@@ -152,14 +153,26 @@ export function MusicProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const a = audioRef.current;
     if (!a || !jf || !current) return;
-    a.src = jf.audioUrl(current.Id);
-    setPosition(0);
-    a.play().catch(() => setPlaying(false));
-    jf.report("start", { itemId: current.Id, positionSeconds: 0 });
-    lastReport.current = 0;
     const id = current.Id;
+    let live = true;
+    let saved: string | null = null;
+    setPosition(0);
+    lastReport.current = 0;
+    // A song saved on this device plays from there; otherwise from the server.
+    offlineAudio(id).then((local) => {
+      if (!live) {
+        if (local) URL.revokeObjectURL(local);
+        return;
+      }
+      saved = local;
+      a.src = local ?? jf.audioUrl(id);
+      a.play().catch(() => setPlaying(false));
+      jf.report("start", { itemId: id, positionSeconds: 0 });
+    });
     return () => {
+      live = false;
       jf.report("stop", { itemId: id, positionSeconds: a.currentTime || 0 });
+      if (saved) URL.revokeObjectURL(saved);
     };
   }, [jf, current]);
 

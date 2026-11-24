@@ -7,11 +7,17 @@ import { Icon } from "../ui";
 const LAST_SERVER = "stream.lastServer";
 
 function lastServer(): string {
+  let remembered = "";
   try {
-    return localStorage.getItem(LAST_SERVER) ?? "";
+    remembered = localStorage.getItem(LAST_SERVER) ?? "";
   } catch {
-    return "";
+    /* nothing remembered in private mode */
   }
+  if (remembered) return remembered;
+  // Served over https from the same address as the Jellyfin server (see
+  // deploy/Caddyfile), so that address is the right first guess.
+  const local = ["localhost", "127.0.0.1"].includes(location.hostname);
+  return location.protocol === "https:" && !local ? location.origin : "";
 }
 
 /** A centred card with one heading, the way streaming sign-in pages are laid

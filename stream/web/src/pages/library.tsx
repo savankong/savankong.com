@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
 import type { Item } from "../api";
 import { useJellyfin, useLoad } from "../app";
 import { Grid, Message } from "../ui";
@@ -8,6 +8,7 @@ const libraries: Record<string, { title: string; types: string; watchable: boole
   movies: { title: "Movies", types: "Movie", watchable: true },
   shows: { title: "Shows", types: "Series", watchable: true },
   music: { title: "Albums", types: "MusicAlbum", watchable: false },
+  playlists: { title: "Playlists", types: "Playlist", watchable: false },
 };
 
 const PAGE = 60;
@@ -77,7 +78,20 @@ export function Library() {
           </select>
         </label>
       </div>
-      {((genres.data && genres.data.length > 0) || lib.watchable) && (
+      {(kind === "music" || kind === "playlists") && (
+        <nav className="chips" aria-label="Music">
+          <NavLink className="chip" to="/library/music">
+            Albums
+          </NavLink>
+          <NavLink className="chip" to="/library/playlists">
+            Playlists
+          </NavLink>
+          <NavLink className="chip" to="/downloads">
+            Downloads
+          </NavLink>
+        </nav>
+      )}
+      {kind !== "playlists" && ((genres.data && genres.data.length > 0) || lib.watchable) && (
         <div className="chips" role="group" aria-label="Filter">
           <button className="chip" aria-pressed={!filtered} onClick={() => { setGenre(null); setUnwatched(false); }}>
             All
@@ -100,7 +114,11 @@ export function Library() {
         </Message>
       )}
       {!error && total === 0 && !filtered && (
-        <Message title={`No ${lib.title.toLowerCase()} yet`}>Add a folder for them in Jellyfin's dashboard.</Message>
+        <Message title={`No ${lib.title.toLowerCase()} yet`}>
+          {kind === "playlists"
+            ? "Open an album and use Add to Playlist to start one."
+            : "Add a folder for them in Jellyfin's dashboard."}
+        </Message>
       )}
       {!error && total === 0 && filtered && (
         <Message title="Nothing matches these filters" action={<button className="btn" onClick={() => { setGenre(null); setUnwatched(false); }}>Clear Filters</button>} />

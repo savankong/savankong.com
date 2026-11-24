@@ -31,7 +31,9 @@ export function Watch() {
   const [time, setTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [muted, setMuted] = useState(false);
-  const [captions, setCaptions] = useState(false);
+  const [subTrack, setSubTrack] = useState<number | null>(null);
+  const [tracksOpen, setTracksOpen] = useState(false);
+  const resumeOverride = useRef<number | null>(null);
   const [visible, setVisible] = useState(true);
 
   // Music and video never play over each other.
@@ -51,6 +53,9 @@ export function Watch() {
     setReady(false);
     setTime(0);
     setDuration(0);
+    setSubTrack(null);
+    setTracksOpen(false);
+    resumeOverride.current = null;
     (async () => {
       try {
         const it = await jf.item(id);
@@ -79,7 +84,10 @@ export function Watch() {
   useEffect(() => {
     const video = videoRef.current;
     if (!video || !playback || !item) return;
-    const resumeAt = fromStart ? 0 : (item.UserData?.PlaybackPositionTicks ?? 0) / TICKS_PER_SECOND;
+    // After an audio-track change the new stream picks up where the old one was.
+    const resumeAt =
+      resumeOverride.current ?? (fromStart ? 0 : (item.UserData?.PlaybackPositionTicks ?? 0) / TICKS_PER_SECOND);
+    resumeOverride.current = null;
     const meta = {
       itemId: item.Id,
       mediaSourceId: playback.mediaSourceId,
@@ -207,12 +215,28 @@ export function Watch() {
     if (e.detail > 0 && document.activeElement instanceof HTMLElement) document.activeElement.blur();
   };
 
-  const toggleCaptions = () => {
+  // Show the chosen subtitle track and hide the rest.
+  useEffect(() => {
     const v = videoRef.current;
-    if (!v || !v.textTracks.length) return;
-    const on = !captions;
-    for (let i = 0; i < v.textTracks.length; i++) v.textTracks[i].mode = on && i === 0 ? "showing" : "hidden";
-    setCaptions(on);
+    if (!v || !playback) return;
+    const at = playback.subtitles.findIndex((t) => t.index === subTrack);
+    for (let i = 0; i < v.textTracks.length; i++) v.textTracks[i].mode = i === at ? "showing" : "hidden";
+  }, [subTrack, playback, ready]);
+
+  const chooseAudio = async (index: number) => {
+    const v = videoRef.current;
+    if (!playback || index === playback.audioIndex) return;
+    setTracksOpen(false);
+    try {
+      const probe = document.createElement("video");
+      const canHls = Hls.isSupported() || probe.canPlayType("application/vnd.apple.mpegurl") !== "";
+      const next = await jf.videoPlayback(id, canHls, { index, mediaSourceId: playback.mediaSourceId });
+      resumeOverride.current = v?.currentTime ?? 0;
+      setReady(false);
+      setPlayback(next);
+    } catch (e) {
+      setError((e as Error).message || "That audio track could not be played.");
+    }
   };
 
   useEffect(() => {
@@ -239,7 +263,7 @@ export function Watch() {
   const isEpisode = item?.Type === "Episode";
   const title = item ? (isEpisode ? item.SeriesName ?? item.Name : item.Name) : "";
   const subtitle = item && isEpisode ? `${episodeLabel(item)} · ${item.Name}` : "";
-  const shown = visible || paused || !ready;
+  const shown = visible || paused || !ready || tracksOpen;
   const total = duration || (item?.RunTimeTicks ?? 0) / TICKS_PER_SECOND;
 
   if (error) {
@@ -311,10 +335,44 @@ export function Watch() {
             <Icon name={muted ? "mute" : "volume"} size={24} />
           </button>
           <span className="watch-spacer" />
-          {playback && playback.subtitles.length > 0 && (
-            <button className="icon-btn" aria-label="Subtitles" aria-pressed={captions} onClick={toggleCaptions}>
-              <Icon name="captions" size={24} />
-            </button>
+          {playback && (playback.subtitles.length > 0 || playback.audioTracks.length > 1) && (
+            <div className="tracks-menu">
+              <button
+                className="icon-btn"
+                aria-label="Audio and subtitles"
+                aria-expanded={tracksOpen}
+                onClick={() => setTracksOpen((o) => !o)}
+              >
+                <Icon name="captions" size={24} />
+              </button>
+              {tracksOpen && (
+                <div className="tracks-panel">
+                  {playback.subtitles.length > 0 && (
+                    <div role="group" aria-label="Subtitles">
+                      <p className="tracks-label">Subtitles</p>
+                      <button className="tracks-option" aria-pressed={subTrack === null} onClick={() => setSubTrack(null)}>
+                        Off
+                      </button>
+                      {playback.subtitles.map((t) => (
+                        <button key={t.index} className="tracks-option" aria-pressed={subTrack === t.index} onClick={() => setSubTrack(t.index)}>
+                          {t.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                  {playback.audioTracks.length > 1 && (
+                    <div role="group" aria-label="Audio">
+                      <p className="tracks-label">Audio</p>
+                      {playback.audioTracks.map((t) => (
+                        <button key={t.index} className="tracks-option" aria-pressed={playback.audioIndex === t.index} onClick={() => chooseAudio(t.index)}>
+                          {t.label}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
           )}
           {nextEpisode && (
             <Link className="icon-btn" to={`/watch/${nextEpisode.Id}?start=0`} replace aria-label={`Next episode: ${nextEpisode.Name}`}>

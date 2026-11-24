@@ -15,9 +15,36 @@
  *   paper   #edebe6   text, focus ring
  *   body    #cfcdc6   reading text    muted  #a3a19b labels
  *   accent  #ff6b57   the one action, progress
+ *
+ * Shapes follow the Stream app: 14px corners on artwork, pill-shaped
+ * buttons, and translucent blurred bars where the device supports blur.
+ * A 2017 TV ignores the blur lines and shows the solid colours instead.
  */
 
 @import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600&family=Instrument+Sans:wght@400;500;600&display=swap");
+
+/* ---------- Newer Jellyfin screens ----------
+ * Recent Jellyfin versions draw some screens (library pages, the dashboard)
+ * with a newer toolkit that takes its colours from these variables. Devices
+ * too old for variables skip this block and use the rules below instead. */
+html:root,
+html:root[data-mui-color-scheme] {
+    --jf-palette-primary-main: #ff6b57 !important;
+    --jf-palette-primary-mainChannel: 255 107 87 !important;
+    --jf-palette-primary-light: #ff8271 !important;
+    --jf-palette-primary-dark: #e2553f !important;
+    --jf-palette-primary-contrastText: #0d0e10 !important;
+    --jf-palette-secondary-main: #ff6b57 !important;
+    --jf-palette-secondary-mainChannel: 255 107 87 !important;
+    --jf-palette-secondary-contrastText: #0d0e10 !important;
+    --jf-palette-background-default: #0d0e10 !important;
+    --jf-palette-background-paper: #15171c !important;
+    --jf-palette-text-primary: #edebe6 !important;
+    --jf-palette-text-secondary: #a3a19b !important;
+    --jf-palette-divider: #2a2d33 !important;
+    --jf-palette-AppBar-defaultBg: #0d0e10 !important;
+    --jf-card-borderRadius: 14px !important;
+}
 
 /* ---------- Type ---------- */
 html,
@@ -135,7 +162,7 @@ html,
 .cardOverlayContainer,
 .mediaInfoText,
 .infoBanner {
-    border-radius: 4px !important;
+    border-radius: 14px !important;
 }
 
 .cardBox:not(.visualCardBox) .cardPadder {
@@ -196,7 +223,7 @@ html,
 .raised,
 .fab,
 a[data-role="button"] {
-    border-radius: 4px !important;
+    border-radius: 999px !important;
 }
 
 .raised,
@@ -262,7 +289,7 @@ a[data-role="button"] {
 .emby-select-withcolor {
     background: #111317 !important;
     border: 1px solid #3a3d44 !important;
-    border-radius: 4px !important;
+    border-radius: 14px !important;
     color: #edebe6 !important;
 }
 
@@ -289,4 +316,44 @@ a[data-role="button"] {
 ::-webkit-scrollbar-thumb:horizontal,
 ::-webkit-scrollbar-thumb:vertical {
     background: #3a3d44;
+}
+
+/* ---------- Glass, where the device can blur ---------- */
+.emby-input,
+.emby-textarea,
+.emby-select-withcolor {
+    border-radius: 12px !important;
+}
+
+.formDialog,
+.dialog,
+.actionSheet {
+    border-radius: 24px !important;
+}
+
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+    .skinHeader-withBackground,
+    .nowPlayingBar,
+    .appfooter {
+        background-color: rgba(24, 26, 31, 0.6) !important;
+        -webkit-backdrop-filter: blur(28px) saturate(180%);
+        backdrop-filter: blur(28px) saturate(180%);
+    }
+
+    .skinHeader-withBackground {
+        border-bottom-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .raised,
+    .fab,
+    a[data-role="button"] {
+        background: rgba(255, 255, 255, 0.1) !important;
+        border: 1px solid rgba(255, 255, 255, 0.16);
+    }
+
+    .button-submit,
+    .button-submit:hover,
+    .mainDetailButtons .detailButton.btnPlay {
+        border-color: transparent;
+    }
 }

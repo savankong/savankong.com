@@ -1,0 +1,30 @@
+# Stream and Jellyfin from one address.
+#
+# Replace the existing stream.savankong.com block in S:\Server\Caddy\Caddyfile
+# with this one, then restart the Caddy service. Leave the music block as is.
+#
+#   https://stream.savankong.com/      opens the Stream app
+#   https://stream.savankong.com/app/  the Stream app's files
+#   everything else                    Jellyfin, so its TV and phone apps
+#                                      keep connecting to the same address
+#
+# Because the app and the server share one https address, the browser lets
+# them talk, and downloads for offline listening work.
+
+stream.savankong.com {
+	# The Stream app: the contents of stream/web/dist, copied to this folder.
+	redir /app /app/
+	handle_path /app/* {
+		root * S:/Server/Stream/app
+		file_server
+	}
+
+	# Typing the bare address into a browser lands on Stream.
+	@home path /
+	redir @home /app/
+
+	# Everything else is Jellyfin.
+	handle {
+		reverse_proxy 127.0.0.1:8096
+	}
+}
