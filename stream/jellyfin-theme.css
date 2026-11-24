@@ -1,0 +1,292 @@
+/*
+ * Stream theme for Jellyfin
+ *
+ * Paste the whole file into Jellyfin: Dashboard > General > Custom CSS code,
+ * then Save. It applies to every client that shows the server's web
+ * interface (browser, the Samsung TV app, the Jellyfin iPhone app).
+ *
+ * Colours are written out instead of using CSS variables on purpose:
+ * 2017 Samsung TVs run a browser too old to understand variables.
+ *
+ *   ink     #0d0e10   page
+ *   ink-2   #111317   bars, panels
+ *   raised  #1b1e24   buttons, fields
+ *   line    #2a2d33   dividers        line-2 #3a3d44 borders
+ *   paper   #edebe6   text, focus ring
+ *   body    #cfcdc6   reading text    muted  #a3a19b labels
+ *   accent  #ff6b57   the one action, progress
+ */
+
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;600&family=Instrument+Sans:wght@400;500;600&display=swap");
+
+/* ---------- Type ---------- */
+html,
+body,
+.emby-button,
+.emby-input,
+.emby-select,
+.emby-textarea {
+    font-family: "Instrument Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+h1,
+h2,
+h3,
+.pageTitle,
+.sectionTitle,
+.itemName {
+    font-family: "Bricolage Grotesque", "Instrument Sans", system-ui, sans-serif;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+}
+
+.sectionTitle {
+    font-weight: 500;
+}
+
+/* ---------- Surfaces ---------- */
+html,
+.backgroundContainer,
+.nowPlayingPlaylist,
+.dialog,
+.mainDrawer,
+.drawer-open,
+.wizardStartForm,
+.noBackdropTransparency .detailPageWrapperContainer {
+    background-color: #0d0e10 !important;
+    background-image: none !important;
+}
+
+.skinHeader-withBackground {
+    background-color: #0d0e10 !important;
+    background-image: none !important;
+    border-bottom: 1px solid #2a2d33;
+}
+
+.detailRibbon {
+    background: rgba(17, 19, 23, 0.9) !important;
+}
+
+.layout-tv .detailRibbon {
+    background: none !important;
+}
+
+.paperList,
+.visualCardBox,
+.collapseContent,
+.formDialogHeader:not(.formDialogHeader-clear),
+.formDialogFooter:not(.formDialogFooter-clear),
+.appfooter,
+.playlistSectionButton,
+.nowPlayingBar {
+    background-color: #111317 !important;
+}
+
+.nowPlayingBar {
+    border-top: 1px solid #2a2d33;
+}
+
+.listItem-border,
+.emby-collapsible-button {
+    border-color: #2a2d33 !important;
+}
+
+.actionsheetDivider {
+    background: #2a2d33 !important;
+}
+
+/* ---------- Text ---------- */
+html,
+.skinHeader {
+    color: #edebe6;
+}
+
+.cardText-secondary,
+.fieldDescription,
+.listItem .secondary,
+.nowPlayingBarSecondaryText,
+.secondaryText,
+.inputLabel,
+.inputLabelUnfocused,
+.checkboxListLabel,
+.paperListLabel,
+.textareaLabelUnfocused {
+    color: #a3a19b !important;
+}
+
+.emby-tab-button {
+    color: #a3a19b;
+}
+
+.emby-tab-button-active,
+.emby-tab-button:hover,
+.emby-tab-button.show-focus:focus {
+    color: #edebe6 !important;
+}
+
+/* ---------- Cards ---------- */
+.paperList,
+.visualCardBox,
+.cardBox:not(.visualCardBox) .cardPadder,
+.cardContent,
+.cardImageContainer,
+.blurhash-canvas,
+.itemDetailImage,
+.cardOverlayContainer,
+.mediaInfoText,
+.infoBanner {
+    border-radius: 4px !important;
+}
+
+.cardBox:not(.visualCardBox) .cardPadder {
+    background-color: #1b1e24 !important;
+}
+
+/* Placeholder tiles for items with no artwork */
+.defaultCardBackground1 { background-color: #26333d !important; }
+.defaultCardBackground2 { background-color: #4a2f2a !important; }
+.defaultCardBackground3 { background-color: #2f4a3c !important; }
+.defaultCardBackground4 { background-color: #473a5c !important; }
+.defaultCardBackground5 { background-color: #5a4a2a !important; }
+
+/* Focus ring on a card: off-white, so it reads on any artwork */
+.card:focus .cardBox.visualCardBox,
+.card:focus .cardBox:not(.visualCardBox) .cardScalable {
+    border-color: #edebe6 !important;
+}
+
+/* ---------- Accent: progress and markers ---------- */
+.itemProgressBarForeground,
+.emby-checkbox:checked + span + .checkboxOutline,
+.mdl-slider-background-lower {
+    background-color: #ff6b57 !important;
+}
+
+.emby-checkbox:checked + span + .checkboxOutline,
+.progressring-spiner {
+    border-color: #ff6b57 !important;
+}
+
+.countIndicator,
+.fullSyncIndicator,
+.mediaSourceIndicator,
+.playedIndicator,
+.selectionCommandsPanel {
+    background: #ff6b57 !important;
+    color: #0d0e10 !important;
+}
+
+.playedIndicator > svg,
+.countIndicator > svg {
+    fill: #0d0e10 !important;
+}
+
+.button-link,
+.buttonActive,
+.upNextDialog-countdownText,
+.metadataSidebarIcon,
+.inputLabelFocused,
+.selectLabelFocused,
+.textareaLabelFocused {
+    color: #ff6b57 !important;
+}
+
+/* ---------- Buttons ---------- */
+.emby-button,
+.raised,
+.fab,
+a[data-role="button"] {
+    border-radius: 4px !important;
+}
+
+.raised,
+.fab,
+a[data-role="button"] {
+    background: #1b1e24 !important;
+    color: #edebe6 !important;
+}
+
+.raised:hover,
+.fab:hover {
+    background: #23262d !important;
+}
+
+/* The one main action: dark text on the accent */
+.button-submit,
+.button-submit:hover,
+.mainDetailButtons .detailButton.btnPlay {
+    background: #ff6b57 !important;
+    color: #0d0e10 !important;
+}
+
+/* Remote and keyboard focus on any button */
+.emby-button.show-focus:focus,
+.raised:focus,
+.button-submit:focus,
+.alphaPickerButton-tv:focus,
+.emby-select-tv-withcolor:focus {
+    background: #ff6b57 !important;
+    color: #0d0e10 !important;
+}
+
+.layout-tv .emby-button.show-focus:focus {
+    outline: 0.18em solid #edebe6;
+    outline-offset: 0.12em;
+}
+
+.paper-icon-button-light:hover:not(:disabled),
+.paper-icon-button-light:active:not(:disabled) {
+    color: #edebe6 !important;
+    background-color: #23262d !important;
+}
+
+.paper-icon-button-light.show-focus:focus {
+    color: #ff6b57 !important;
+}
+
+/* ---------- Menu and lists ---------- */
+.navMenuOption:hover,
+.listItem:hover,
+.listItem:focus {
+    background: #1b1e24 !important;
+}
+
+.navMenuOption-selected {
+    background: #23262d !important;
+    color: #edebe6 !important;
+}
+
+/* ---------- Fields ---------- */
+.emby-input,
+.emby-textarea,
+.emby-select-withcolor {
+    background: #111317 !important;
+    border: 1px solid #3a3d44 !important;
+    border-radius: 4px !important;
+    color: #edebe6 !important;
+}
+
+.emby-input:focus,
+.emby-textarea:focus,
+.emby-select-withcolor:focus {
+    border-color: #ff6b57 !important;
+}
+
+.emby-select-withcolor > option {
+    background: #111317;
+    color: #edebe6;
+}
+
+/* ---------- Scrollbars ---------- */
+* {
+    scrollbar-color: #3a3d44 #0d0e10;
+}
+
+::-webkit-scrollbar-track-piece {
+    background-color: #0d0e10;
+}
+
+::-webkit-scrollbar-thumb:horizontal,
+::-webkit-scrollbar-thumb:vertical {
+    background: #3a3d44;
+}
