@@ -14,7 +14,7 @@
  *   line    #2a2d33   dividers        line-2 #3a3d44 borders
  *   paper   #edebe6   text, focus ring
  *   body    #cfcdc6   reading text    muted  #a3a19b labels
- *   accent  #ff6b57   the one action, progress
+ *   accent  #6ee0b8   the one action, progress
  *
  * Shapes follow the Stream app: 14px corners on artwork, pill-shaped
  * buttons, and translucent blurred bars where the device supports blur.
@@ -29,13 +29,13 @@
  * too old for variables skip this block and use the rules below instead. */
 html:root,
 html:root[data-mui-color-scheme] {
-    --jf-palette-primary-main: #ff6b57 !important;
-    --jf-palette-primary-mainChannel: 255 107 87 !important;
-    --jf-palette-primary-light: #ff8271 !important;
-    --jf-palette-primary-dark: #e2553f !important;
+    --jf-palette-primary-main: #6ee0b8 !important;
+    --jf-palette-primary-mainChannel: 110 224 184 !important;
+    --jf-palette-primary-light: #8cecc9 !important;
+    --jf-palette-primary-dark: #4fc79d !important;
     --jf-palette-primary-contrastText: #0d0e10 !important;
-    --jf-palette-secondary-main: #ff6b57 !important;
-    --jf-palette-secondary-mainChannel: 255 107 87 !important;
+    --jf-palette-secondary-main: #6ee0b8 !important;
+    --jf-palette-secondary-mainChannel: 110 224 184 !important;
     --jf-palette-secondary-contrastText: #0d0e10 !important;
     --jf-palette-background-default: #0d0e10 !important;
     --jf-palette-background-paper: #15171c !important;
@@ -186,12 +186,12 @@ html,
 .itemProgressBarForeground,
 .emby-checkbox:checked + span + .checkboxOutline,
 .mdl-slider-background-lower {
-    background-color: #ff6b57 !important;
+    background-color: #6ee0b8 !important;
 }
 
 .emby-checkbox:checked + span + .checkboxOutline,
 .progressring-spiner {
-    border-color: #ff6b57 !important;
+    border-color: #6ee0b8 !important;
 }
 
 .countIndicator,
@@ -199,7 +199,7 @@ html,
 .mediaSourceIndicator,
 .playedIndicator,
 .selectionCommandsPanel {
-    background: #ff6b57 !important;
+    background: #6ee0b8 !important;
     color: #0d0e10 !important;
 }
 
@@ -215,7 +215,7 @@ html,
 .inputLabelFocused,
 .selectLabelFocused,
 .textareaLabelFocused {
-    color: #ff6b57 !important;
+    color: #6ee0b8 !important;
 }
 
 /* ---------- Buttons ---------- */
@@ -242,7 +242,7 @@ a[data-role="button"] {
 .button-submit,
 .button-submit:hover,
 .mainDetailButtons .detailButton.btnPlay {
-    background: #ff6b57 !important;
+    background: #6ee0b8 !important;
     color: #0d0e10 !important;
 }
 
@@ -252,7 +252,7 @@ a[data-role="button"] {
 .button-submit:focus,
 .alphaPickerButton-tv:focus,
 .emby-select-tv-withcolor:focus {
-    background: #ff6b57 !important;
+    background: #6ee0b8 !important;
     color: #0d0e10 !important;
 }
 
@@ -268,7 +268,7 @@ a[data-role="button"] {
 }
 
 .paper-icon-button-light.show-focus:focus {
-    color: #ff6b57 !important;
+    color: #6ee0b8 !important;
 }
 
 /* ---------- Menu and lists ---------- */
@@ -296,7 +296,7 @@ a[data-role="button"] {
 .emby-input:focus,
 .emby-textarea:focus,
 .emby-select-withcolor:focus {
-    border-color: #ff6b57 !important;
+    border-color: #6ee0b8 !important;
 }
 
 .emby-select-withcolor > option {

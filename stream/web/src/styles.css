@@ -1,4 +1,4 @@
-/* Stream: the savankong.com palette and type, with one coral accent. */
+/* Stream: the savankong.com palette and type, with one mint accent. */
 :root {
   --ink: #0d0e10;
   --ink-2: #111317;
@@ -9,7 +9,7 @@
   --muted: #a3a19b;
   --line: #2a2d33;
   --line-2: #3a3d44;
-  --accent: #ff6b57;
+  --accent: #6ee0b8;
   --r: 4px;
   --gutter: 40px;
   --display: "Bricolage Grotesque", "Instrument Sans", system-ui, sans-serif;
@@ -262,7 +262,7 @@ p {
 }
 
 .btn-primary:hover {
-  background: #ff8271;
+  background: #8cecc9;
 }
 
 .icon-btn {
@@ -994,7 +994,7 @@ p {
 }
 
 .error {
-  color: #ff9a8c;
+  color: #ff8a8a;
 }
 
 /* ---------- Chips ---------- */
@@ -1325,7 +1325,7 @@ p {
   overflow: hidden;
   pointer-events: none;
   background:
-    radial-gradient(60% 50% at 12% 0%, rgba(255, 107, 87, 0.2), transparent 70%),
+    radial-gradient(60% 50% at 12% 0%, rgba(110, 224, 184, 0.2), transparent 70%),
     radial-gradient(55% 55% at 95% 10%, rgba(90, 120, 190, 0.22), transparent 70%),
     radial-gradient(60% 50% at 50% 110%, rgba(71, 58, 92, 0.35), transparent 70%),
     var(--ink);
@@ -1457,7 +1457,7 @@ p {
 }
 
 .btn-primary:hover {
-  background: #ff8271;
+  background: #8cecc9;
 }
 
 .chip[aria-pressed="true"],
