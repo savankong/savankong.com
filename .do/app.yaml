@@ -89,6 +89,33 @@ workers:
         scope: RUN_TIME
         type: SECRET
 
+  # Dreame robot vacuum: keeps its status in the database and runs the
+  # dashboard's vacuum requests. Python, because it uses the DreameHome
+  # protocol from Tasshack/dreame-vacuum (vendored in worker/dreame).
+  - name: home-dreame
+    github:
+      repo: savankong/savankong.com
+      branch: main
+      deploy_on_push: true
+    source_dir: worker/dreame
+    environment_slug: python
+    run_command: python bridge.py
+    instance_size_slug: basic-xxs
+    instance_count: 1
+    envs:
+      - key: DATABASE_URL
+        scope: RUN_TIME
+        value: ${savankong-db.DATABASE_URL}
+      - key: DREAME_USERNAME
+        scope: RUN_TIME
+        type: SECRET
+      - key: DREAME_PASSWORD
+        scope: RUN_TIME
+        type: SECRET
+      - key: DREAME_COUNTRY
+        scope: RUN_TIME
+        value: us
+
 databases:
   - name: savankong-db
     engine: PG

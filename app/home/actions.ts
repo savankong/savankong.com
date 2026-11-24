@@ -10,7 +10,10 @@ import { homeHref } from '@/lib/home/paths'
 import { deleteObjects, storageConfigured } from '@/lib/home/storage'
 
 // Buttons may only send these; live view goes through /api/home/live.
-const BUTTON_ACTIONS = new Set(['record', 'light_on', 'light_off', 'siren_on', 'siren_off', 'mode_set'])
+const BUTTON_ACTIONS = new Set([
+  'record', 'light_on', 'light_off', 'siren_on', 'siren_off', 'mode_set',
+  'vacuum_start', 'vacuum_pause', 'vacuum_dock', 'vacuum_stop', 'vacuum_locate',
+])
 const MODES = new Set(['home', 'away', 'disarmed'])
 
 async function requireSession() {

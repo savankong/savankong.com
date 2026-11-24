@@ -86,7 +86,37 @@ export function changeLabel(action: string, mode: string | null): string {
       return 'Watched live'
     case 'mode_set':
       return `House set to ${MODE_LABEL[mode ?? ''] ?? mode}`
+    case 'vacuum_start':
+      return 'Vacuum started'
+    case 'vacuum_pause':
+      return 'Vacuum paused'
+    case 'vacuum_dock':
+      return 'Vacuum sent home'
+    case 'vacuum_stop':
+      return 'Vacuum stopped'
+    case 'vacuum_locate':
+      return 'Vacuum asked to beep'
     default:
       return action.replaceAll('_', ' ')
   }
+}
+
+/** What the vacuum is doing, in words (see worker/dreame/bridge.py STATES). */
+export const VACUUM_STATE: Record<string, string> = {
+  cleaning: 'Cleaning',
+  idle: 'Idle',
+  paused: 'Paused',
+  error: 'Needs help',
+  returning: 'Heading home',
+  charging: 'Charging',
+  docked: 'Docked',
+  drying: 'Drying the mop',
+  washing: 'Washing the mop',
+  mapping: 'Mapping',
+  updating: 'Updating',
+  station: 'At the station',
+  emptying: 'Emptying the bin',
+  remote: 'Remote control',
+  offline: 'Offline',
+  unknown: 'Unknown',
 }

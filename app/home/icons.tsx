@@ -199,3 +199,13 @@ export const Pulse = ({ className }: P) => (
     <path d="M3 12h4l2.5-6 5 12 2.5-6H21" />
   </svg>
 )
+export const Pause = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M8.5 5.5v13M15.5 5.5v13" strokeWidth={2.4} />
+  </svg>
+)
+export const Home = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M4 10.5 12 4l8 6.5V20h-5.5v-5.5h-5V20H4Z" />
+  </svg>
+)

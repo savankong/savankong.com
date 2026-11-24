@@ -6,6 +6,6 @@ export const SYSTEMS: { key: SystemKey; name: string; kinds: string[]; href?: st
   { key: 'security', name: 'Security', kinds: ['camera', 'doorbell'], href: '/security', idle: 'Cameras and doorbell' },
   { key: 'lights', name: 'Lights', kinds: ['light'], idle: 'Rooms and scenes' },
   { key: 'climate', name: 'Climate', kinds: ['thermostat'], idle: 'Thermostat' },
-  { key: 'cleaning', name: 'Cleaning', kinds: ['vacuum'], idle: 'Robot vacuum' },
+  { key: 'cleaning', name: 'Cleaning', kinds: ['vacuum'], href: '/cleaning', idle: 'Robot vacuum' },
   { key: 'locks', name: 'Locks', kinds: ['lock'], idle: 'Front and back door' },
 ]

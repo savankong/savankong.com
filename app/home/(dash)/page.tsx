@@ -2,6 +2,7 @@ import Link from 'next/link'
 import {
   attentionItems,
   getActivity,
+  getBridgeStatus,
   getDevices,
   getFailedToday,
   getPendingCommands,
@@ -31,16 +32,18 @@ export default async function HomeHub() {
   let pending: Pending[] = []
   let clipsToday = 0
   let failedToday = 0
+  let vacuumBridge: RecorderStatus | null = null
   let dbOk = true
   try {
     let stats
-    ;[devices, { items: activity }, recorder, pending, stats, failedToday] = await Promise.all([
+    ;[devices, { items: activity }, recorder, pending, stats, failedToday, vacuumBridge] = await Promise.all([
       getDevices(),
       getActivity({ limit: 7 }),
       getRecorderStatus(),
       getPendingCommands(),
       getStats(),
       getFailedToday(),
+      getBridgeStatus('dreame'),
     ])
     clipsToday = stats.clipsToday
   } catch {
@@ -48,7 +51,7 @@ export default async function HomeHub() {
   }
 
   const house = houseOf(devices)
-  const attention = dbOk ? attentionItems(devices, recorder, failedToday) : []
+  const attention = dbOk ? attentionItems(devices, recorder, failedToday, vacuumBridge) : []
   const pendingMode = (house && pending.find((p) => p.deviceId === house.id && p.action === 'mode_set')?.mode) || null
   const cameras = devices.filter(isCamera)
   const allGood = dbOk && cameras.length > 0 && attention.length === 0

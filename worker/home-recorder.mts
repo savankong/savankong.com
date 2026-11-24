@@ -252,7 +252,9 @@ async function pollCommands() {
     for (;;) {
       const rows = await sql`
         UPDATE home_commands SET status = 'running'
-        WHERE id = (SELECT id FROM home_commands WHERE status = 'pending' ORDER BY id FOR UPDATE SKIP LOCKED LIMIT 1)
+        WHERE id = (SELECT id FROM home_commands
+                    WHERE status = 'pending' AND device_id LIKE 'ring%' -- vacuum commands go to worker/dreame
+                    ORDER BY id FOR UPDATE SKIP LOCKED LIMIT 1)
         RETURNING id, device_id, action, payload, created_at`
       const cmd = rows[0]
       if (!cmd) break

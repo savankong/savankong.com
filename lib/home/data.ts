@@ -177,9 +177,47 @@ export function houseOf(devices: Device[]): House | null {
 
 export type Attention = { tone: 'bad' | 'warn'; title: string; text: string; href?: string }
 
+export type VacuumMeta = {
+  state?: string
+  error?: string | null
+  charging?: boolean
+  cleanMinutes?: number | null
+  cleanedArea?: number | null
+}
+export const vacuumMeta = (d: Device) => d.meta as VacuumMeta
+
+/** Floodlights on Ring cameras count as lights until real lights are connected. */
+export const isLight = (d: Device) => d.kind === 'light' || (isCamera(d) && d.capabilities.includes('light'))
+
+export async function getBridgeStatus(prefix: 'dreame'): Promise<RecorderStatus> {
+  const rows = await sql`SELECT key, value, updated_at FROM home_kv WHERE key IN (${`${prefix}_heartbeat`}, ${`${prefix}_note`})`
+  const beat = rows.find((r) => r.key === `${prefix}_heartbeat`)
+  const note = rows.find((r) => r.key === `${prefix}_note`)
+  const lastBeat = beat ? new Date(beat.updated_at as string) : null
+  return {
+    online: Boolean(lastBeat && Date.now() - lastBeat.getTime() < 3 * 60_000),
+    lastBeat,
+    note: note ? String(note.value) : null,
+  }
+}
+
 /** Things worth a look, worst first. Empty means all good. */
-export function attentionItems(devices: Device[], recorder: RecorderStatus | null, failedToday: number): Attention[] {
+export function attentionItems(
+  devices: Device[],
+  recorder: RecorderStatus | null,
+  failedToday: number,
+  vacuumBridge: RecorderStatus | null = null,
+): Attention[] {
   const out: Attention[] = []
+  const vacuums = devices.filter((d) => d.kind === 'vacuum')
+  if (vacuums.length && vacuumBridge && !vacuumBridge.online) {
+    out.push({ tone: 'bad', title: 'Vacuum bridge offline', text: vacuumBridge.note ?? 'Vacuum status and controls are paused.' })
+  }
+  for (const v of vacuums) {
+    const m = vacuumMeta(v)
+    if (m.error || m.state === 'error')
+      out.push({ tone: 'bad', title: `${v.name} needs help`, text: m.error ?? 'Check it in the DreameHome app.', href: '/cleaning' })
+  }
   if (recorder && !recorder.online && devices.some(isCamera)) {
     out.push({ tone: 'bad', title: 'Recorder offline', text: recorder.note ?? 'New motion and rings aren’t being saved.' })
   }

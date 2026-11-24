@@ -1,7 +1,9 @@
 // Requests from the dashboard to the recorder worker, through home_commands.
 import { sql } from '../db'
 
-export const ACTIONS = new Set(['record', 'light_on', 'light_off', 'siren_on', 'siren_off', 'live_start', 'live_stop', 'mode_set'])
+export const ACTIONS = new Set(['record', 'light_on', 'light_off', 'siren_on', 'siren_off', 'live_start', 'live_stop', 'mode_set',
+  'vacuum_start', 'vacuum_pause', 'vacuum_dock', 'vacuum_stop', 'vacuum_locate',
+])
 
 export async function queueCommand(deviceId: string, action: string, payload: unknown = null): Promise<number> {
   if (!ACTIONS.has(action)) throw new Error(`Unknown action ${action}`)
