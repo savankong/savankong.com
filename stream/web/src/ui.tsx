@@ -248,8 +248,8 @@ export function Shell({ children }: { children: ReactNode }) {
     <div className="shell">
       <header className="topbar">
         <Link to="/" className="wordmark">
-          <img className="logo" src="./r-tile-blue.svg" alt="" />
-          Stream
+          <span className="logo" aria-hidden="true" />
+          Kong
         </Link>
         <nav className="topnav" aria-label="Library">
           {sections.map((s) => (

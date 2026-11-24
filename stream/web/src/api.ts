@@ -1,4 +1,4 @@
-// A small client for the Jellyfin server API. Stream is only a player:
+// A small client for the Jellyfin server API. Kong is only a player:
 // the server does the scanning, metadata and transcoding.
 
 export const TICKS_PER_SECOND = 10_000_000;
@@ -111,7 +111,7 @@ export function deviceId(): string {
 
 function authHeader(token?: string): string {
   const parts = [
-    'Client="Stream"',
+    'Client="Kong"',
     'Device="Web"',
     `DeviceId="${deviceId()}"`,
     'Version="0.1.0"',

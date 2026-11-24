@@ -51,7 +51,7 @@ export function SignIn() {
         const blocked = location.protocol === "https:" && target.startsWith("http://");
         setError(
           blocked
-            ? "This page is secure (https) and your server address is not, so the browser blocks the connection. Use an https address for the server, or open Stream from an http address on your home network."
+            ? "This page is secure (https) and your server address is not, so the browser blocks the connection. Use an https address for the server, or open Kong from an http address on your home network."
             : `Could not reach ${target}. Check the address, that Jellyfin is running, and that this device is on the same network.`,
         );
       } else setError("The server could not sign you in. Try again.");
@@ -63,8 +63,8 @@ export function SignIn() {
   return (
     <div className="signin">
       <div className="wordmark wordmark-lg">
-        <img className="logo" src="./r-tile-blue.svg" alt="" />
-        Stream
+        <span className="logo" aria-hidden="true" />
+        Kong
       </div>
       <form className="signin-card" onSubmit={submit}>
         <div>

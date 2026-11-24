@@ -1,4 +1,4 @@
-// Stream service worker: keeps the app's own files so it opens offline.
+// Kong service worker: keeps the app's own files so it opens offline.
 // Media is not handled here; saved albums live in their own cache
 // (see src/offline.ts) and are read directly by the app.
 

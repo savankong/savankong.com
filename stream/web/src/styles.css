@@ -1,6 +1,6 @@
-/* Stream in the One Roster brand: the Your Roster typeface and the brand's
+/* Kong in the One Roster brand: the Your Roster typeface and the brand's
    dark ("capture") colours, with the one blue for the main action. The
-   floating glass shapes are Stream's own. */
+   floating glass shapes are Kong's own. */
 @font-face {
   font-family: "Your Roster";
   src: url("/fonts/your-roster-thin.woff2") format("woff2");
@@ -155,12 +155,15 @@ p {
   font-size: 40px;
 }
 
+/* The gorilla mark from Kong Reviews, drawn in the text colour the same way
+   that site does it: the file is used as a mask. */
 .logo {
-  width: 1.15em;
-  height: 1.15em;
-  min-width: 20px;
-  min-height: 20px;
-  display: block;
+  flex: none;
+  width: 0.83em;
+  height: 1.3em;
+  background: currentColor;
+  -webkit-mask: url("/kong-logo.svg") center / contain no-repeat;
+  mask: url("/kong-logo.svg") center / contain no-repeat;
 }
 
 .dot {

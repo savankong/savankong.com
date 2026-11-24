@@ -1,5 +1,5 @@
 /*
- * Stream theme for Jellyfin, in the One Roster brand
+ * Kong theme for Jellyfin, in the One Roster brand
  *
  * Paste the whole file into Jellyfin: Dashboard > General > Custom CSS code,
  * then Save. It applies to every client that shows the server's web
@@ -15,11 +15,11 @@
  *   primary   #0071e3  the one action, always with white text
  *   link      #2997ff  blue as text, progress and sliders
  *
- * The Your Roster typeface loads from the Stream app's folder on the same
- * address (/app/fonts/). Until Stream is installed there (see
+ * The Your Roster typeface loads from the Kong app's folder on the same
+ * address (/app/fonts/). Until Kong is installed there (see
  * deploy/Caddyfile), text falls back to the device's own sans.
  *
- * Shapes follow the Stream app: 14px corners on artwork, pill-shaped
+ * Shapes follow the Kong app: 14px corners on artwork, pill-shaped
  * buttons, and translucent blurred bars where the device supports blur.
  * A 2017 TV ignores the blur lines and shows the solid colours instead.
  */
