@@ -68,3 +68,25 @@ export function groupByDay<T extends { startedAt: Date }>(items: T[]): { label: 
   }
   return out
 }
+
+export const MODE_LABEL: Record<string, string> = { home: 'Home', away: 'Away', disarmed: 'Disarmed' }
+
+/** "Light turned on", "House set to Away", ... for the activity feed. */
+export function changeLabel(action: string, mode: string | null): string {
+  switch (action) {
+    case 'light_on':
+      return 'Light turned on'
+    case 'light_off':
+      return 'Light turned off'
+    case 'siren_on':
+      return 'Siren sounded'
+    case 'siren_off':
+      return 'Siren stopped'
+    case 'live_start':
+      return 'Watched live'
+    case 'mode_set':
+      return `House set to ${MODE_LABEL[mode ?? ''] ?? mode}`
+    default:
+      return action.replaceAll('_', ' ')
+  }
+}

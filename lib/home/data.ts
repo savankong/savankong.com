@@ -151,9 +151,126 @@ export async function getRecorderStatus(): Promise<RecorderStatus> {
   }
 }
 
-export async function getPendingCommands(): Promise<{ deviceId: string; action: string }[]> {
+export type Pending = { deviceId: string; action: string; mode: string | null }
+
+export async function getPendingCommands(): Promise<Pending[]> {
   const rows = await sql`
-    SELECT device_id, action FROM home_commands
-    WHERE status IN ('pending', 'running') AND created_at > now() - interval '2 minutes'`
-  return rows.map((r) => ({ deviceId: String(r.device_id), action: String(r.action) }))
+    SELECT device_id, action, payload->>'mode' AS mode FROM home_commands
+    WHERE status IN ('pending', 'running') AND created_at > now() - interval '2 minutes'
+      AND action NOT IN ('live_start', 'live_stop')
+    ORDER BY id DESC`
+  return rows.map((r) => ({ deviceId: String(r.device_id), action: String(r.action), mode: (r.mode as string) ?? null }))
+}
+
+// ---------- Whole-home views ----------
+
+export const isCamera = (d: Pick<Device, 'kind'>) => d.kind === 'camera' || d.kind === 'doorbell'
+
+export type House = { id: string; name: string; mode: string }
+
+/** The Ring location whose mode (Home / Away / Disarmed) the hub switches. */
+export function houseOf(devices: Device[]): House | null {
+  const d = devices.find((x) => x.kind === 'house')
+  if (!d) return null
+  return { id: d.id, name: d.name, mode: String((d.meta as { mode?: string }).mode ?? 'unset') }
+}
+
+export type Attention = { tone: 'bad' | 'warn'; title: string; text: string; href?: string }
+
+/** Things worth a look, worst first. Empty means all good. */
+export function attentionItems(devices: Device[], recorder: RecorderStatus | null, failedToday: number): Attention[] {
+  const out: Attention[] = []
+  if (recorder && !recorder.online && devices.some(isCamera)) {
+    out.push({ tone: 'bad', title: 'Recorder offline', text: recorder.note ?? 'New motion and rings aren’t being saved.' })
+  }
+  for (const d of devices.filter(isCamera)) {
+    if (!d.online) out.push({ tone: 'bad', title: `${d.name} is offline`, text: 'Check its power and Wi-Fi.', href: `/live/${encodeURIComponent(d.id)}` })
+    else if (d.battery != null && d.battery < 20)
+      out.push({ tone: 'warn', title: `${d.name} battery at ${d.battery}%`, text: 'Charge it soon.', href: `/live/${encodeURIComponent(d.id)}` })
+  }
+  if (failedToday > 0) {
+    out.push({
+      tone: 'warn',
+      title: `${failedToday} ${failedToday === 1 ? 'clip' : 'clips'} not saved today`,
+      text: 'Open one to see why.',
+      href: '/activity?show=failed',
+    })
+  }
+  return out
+}
+
+export async function getFailedToday(): Promise<number> {
+  const rows = await sql`SELECT count(*) AS n FROM home_clips WHERE status = 'failed' AND started_at > now() - interval '24 hours'`
+  return Number(rows[0]?.n ?? 0)
+}
+
+export type Change = {
+  id: number
+  deviceId: string
+  deviceName: string
+  action: string
+  mode: string | null
+  status: string
+  error: string | null
+  at: Date
+}
+
+export type Activity = { kind: 'clip'; at: Date; clip: Clip } | { kind: 'change'; at: Date; change: Change }
+
+export const clipActivity = (clips: Clip[]): Activity[] => clips.map((clip) => ({ kind: 'clip', at: clip.startedAt, clip }))
+
+/**
+ * Everything that happened, newest first: recorded clips plus changes made
+ * from the dashboard (lights, siren, house mode, live views).
+ */
+export async function getActivity(opts: { show?: string; limit?: number; before?: Date } = {}) {
+  const limit = Math.min(opts.limit ?? 60, 200)
+  const show = opts.show ?? ''
+  const before = opts.before?.toISOString() ?? null
+  const wantClips = show !== 'changes'
+  const wantChanges = show === '' || show === 'changes'
+  const trigger = ['motion', 'ding', 'manual'].includes(show) ? show : null
+  const failed = show === 'failed'
+
+  const [clipRows, changeRows] = await Promise.all([
+    wantClips
+      ? sql`
+        SELECT c.*, d.name AS device_name FROM home_clips c JOIN home_devices d ON d.id = c.device_id
+        WHERE (${trigger}::text IS NULL OR c.trigger = ${trigger})
+          AND (${failed} = false OR c.status = 'failed')
+          AND (${before}::timestamptz IS NULL OR c.started_at < ${before})
+        ORDER BY c.started_at DESC LIMIT ${limit + 1}`
+      : Promise.resolve([]),
+    wantChanges
+      ? sql`
+        SELECT m.id, m.device_id, d.name AS device_name, m.action, m.payload->>'mode' AS mode, m.status, m.error,
+               coalesce(m.finished_at, m.created_at) AS at
+        FROM home_commands m JOIN home_devices d ON d.id = m.device_id
+        WHERE m.action NOT IN ('record', 'live_stop') AND m.status IN ('done', 'failed')
+          AND (${before}::timestamptz IS NULL OR coalesce(m.finished_at, m.created_at) < ${before})
+        ORDER BY at DESC LIMIT ${limit + 1}`
+      : Promise.resolve([]),
+  ])
+
+  const items: Activity[] = [
+    ...clipActivity(clipRows.map(toClip)),
+    ...changeRows.map(
+      (r): Activity => ({
+        kind: 'change',
+        at: new Date(r.at as string),
+        change: {
+          id: Number(r.id),
+          deviceId: String(r.device_id),
+          deviceName: String(r.device_name),
+          action: String(r.action),
+          mode: (r.mode as string) ?? null,
+          status: String(r.status),
+          error: (r.error as string) ?? null,
+          at: new Date(r.at as string),
+        },
+      }),
+    ),
+  ].sort((a, b) => b.at.getTime() - a.at.getTime())
+
+  return { items: items.slice(0, limit), more: items.length > limit }
 }

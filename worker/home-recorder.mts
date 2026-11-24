@@ -16,7 +16,13 @@ import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
 import pg from 'pg'
-import { PushNotificationAction, RingApi, type PushNotificationDingV2, type RingCamera } from 'ring-client-api'
+import {
+  PushNotificationAction,
+  RingApi,
+  type Location,
+  type PushNotificationDingV2,
+  type RingCamera,
+} from 'ring-client-api'
 import { pgConfig, sql } from '../lib/db.ts'
 import { deleteObjects, putObject, storageConfigured } from '../lib/home/storage.ts'
 
@@ -32,6 +38,8 @@ const COMMAND_TTL_MS = 2 * 60_000
 const LIVE_TTL_MS = 20_000 // the browser stops waiting for an answer after ~15 s
 
 const cameras = new Map<string, RingCamera>()
+const locations = new Map<string, Location>() // house modes live on Ring locations
+const MODES = new Set(['home', 'away', 'disarmed'])
 const recording = new Set<string>()
 let api: RingApi | null = null
 let stopping = false
@@ -87,6 +95,25 @@ async function syncCamera(c: RingCamera) {
     ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, kind = EXCLUDED.kind, model = EXCLUDED.model,
       online = EXCLUDED.online, battery = EXCLUDED.battery, capabilities = EXCLUDED.capabilities,
       meta = EXCLUDED.meta, updated_at = now()`
+}
+
+/**
+ * A Ring location with Modes turned on becomes a "house" device, so the
+ * dashboard can show and switch Home / Away / Disarmed.
+ */
+async function syncLocation(loc: Location) {
+  if (!(await loc.supportsLocationModeSwitching().catch(() => false))) return
+  const id = `ring-location:${loc.id}`
+  locations.set(id, loc)
+  const save = (mode: string) =>
+    sql`
+      INSERT INTO home_devices (id, provider, kind, name, capabilities, meta, updated_at)
+      VALUES (${id}, 'ring', 'house', ${loc.name}, '["mode"]'::jsonb, ${JSON.stringify({ mode })}::jsonb, now())
+      ON CONFLICT (id) DO UPDATE SET name = EXCLUDED.name, meta = EXCLUDED.meta, updated_at = now()`.catch((e) =>
+      log('mode sync error', e),
+    )
+  loc.onLocationMode.subscribe((mode) => save(String(mode)))
+  await save(String((await loc.getLocationMode()).mode))
 }
 
 // ---------- Recording ----------
@@ -244,6 +271,16 @@ async function pollCommands() {
           await finish(null)
           continue
         }
+        if (cmd.action === 'mode_set') {
+          const loc = locations.get(String(cmd.device_id))
+          const mode = String(payload.mode ?? '')
+          if (!loc) throw new Error('Ring Modes are not available for this location')
+          if (!MODES.has(mode)) throw new Error(`Unknown mode ${mode}`)
+          await loc.setLocationMode(mode as 'home' | 'away' | 'disarmed')
+          log(`${loc.name}: mode set to ${mode}`)
+          await finish(null)
+          continue
+        }
         if (!c) throw new Error('Device is not connected to the recorder')
         switch (cmd.action) {
           case 'live_start':
@@ -319,6 +356,7 @@ async function connect() {
     refreshToken: token,
     controlCenterDisplayName: 'home.savankong.com',
     cameraStatusPollingSeconds: 60,
+    locationModePollingSeconds: 60, // picks up mode changes made in the Ring app
     avoidSnapshotBatteryDrain: true,
     ffmpegPath: FFMPEG,
   })
@@ -333,7 +371,8 @@ async function connect() {
     c.onData.subscribe(() => syncCamera(c).catch((e) => log('sync error', e)))
     c.onNewNotification.subscribe((n) => onNotification(c, n))
   }
-  log(`connected: ${list.map((c) => c.name).join(', ') || 'no cameras'}`)
+  for (const loc of await api.getLocations()) await syncLocation(loc).catch((e) => log('location error', e))
+  log(`connected: ${list.map((c) => c.name).join(', ') || 'no cameras'}; ${locations.size} location(s) with Modes`)
   await note(list.length ? null : 'Ring login works, but the account has no cameras.')
 }
 

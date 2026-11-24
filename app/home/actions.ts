@@ -10,7 +10,8 @@ import { homeHref } from '@/lib/home/paths'
 import { deleteObjects, storageConfigured } from '@/lib/home/storage'
 
 // Buttons may only send these; live view goes through /api/home/live.
-const BUTTON_ACTIONS = new Set(['record', 'light_on', 'light_off', 'siren_on', 'siren_off'])
+const BUTTON_ACTIONS = new Set(['record', 'light_on', 'light_off', 'siren_on', 'siren_off', 'mode_set'])
+const MODES = new Set(['home', 'away', 'disarmed'])
 
 async function requireSession() {
   const jar = await cookies()
@@ -51,7 +52,13 @@ export async function sendCommand(form: FormData) {
   const deviceId = String(form.get('deviceId') ?? '')
   const action = String(form.get('action') ?? '')
   if (!deviceId || !BUTTON_ACTIONS.has(action)) return
-  await queueCommand(deviceId, action)
+  if (action === 'mode_set') {
+    const mode = String(form.get('mode') ?? '')
+    if (!MODES.has(mode)) return
+    await queueCommand(deviceId, action, { mode })
+  } else {
+    await queueCommand(deviceId, action)
+  }
   revalidatePath('/home', 'layout')
 }
 

@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import type { Metadata } from 'next'
-import { getClips, getDevices, type Clip, type Device } from '@/lib/home/data'
+import { getClips, getDevices, isCamera, type Clip, type Device } from '@/lib/home/data'
 import { groupByDay, time, triggerLabel } from '@/lib/home/format'
 import { homeHref } from '@/lib/home/paths'
 import { ClipThumb } from '../../parts'
@@ -35,7 +35,7 @@ export default async function Clips({ searchParams }: { searchParams: Promise<Se
   let dbOk = true
   try {
     ;[devices, { clips, more }] = await Promise.all([
-      getDevices(),
+      getDevices().then((d) => d.filter(isCamera)),
       getClips({
         deviceId: q.camera || undefined,
         trigger: q.trigger || undefined,
@@ -52,7 +52,7 @@ export default async function Clips({ searchParams }: { searchParams: Promise<Se
     <>
       {!q.before ? <AutoRefresh seconds={20} /> : null}
       <div className={styles.head}>
-        <div className={styles.eyebrow}>Clips</div>
+        <div className={styles.eyebrow}>Security · Recordings</div>
         <h1 className={styles.title}>{camName ?? 'Everything that happened'}</h1>
         <p className={styles.summary}>
           Clips are kept for {Number(process.env.HOME_RETENTION_DAYS || 30)} days, then deleted. Download any you

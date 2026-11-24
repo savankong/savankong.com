@@ -1,7 +1,7 @@
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import type { Metadata } from 'next'
-import { getClips, getDevice, getRecorderStatus } from '@/lib/home/data'
+import { clipActivity, getClips, getDevice, getRecorderStatus } from '@/lib/home/data'
 import { when } from '@/lib/home/format'
 import { homeHref } from '@/lib/home/paths'
 import { Battery, Bulb, Left, Plug, Record, Siren } from '../../../icons'
@@ -29,8 +29,8 @@ export default async function LivePage({ params }: Props) {
   return (
     <>
       <div className={styles.head}>
-        <Link href={homeHref('/')} className={styles.back}>
-          <Left className={styles.brandMark} /> Overview
+        <Link href={homeHref('/security')} className={styles.back}>
+          <Left className={styles.brandMark} /> Security
         </Link>
         <div className={styles.eyebrow}>
           {device.online ? 'Online' : 'Offline'}
@@ -123,7 +123,7 @@ export default async function LivePage({ params }: Props) {
             All from {device.name} →
           </Link>
         </div>
-        {clips.length ? <Timeline clips={clips} /> : <div className={styles.empty}>No clips yet.</div>}
+        {clips.length ? <Timeline items={clipActivity(clips)} /> : <div className={styles.empty}>No clips yet.</div>}
       </section>
     </>
   )

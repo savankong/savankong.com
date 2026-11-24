@@ -173,3 +173,29 @@ export const Expand = ({ className }: P) => (
     <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />
   </svg>
 )
+export const Shield = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M12 3.5 19 6v5.5c0 4.2-2.9 7.6-7 9-4.1-1.4-7-4.8-7-9V6Z" />
+  </svg>
+)
+export const Away = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M13.5 20.5h-8v-17h8M10 12h10.5M17.5 8.5 21 12l-3.5 3.5" />
+  </svg>
+)
+export const Power = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M12 3.5v8M7 6.5a7.5 7.5 0 1 0 10 0" />
+  </svg>
+)
+export const Alert = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M12 4 21 19.5H3Z" />
+    <path d="M12 10v4M12 16.8v.2" />
+  </svg>
+)
+export const Pulse = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M3 12h4l2.5-6 5 12 2.5-6H21" />
+  </svg>
+)

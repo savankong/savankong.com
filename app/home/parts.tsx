@@ -1,10 +1,32 @@
 // Server-rendered building blocks shared by the dashboard pages.
 /* eslint-disable @next/next/no-img-element -- thumbnails are signed Spaces URLs behind a redirect */
 import Link from 'next/link'
-import type { Clip, Device, RecorderStatus } from '@/lib/home/data'
-import { bytes, groupByDay, seconds, time, triggerLabel, when } from '@/lib/home/format'
+import type { Activity, Attention, Change, Clip, Device, House, RecorderStatus } from '@/lib/home/data'
+import { SYSTEMS, type SystemKey } from '@/lib/home/systems'
+import { MODE_LABEL, bytes, changeLabel, groupByDay, seconds, time, triggerLabel, when } from '@/lib/home/format'
 import { homeHref } from '@/lib/home/paths'
-import { Battery, Bell, Bulb, Camera, Cloud, Film, Lock, Play, Plug, Record, Siren, Thermo, TriggerIcon, Vacuum } from './icons'
+import {
+  Alert,
+  Away,
+  Battery,
+  Bell,
+  Bulb,
+  Camera,
+  Cloud,
+  Film,
+  HouseMark,
+  Lock,
+  Play,
+  Plug,
+  Power,
+  Record,
+  Right,
+  Shield,
+  Siren,
+  Thermo,
+  TriggerIcon,
+  Vacuum,
+} from './icons'
 import { CommandButton } from './ui'
 import styles from './home.module.css'
 
@@ -164,38 +186,219 @@ export function CameraTile({
   )
 }
 
-/** Activity grouped by day on a vertical rail, one node per clip. */
-export function Timeline({ clips }: { clips: Clip[] }) {
+/** Activity grouped by day on a vertical rail, one node per event. */
+export function Timeline({ items, compact = false }: { items: Activity[]; compact?: boolean }) {
   return (
-    <div className={styles.timeline}>
-      {groupByDay(clips).map((g) => (
-        <section key={g.label + g.items[0].id}>
+    <div className={`${styles.timeline} ${compact ? styles.timelineCompact : ''}`}>
+      {groupByDay(items.map((i) => ({ ...i, startedAt: i.at }))).map((g) => (
+        <section key={g.label + g.items[0].at.getTime()}>
           <h3 className={styles.tlDay}>{g.label}</h3>
           <ol className={styles.tl}>
-            {g.items.map((c) => (
-              <li key={c.id} className={styles.tlItem}>
-                <span className={`${styles.tlNode} ${styles[`tl_${tone(c)}`]}`}>
-                  <TriggerIcon trigger={c.trigger} detail={c.detail} />
-                </span>
-                <Link href={homeHref(`/clips/${c.id}`)} className={styles.tlCard}>
-                  <div className={styles.tlText}>
-                    <div className={styles.tlTime}>
-                      {time(c.startedAt)}
-                      {Date.now() - c.startedAt.getTime() < 3 * 3600_000 ? ` · ${when(c.startedAt)}` : ''}
-                    </div>
-                    <div className={styles.rowTitle}>{triggerLabel(c.trigger, c.detail)}</div>
-                    <div className={`${styles.rowSub} ${c.status === 'failed' ? styles.failed : ''}`}>
-                      {c.deviceName}
-                      {c.status === 'failed' ? ' · not saved' : c.durationSeconds ? ` · ${seconds(c.durationSeconds)}` : ''}
-                    </div>
-                  </div>
-                  <ClipThumb clip={c} />
-                </Link>
-              </li>
-            ))}
+            {g.items.map((i) =>
+              i.kind === 'clip' ? (
+                <ClipItem key={`c${i.clip.id}`} c={i.clip} compact={compact} />
+              ) : (
+                <ChangeItem key={`m${i.change.id}`} m={i.change} />
+              ),
+            )}
           </ol>
         </section>
       ))}
+    </div>
+  )
+}
+
+function ClipItem({ c, compact }: { c: Clip; compact: boolean }) {
+  return (
+    <li className={styles.tlItem}>
+      <span className={`${styles.tlNode} ${styles[`tl_${tone(c)}`]}`}>
+        <TriggerIcon trigger={c.trigger} detail={c.detail} />
+      </span>
+      <Link href={homeHref(`/clips/${c.id}`)} className={styles.tlCard}>
+        <div className={styles.tlText}>
+          <div className={styles.tlTime}>
+            {time(c.startedAt)}
+            {!compact && Date.now() - c.startedAt.getTime() < 3 * 3600_000 ? ` · ${when(c.startedAt)}` : ''}
+          </div>
+          <div className={styles.rowTitle}>{triggerLabel(c.trigger, c.detail)}</div>
+          <div className={`${styles.rowSub} ${c.status === 'failed' ? styles.failed : ''}`}>
+            {c.deviceName}
+            {c.status === 'failed' ? ' · not saved' : c.durationSeconds ? ` · ${seconds(c.durationSeconds)}` : ''}
+          </div>
+        </div>
+        <ClipThumb clip={c} />
+      </Link>
+    </li>
+  )
+}
+
+function ChangeIcon({ action }: { action: string }) {
+  if (action.startsWith('light')) return <Bulb />
+  if (action.startsWith('siren')) return <Siren />
+  if (action === 'mode_set') return <HouseMark />
+  if (action === 'live_start') return <Play />
+  return <Record />
+}
+
+function ChangeItem({ m }: { m: Change }) {
+  return (
+    <li className={styles.tlItem}>
+      <span className={`${styles.tlNode} ${m.status === 'failed' ? styles.tl_failed : styles.tl_change}`}>
+        <ChangeIcon action={m.action} />
+      </span>
+      <div className={`${styles.tlCard} ${styles.tlPlain}`}>
+        <div className={styles.tlText}>
+          <div className={styles.tlTime}>{time(m.at)}</div>
+          <div className={styles.rowTitle}>{changeLabel(m.action, m.mode)}</div>
+          <div className={`${styles.rowSub} ${m.status === 'failed' ? styles.failed : ''}`}>
+            {m.deviceName}
+            {m.status === 'failed' ? ` · didn’t work${m.error ? `: ${m.error}` : ''}` : ' · from Home'}
+          </div>
+        </div>
+      </div>
+    </li>
+  )
+}
+
+const MODE_HELP: Record<string, string> = {
+  home: 'Someone’s in. Cameras follow your Home settings in Ring.',
+  away: 'Nobody’s home. Cameras follow your Away settings in Ring.',
+  disarmed: 'Cameras follow your Disarmed settings in Ring.',
+}
+
+/** Home / Away / Disarmed for the whole house (Ring Modes). */
+export function ModeSwitch({ house, pending }: { house: House; pending: string | null }) {
+  const current = pending ?? house.mode
+  return (
+    <div className={styles.modeCard}>
+      <div className={styles.modeHead}>
+        <div>
+          <div className={styles.cardTitle}>House mode</div>
+          <div className={styles.cardSub}>
+            {pending ? `Switching to ${MODE_LABEL[pending]}…` : (MODE_HELP[house.mode] ?? 'Ring Modes are off.')}
+          </div>
+        </div>
+      </div>
+      <div className={styles.segment} role="group" aria-label="House mode">
+        {(['home', 'away', 'disarmed'] as const).map((m) => (
+          <CommandButton
+            key={m}
+            deviceId={house.id}
+            action="mode_set"
+            fields={{ mode: m }}
+            pressed={current === m}
+            className={`${styles.segBtn} ${current === m ? styles.segOn : ''}`}
+            busy={MODE_LABEL[m]}
+          >
+            {m === 'home' ? <HouseMark /> : m === 'away' ? <Away /> : <Power />}
+            {MODE_LABEL[m]}
+          </CommandButton>
+        ))}
+      </div>
+    </div>
+  )
+}
+
+export function AttentionList({ items }: { items: Attention[] }) {
+  if (!items.length) return null
+  return (
+    <div className={styles.attention}>
+      {items.map((a) => {
+        const body = (
+          <>
+            <span className={`${styles.attIcon} ${a.tone === 'bad' ? styles.attBad : styles.attWarn}`}>
+              <Alert />
+            </span>
+            <div className={styles.tlText}>
+              <div className={styles.rowTitle}>{a.title}</div>
+              <div className={styles.rowSub}>{a.text}</div>
+            </div>
+            {a.href ? <Right className={styles.attGo} /> : null}
+          </>
+        )
+        return a.href ? (
+          <Link key={a.title} href={homeHref(a.href)} className={styles.attItem}>
+            {body}
+          </Link>
+        ) : (
+          <div key={a.title} className={styles.attItem}>
+            {body}
+          </div>
+        )
+      })}
+    </div>
+  )
+}
+
+const SYSTEM_ICON: Record<SystemKey, React.ReactNode> = {
+  security: <Shield />,
+  lights: <Bulb />,
+  climate: <Thermo />,
+  cleaning: <Vacuum />,
+  locks: <Lock />,
+}
+
+/** One tile per part of the house; connected ones lead. */
+export function SystemsGrid({
+  devices,
+  recorder,
+  clipsToday,
+}: {
+  devices: Device[]
+  recorder: RecorderStatus | null
+  clipsToday: number
+}) {
+  const systems = SYSTEMS.map((s) => ({ ...s, devices: devices.filter((d) => s.kinds.includes(d.kind)) })).sort(
+    (a, b) => Number(b.devices.length > 0) - Number(a.devices.length > 0),
+  )
+  return (
+    <div className={styles.systems}>
+      {systems.map((s) => {
+        if (s.key === 'security' && s.devices.length) {
+          const online = s.devices.filter((d) => d.online).length
+          const thumbs = s.devices.filter((d) => d.latestThumbClipId).slice(0, 3)
+          return (
+            <Link key={s.key} href={homeHref('/security')} className={`${styles.sys} ${styles.sysWide}`}>
+              <div className={styles.sysHead}>
+                <span className={styles.sysIcon}>{SYSTEM_ICON[s.key]}</span>
+                <div>
+                  <div className={styles.cardTitle}>{s.name}</div>
+                  <div className={styles.cardSub}>
+                    {online}/{s.devices.length} cameras online · {clipsToday} {clipsToday === 1 ? 'clip' : 'clips'} today
+                  </div>
+                </div>
+                <span className={styles.sysState}>
+                  <span className={`${styles.dot} ${recorder?.online ? styles.dotOk : styles.dotBad}`} />
+                  {recorder?.online ? 'Recording' : 'Not recording'}
+                </span>
+              </div>
+              {thumbs.length ? (
+                <div className={styles.mosaic}>
+                  {thumbs.map((d) => (
+                    <div key={d.id} className={styles.mosaicCell}>
+                      <img src={thumbSrc(d.latestThumbClipId!)} alt="" />
+                      <span className={styles.mosaicName}>{d.name}</span>
+                    </div>
+                  ))}
+                </div>
+              ) : null}
+            </Link>
+          )
+        }
+        const connected = s.devices.length > 0
+        return (
+          <div key={s.key} className={`${styles.sys} ${connected ? '' : styles.sysIdle}`}>
+            <div className={styles.sysHead}>
+              <span className={styles.sysIcon}>{SYSTEM_ICON[s.key]}</span>
+              <div>
+                <div className={styles.cardTitle}>{s.name}</div>
+                <div className={styles.cardSub}>{connected ? `${s.devices.length} connected` : s.idle}</div>
+              </div>
+            </div>
+            <div className={styles.sysFoot}>{connected ? 'Connected' : 'Not connected'}</div>
+          </div>
+        )
+      })}
     </div>
   )
 }
@@ -242,35 +445,6 @@ export function StatusTiles({
           <div>
             <div className={styles.tileValue}>{t.value}</div>
             <div className={styles.tileLabel}>{t.label}</div>
-          </div>
-        </div>
-      ))}
-    </div>
-  )
-}
-
-const SOON = [
-  { name: 'Vacuum', status: 'Start, pause, send home', icon: <Vacuum />, tint: 'vac' },
-  { name: 'Lights', status: 'Rooms and scenes', icon: <Bulb />, tint: 'light' },
-  { name: 'Climate', status: 'Thermostat', icon: <Thermo />, tint: 'climate' },
-  { name: 'Locks', status: 'Front and back door', icon: <Lock />, tint: 'lock' },
-] as const
-
-/** Placeholder tiles for the devices Home will control next. */
-export function SoonTiles() {
-  return (
-    <div className={styles.soon}>
-      {SOON.map((s) => (
-        <div key={s.name} className={`${styles.soonTile} ${styles[`soon_${s.tint}`]}`}>
-          <div>
-            <div className={styles.soonName}>{s.name}</div>
-            <div className={styles.soonSub}>{s.status}</div>
-          </div>
-          <div className={styles.soonFoot}>
-            <span className={styles.soonTag}>Not connected</span>
-            <span className={styles.soonBtn} aria-hidden>
-              {s.icon}
-            </span>
           </div>
         </div>
       ))}

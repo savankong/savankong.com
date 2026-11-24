@@ -12,8 +12,9 @@ export const dynamic = 'force-dynamic'
 export default async function DashLayout({ children }: { children: React.ReactNode }) {
   const status = await getRecorderStatus().catch(() => null)
   const links = [
-    { href: homeHref('/'), label: 'Overview' },
-    { href: homeHref('/clips'), label: 'Clips' },
+    { href: homeHref('/'), label: 'Home' },
+    { href: homeHref('/security'), label: 'Security', also: ['/clips', '/live'] },
+    { href: homeHref('/activity'), label: 'Activity' },
   ]
   return (
     <>
@@ -21,7 +22,7 @@ export default async function DashLayout({ children }: { children: React.ReactNo
         <div className={`${styles.wrap} ${styles.barInner}`}>
           <Link href={homeHref('/')} className={styles.brand}>
             <HouseMark className={styles.brandMark} />
-            Home <span className={styles.brandSub}>· Kong</span>
+            Home <span className={styles.brandSub}>· Kong house</span>
           </Link>
           <NavLinks links={links} />
           <div className={styles.barEnd}>

@@ -1,131 +1,111 @@
 import Link from 'next/link'
 import {
-  getClips,
+  attentionItems,
+  getActivity,
   getDevices,
+  getFailedToday,
   getPendingCommands,
   getRecorderStatus,
   getStats,
-  type Clip,
+  houseOf,
+  isCamera,
+  type Activity,
   type Device,
+  type Pending,
   type RecorderStatus,
 } from '@/lib/home/data'
 import { greeting, longDate } from '@/lib/home/format'
 import { homeHref } from '@/lib/home/paths'
 import { storageConfigured } from '@/lib/home/storage'
-import { CameraTile, SetupChecklist, SoonTiles, StatusTiles, Timeline } from '../parts'
+import { AttentionList, ModeSwitch, SetupChecklist, SystemsGrid, Timeline } from '../parts'
 import { AutoRefresh } from '../ui'
 import styles from '../home.module.css'
 
 export const dynamic = 'force-dynamic'
 
-const RETENTION_DAYS = Number(process.env.HOME_RETENTION_DAYS || 30)
-
-export default async function Overview() {
+/** The hub: is the house OK, what mode is it in, and what's going on. */
+export default async function HomeHub() {
   let devices: Device[] = []
-  let recent: Clip[] = []
-  let stats = { clipsToday: 0, clipsTotal: 0, bytesTotal: 0, oldest: null as Date | null }
+  let activity: Activity[] = []
   let recorder: RecorderStatus | null = null
-  let pending: { deviceId: string; action: string }[] = []
+  let pending: Pending[] = []
+  let clipsToday = 0
+  let failedToday = 0
   let dbOk = true
   try {
-    ;[devices, { clips: recent }, stats, recorder, pending] = await Promise.all([
+    let stats
+    ;[devices, { items: activity }, recorder, pending, stats, failedToday] = await Promise.all([
       getDevices(),
-      getClips({ limit: 10 }),
-      getStats(),
+      getActivity({ limit: 7 }),
       getRecorderStatus(),
       getPendingCommands(),
+      getStats(),
+      getFailedToday(),
     ])
+    clipsToday = stats.clipsToday
   } catch {
     dbOk = false
   }
 
-  const storage = storageConfigured()
-  const live = new Set(recent.filter((c) => c.status === 'recording').map((c) => c.deviceId))
-  const pendingSet = new Set(pending.map((p) => `${p.deviceId}:${p.action}`))
-  const online = devices.filter((d) => d.online).length
-  const ready = dbOk && storage && recorder?.online && devices.length > 0
+  const house = houseOf(devices)
+  const attention = dbOk ? attentionItems(devices, recorder, failedToday) : []
+  const pendingMode = (house && pending.find((p) => p.deviceId === house.id && p.action === 'mode_set')?.mode) || null
+  const cameras = devices.filter(isCamera)
+  const allGood = dbOk && cameras.length > 0 && attention.length === 0
 
   return (
     <>
-      <AutoRefresh seconds={live.size || pending.length ? 4 : 15} />
+      <AutoRefresh seconds={pending.length ? 3 : 20} />
       <div className={styles.head}>
         <div className={styles.eyebrow}>{longDate()}</div>
         <h1 className={styles.title}>{greeting()}.</h1>
-        <p className={styles.summary}>
-          {!devices.length
-            ? 'Your Ring cameras will show up here once the recorder is connected.'
-            : recorder?.online
-              ? 'Every motion and doorbell ring is being saved.'
-              : 'The recorder is offline, so nothing new is being saved.'}
+        <p className={styles.status}>
+          <span
+            className={`${styles.dot} ${
+              allGood ? styles.dotOk : attention.some((a) => a.tone === 'bad') ? styles.dotBad : attention.length ? styles.dotWarn : ''
+            }`}
+          />
+          {!dbOk
+            ? 'Home can’t reach its database.'
+            : !cameras.length
+              ? 'Nothing is connected yet.'
+              : allGood
+                ? 'All good at home.'
+                : `${attention.length} ${attention.length === 1 ? 'thing needs' : 'things need'} a look.`}
         </p>
       </div>
-      {devices.length ? (
-        <StatusTiles
-          online={online}
-          total={devices.length}
-          clipsToday={stats.clipsToday}
-          recorder={recorder}
-          bytesTotal={stats.bytesTotal}
-          retentionDays={RETENTION_DAYS}
-        />
-      ) : null}
 
       {!dbOk ? (
         <div className={styles.alert}>
-          Can&rsquo;t read the home tables. Check <code>DATABASE_URL</code> and apply the home migration.
+          Can&rsquo;t read the home tables. Check <code>DATABASE_URL</code> and apply the home migrations.
         </div>
       ) : null}
-      {dbOk && devices.length && recorder && !recorder.online && recorder.note ? (
-        <div className={styles.alert}>{recorder.note}</div>
-      ) : null}
 
-      {!ready && !devices.length ? (
-        <section className={styles.section}>
-          <SetupChecklist db={dbOk} storage={storage} recorder={recorder} devices={devices.length} />
-        </section>
-      ) : null}
-
-      {devices.length ? (
-        <section className={styles.section}>
-          <div className={styles.sectionHead}>
-            <h2 className={styles.sectionTitle}>Cameras</h2>
-            <Link href={homeHref('/clips')} className={styles.sectionLink}>
-              All clips →
-            </Link>
-          </div>
-          <div className={styles.cams}>
-            {devices
-              .filter((d) => d.kind === 'camera' || d.kind === 'doorbell')
-              .map((d) => (
-                <CameraTile key={d.id} device={d} live={live.has(d.id)} pending={pendingSet} />
-              ))}
-          </div>
-        </section>
-      ) : null}
-
-      {recent.length ? (
-        <section className={styles.section}>
-          <div className={styles.sectionHead}>
-            <h2 className={styles.sectionTitle}>Recent activity</h2>
-            <Link href={homeHref('/clips')} className={styles.sectionLink}>
-              See everything →
-            </Link>
-          </div>
-          <Timeline clips={recent} />
-        </section>
-      ) : null}
-
-      <section className={styles.section}>
-        <div className={styles.sectionHead}>
-          <h2 className={styles.sectionTitle}>Coming to Home</h2>
+      <div className={styles.hub}>
+        <div className={styles.hubMain}>
+          {house ? <ModeSwitch house={house} pending={pendingMode} /> : null}
+          <AttentionList items={attention} />
+          {!cameras.length && dbOk ? (
+            <SetupChecklist db={dbOk} storage={storageConfigured()} recorder={recorder} devices={0} />
+          ) : null}
+          <section>
+            <div className={styles.sectionHead}>
+              <h2 className={styles.sectionTitle}>Around the house</h2>
+            </div>
+            <SystemsGrid devices={devices} recorder={recorder} clipsToday={clipsToday} />
+          </section>
         </div>
-        <SoonTiles />
-      </section>
 
-      <footer className={styles.foot}>
-        <span>Clips are saved to our own DigitalOcean storage, not Ring&rsquo;s.</span>
-        <span>Deleted automatically after {RETENTION_DAYS} days.</span>
-      </footer>
+        <aside className={styles.hubSide}>
+          <div className={styles.sectionHead}>
+            <h2 className={styles.sectionTitle}>Latest</h2>
+            <Link href={homeHref('/activity')} className={styles.sectionLink}>
+              All activity →
+            </Link>
+          </div>
+          {activity.length ? <Timeline items={activity} compact /> : <div className={styles.empty}>Nothing yet.</div>}
+        </aside>
+      </div>
     </>
   )
 }
