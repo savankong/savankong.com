@@ -151,3 +151,25 @@ export function TriggerIcon({ trigger, detail, className }: { trigger: string; d
   if (detail?.startsWith('package')) return <Box className={className} />
   return <Waves className={className} />
 }
+export const Play = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M8 5.5v13l10.5-6.5Z" fill="currentColor" />
+  </svg>
+)
+export const Speaker = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4Z" />
+    <path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11" />
+  </svg>
+)
+export const Muted = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4Z" />
+    <path d="m16 9.5 5 5M21 9.5l-5 5" />
+  </svg>
+)
+export const Expand = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5" />
+  </svg>
+)

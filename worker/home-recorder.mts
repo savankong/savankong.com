@@ -15,8 +15,9 @@ import { mkdtemp, readFile, rm, stat } from 'node:fs/promises'
 import { tmpdir } from 'node:os'
 import path from 'node:path'
 import { pathToFileURL } from 'node:url'
+import pg from 'pg'
 import { PushNotificationAction, RingApi, type PushNotificationDingV2, type RingCamera } from 'ring-client-api'
-import { sql } from '../lib/db.ts'
+import { pgConfig, sql } from '../lib/db.ts'
 import { deleteObjects, putObject, storageConfigured } from '../lib/home/storage.ts'
 
 const int = (v: string | undefined, d: number) => (v && Number.isFinite(Number(v)) ? Number(v) : d)
@@ -26,7 +27,9 @@ const MAX_PARALLEL = int(process.env.HOME_MAX_PARALLEL, 3)
 // ffmpeg-static is CommonJS; its default export is the binary's path.
 const ffmpegStatic = createRequire(import.meta.url)('ffmpeg-static') as string | null
 const FFMPEG = process.env.FFMPEG_PATH || ffmpegStatic || 'ffmpeg'
+const LIVE_SECONDS = int(process.env.HOME_LIVE_SECONDS, 120)
 const COMMAND_TTL_MS = 2 * 60_000
+const LIVE_TTL_MS = 20_000 // the browser stops waiting for an answer after ~15 s
 
 const cameras = new Map<string, RingCamera>()
 const recording = new Set<string>()
@@ -187,6 +190,32 @@ function onNotification(c: RingCamera, n: PushNotificationDingV2) {
   record(c, trigger, detail, ding?.id ? `ring:${ding.id}` : null).catch((e) => log('record error', e))
 }
 
+// ---------- Live view ----------
+// The browser sends a WebRTC offer; Ring answers it and then streams straight
+// to the browser. The recorder only relays the offer and answer, so live video
+// never passes through DigitalOcean.
+type LiveSession = ReturnType<RingCamera['createSimpleWebRtcSession']>
+const live = new Map<string, { session: LiveSession; timer: NodeJS.Timeout }>()
+
+async function startLive(c: RingCamera, sdp: unknown) {
+  if (typeof sdp !== 'string' || !sdp.startsWith('v=')) throw new Error('No WebRTC offer')
+  const session = c.createSimpleWebRtcSession()
+  const answer = await session.start(sdp)
+  // Cap every view so a closed tab can't drain a battery camera.
+  const timer = setTimeout(() => endLive(session.sessionId), LIVE_SECONDS * 1000)
+  live.set(session.sessionId, { session, timer })
+  log(`${c.name}: live view started (${LIVE_SECONDS}s max)`)
+  return { sdp: answer, session: session.sessionId, seconds: LIVE_SECONDS }
+}
+
+async function endLive(id: string) {
+  const s = live.get(id)
+  if (!s) return
+  live.delete(id)
+  clearTimeout(s.timer)
+  await s.session.end().catch((e: unknown) => log('live end error', e))
+}
+
 // ---------- Commands from the dashboard ----------
 let polling = false
 async function pollCommands() {
@@ -197,17 +226,29 @@ async function pollCommands() {
       const rows = await sql`
         UPDATE home_commands SET status = 'running'
         WHERE id = (SELECT id FROM home_commands WHERE status = 'pending' ORDER BY id FOR UPDATE SKIP LOCKED LIMIT 1)
-        RETURNING id, device_id, action, created_at`
+        RETURNING id, device_id, action, payload, created_at`
       const cmd = rows[0]
       if (!cmd) break
+      const payload = (cmd.payload ?? {}) as Record<string, unknown>
+      let result: unknown = null
       const finish = (error: string | null) =>
-        sql`UPDATE home_commands SET status = ${error ? 'failed' : 'done'}, error = ${error}, finished_at = now()
+        sql`UPDATE home_commands SET status = ${error ? 'failed' : 'done'}, error = ${error},
+            result = ${result === null ? null : JSON.stringify(result)}::jsonb, finished_at = now()
             WHERE id = ${cmd.id}`
       const c = cameras.get(String(cmd.device_id))
       try {
-        if (Date.now() - new Date(cmd.created_at as string).getTime() > COMMAND_TTL_MS) throw new Error('Expired')
+        const age = Date.now() - new Date(cmd.created_at as string).getTime()
+        if (age > (cmd.action === 'live_start' ? LIVE_TTL_MS : COMMAND_TTL_MS)) throw new Error('Expired')
+        if (cmd.action === 'live_stop') {
+          await endLive(String(payload.session ?? ''))
+          await finish(null)
+          continue
+        }
         if (!c) throw new Error('Device is not connected to the recorder')
         switch (cmd.action) {
+          case 'live_start':
+            result = await startLive(c, payload.sdp)
+            break
           case 'record':
             record(c, 'manual', null, null).catch((e) => log('record error', e))
             break
@@ -234,6 +275,23 @@ async function pollCommands() {
   } finally {
     polling = false
   }
+}
+
+/** Wakes pollCommands the moment the dashboard queues something (pg NOTIFY). */
+function listenForCommands() {
+  const client = new pg.Client(pgConfig())
+  const retry = (e: unknown) => {
+    log('command listener lost, retrying in 5 s', e instanceof Error ? e.message : e)
+    client.removeAllListeners()
+    client.end().catch(() => {})
+    if (!stopping) setTimeout(listenForCommands, 5000)
+  }
+  client.on('notification', () => pollCommands())
+  client.on('error', retry)
+  client
+    .connect()
+    .then(() => client.query('LISTEN home_commands'))
+    .catch(retry)
 }
 
 // ---------- Housekeeping ----------
@@ -301,7 +359,8 @@ async function main() {
 
   await heartbeat()
   setInterval(() => heartbeat().catch((e) => log('heartbeat error', e)), 30_000)
-  setInterval(() => pollCommands(), 2_000)
+  listenForCommands()
+  setInterval(() => pollCommands(), 2_000) // fallback if a notification is missed
   setInterval(() => prune().catch((e) => log('prune error', e)), 6 * 3600_000)
   prune().catch((e) => log('prune error', e))
 }
@@ -310,12 +369,13 @@ async function shutdown() {
   if (stopping) return
   stopping = true
   log('stopping')
+  await Promise.all([...live.keys()].map(endLive))
   for (let i = 0; i < 40 && recording.size; i++) await sleep(500)
   api?.disconnect()
   process.exit(0)
 }
 // Exported for tests; only starts when run directly (npm run home:recorder).
-export { cameras, pollCommands, prune, record, syncCamera }
+export { cameras, endLive, listenForCommands, live, pollCommands, prune, record, startLive, syncCamera }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? '').href) {
   process.on('SIGTERM', shutdown)

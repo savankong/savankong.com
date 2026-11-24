@@ -70,6 +70,9 @@ workers:
       - key: HOME_CLIP_SECONDS
         scope: RUN_TIME
         value: "30"
+      - key: HOME_LIVE_SECONDS
+        scope: RUN_TIME
+        value: "120"
       - key: HOME_RETENTION_DAYS
         scope: RUN_TIME
         value: "30"

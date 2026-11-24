@@ -15,14 +15,18 @@ Ring camera ──motion / ring──▶ Ring cloud ──push alert──▶ ho
 ```
 
 - **Recorder** (`worker/home-recorder.mts`): signs in to Ring with a refresh token and listens for motion and doorbell alerts. For each alert it starts a live view, copies 30 seconds of video (no re-encoding) to MP4, takes a thumbnail and uploads both to Spaces. It also runs the dashboard's requests (Record now, floodlight on or off, siren) and deletes clips older than 30 days.
+- **Live view** (`app/home/LiveView.tsx`, `/live/<camera>`): the browser makes a WebRTC offer and sends it to `/api/home/live`. That queues a `live_start` request, and Postgres `NOTIFY` wakes the recorder at once. The recorder passes the offer to Ring and returns Ring's answer. From then on, video flows **directly from Ring to the browser**, not through DigitalOcean. Each view stops after `HOME_LIVE_SECONDS` (120 by default). It also stops when you press Stop, switch tabs or leave the page, to spare battery cameras.
 - **Dashboard** (`app/home`): the same Next.js app as savankong.com. On the `home.` hostname, `middleware.ts` serves the `/home` pages at the site root and requires a login for every page and API route. Videos stay private in Spaces; the dashboard gives out signed links that expire after one hour.
 - **Data** (`db/migrations/*_create_home`): `home_devices` (all devices, so new kinds can be added later), `home_clips`, `home_commands` (requests from the dashboard to the recorder) and `home_kv` (Ring's rotating refresh token and the recorder's heartbeat).
 
 ## Setup
 
-1. **Database.** Apply the migration to the app's Postgres:
+1. **Database.** Apply the two home migrations to the app's Postgres, in order:
    ```bash
    psql "$DATABASE_URL" -f db/migrations/20261124031307_create_home/migration.sql
+   ```
+   ```bash
+   psql "$DATABASE_URL" -f db/migrations/20261124033843_home_live/migration.sql
    ```
 2. **Storage.** In DigitalOcean, create a Spaces bucket named `kong-home` in `nyc3`. Keep it private, with the CDN off. Create a Spaces access key and secret for it.
 3. **Ring login.** On your own computer, in this repository:
@@ -51,12 +55,13 @@ Ring camera ──motion / ring──▶ Ring cloud ──push alert──▶ ho
 - **One clip per event, 30 seconds long** (`HOME_CLIP_SECONDS`). A second alert during a recording is folded into the clip already running. At most 3 clips record at once (`HOME_MAX_PARALLEL`).
 - **Battery cameras** use more battery: each clip is a live view, as if you had opened the camera in the Ring app.
 - **Clips are kept for 30 days** (`HOME_RETENTION_DAYS`). At roughly 1–2 Mbps, a 30-second clip is about 4–8 MB.
-- **The Ring app no longer shows history.** Live view, two-way talk and alerts in the Ring app still work.
+- **The Ring app no longer shows history.** Live view, two-way talk and alerts in the Ring app still work. Home has its own live view, without talk.
+- **Live view takes a few seconds to start**, as in the Ring app. It turns on Live View in Ring's sense, so a camera with Live View disabled by a Ring mode shows that error instead of video.
 - **This uses Ring's unofficial API** (the `ring-client-api` library, also used by Homebridge and Home Assistant). Ring can change that API. Watch the "Recording on" indicator in the dashboard header.
 
 ## Risks to check on deploy
 
-- **Outbound UDP from App Platform.** Ring's live video uses WebRTC. If the worker logs `Stream did not finish in time` for every clip, App Platform is blocking the media connection. In that case, run the same command on a small Droplet or on the home mini PC instead. Give it the same environment variables, and do not run it in two places at once.
+- **Outbound UDP from App Platform.** The recorder receives Ring's video over WebRTC to make clips. If the worker logs `Stream did not finish in time` for every clip, App Platform is blocking the media connection. Live view on the dashboard is not affected, because its video never touches the worker. In that case, run the same command on a small Droplet or on the home mini PC instead. Give it the same environment variables, and do not run it in two places at once.
 - **Ring login.** If the refresh token stops working, the header shows "Recorder offline" with the reason. Run `npm run ring:auth` again and update `RING_REFRESH_TOKEN`. A changed value takes priority over the saved token.
 
 ## Running it locally

@@ -53,6 +53,8 @@ export const homeCommands = pgTable('home_commands', {
   id: serial('id').primaryKey(),
   deviceId: text('device_id').notNull().references(() => homeDevices.id, { onDelete: 'cascade' }),
   action: text('action').notNull(),
+  payload: jsonb('payload'), // e.g. the browser's WebRTC offer for live view
+  result: jsonb('result'), // e.g. Ring's WebRTC answer
   status: text('status').notNull().default('pending'), // pending | running | done | failed
   error: text('error'),
   createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),

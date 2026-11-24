@@ -4,7 +4,7 @@ import Link from 'next/link'
 import type { Clip, Device, RecorderStatus } from '@/lib/home/data'
 import { bytes, groupByDay, seconds, time, triggerLabel, when } from '@/lib/home/format'
 import { homeHref } from '@/lib/home/paths'
-import { Battery, Bell, Bulb, Camera, Cloud, Film, Lock, Plug, Record, Siren, Thermo, TriggerIcon, Vacuum } from './icons'
+import { Battery, Bell, Bulb, Camera, Cloud, Film, Lock, Play, Plug, Record, Siren, Thermo, TriggerIcon, Vacuum } from './icons'
 import { CommandButton } from './ui'
 import styles from './home.module.css'
 
@@ -55,10 +55,11 @@ export function CameraTile({
   const can = (c: string) => device.capabilities.includes(c)
   const lightOn = Boolean(device.meta.light)
   const lowBattery = device.battery != null && device.battery < 20
-  const href = homeHref(`/clips?camera=${encodeURIComponent(device.id)}`)
+  const href = homeHref(`/live/${encodeURIComponent(device.id)}`)
+  const clipsHref = homeHref(`/clips?camera=${encodeURIComponent(device.id)}`)
   return (
     <article className={styles.cam}>
-      <Link href={href} className={styles.frame} aria-label={`${device.name} clips`}>
+      <Link href={href} className={styles.frame} aria-label={`Watch ${device.name} live`}>
         {device.latestThumbClipId ? (
           <img src={thumbSrc(device.latestThumbClipId)} alt="" />
         ) : (
@@ -79,7 +80,11 @@ export function CameraTile({
             <span className={`${styles.badge} ${styles.badgeLive}`}>
               <span className={`${styles.dot} ${styles.dotLive}`} /> Recording
             </span>
-          ) : null}
+          ) : (
+            <span className={styles.badge}>
+              <Play className={styles.badgeIcon} /> Live
+            </span>
+          )}
         </div>
         <div className={styles.frameBottom}>
           <div>
@@ -101,7 +106,9 @@ export function CameraTile({
               <Plug /> Wired
             </span>
           )}
-          <span className={styles.metaItem}>{device.clipsToday} today</span>
+          <Link href={clipsHref} className={`${styles.metaItem} ${styles.metaLink}`}>
+            {device.clipsToday} today
+          </Link>
         </div>
         {can('light') ? (
           <CommandButton

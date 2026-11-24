@@ -4,11 +4,13 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { revalidatePath } from 'next/cache'
 import { sql } from '@/lib/db'
+import { queueCommand } from '@/lib/home/commands'
 import { SESSION_COOKIE, checkPassword, createSession, verifySession } from '@/lib/home/auth'
 import { homeHref } from '@/lib/home/paths'
 import { deleteObjects, storageConfigured } from '@/lib/home/storage'
 
-const ACTIONS = new Set(['record', 'light_on', 'light_off', 'siren_on', 'siren_off'])
+// Buttons may only send these; live view goes through /api/home/live.
+const BUTTON_ACTIONS = new Set(['record', 'light_on', 'light_off', 'siren_on', 'siren_off'])
 
 async function requireSession() {
   const jar = await cookies()
@@ -48,8 +50,8 @@ export async function sendCommand(form: FormData) {
   await requireSession()
   const deviceId = String(form.get('deviceId') ?? '')
   const action = String(form.get('action') ?? '')
-  if (!deviceId || !ACTIONS.has(action)) return
-  await sql`INSERT INTO home_commands (device_id, action) VALUES (${deviceId}, ${action})`
+  if (!deviceId || !BUTTON_ACTIONS.has(action)) return
+  await queueCommand(deviceId, action)
   revalidatePath('/home', 'layout')
 }
 
