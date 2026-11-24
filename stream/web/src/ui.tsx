@@ -89,7 +89,7 @@ export function Icon({ name, size = 20 }: { name: keyof typeof paths | string; s
 
 const tiles = ["#26333d", "#4a2f2a", "#2f4a3c", "#473a5c", "#5a4a2a", "#26444d", "#5a2f3f", "#3a3f52"];
 
-function tileColor(id: string): string {
+export function tileColor(id: string): string {
   let h = 0;
   for (let i = 0; i < id.length; i++) h = (h * 31 + id.charCodeAt(i)) >>> 0;
   return tiles[h % tiles.length];

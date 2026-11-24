@@ -1145,6 +1145,7 @@ p {
 
   .hero-art {
     flex: none;
+    width: 100%;
     min-height: 0;
     aspect-ratio: 16 / 9;
   }
@@ -1280,4 +1281,380 @@ p {
 .row-head .count {
   flex-grow: 0;
   white-space: nowrap;
+}
+
+/* ==========================================================================
+   Glass
+   Floating translucent bars and panels over the page's own artwork, soft
+   large corners, and pill-shaped controls. Blur is kept to the large
+   surfaces; small controls use a plain translucent fill so scrolling a long
+   grid stays smooth.
+   ========================================================================== */
+:root {
+  --r: 14px;
+  --r-lg: 24px;
+  --pill: 999px;
+  --glass: rgba(24, 26, 31, 0.56);
+  --glass-fill: rgba(255, 255, 255, 0.09);
+  --glass-fill-hi: rgba(255, 255, 255, 0.16);
+  --glass-line: rgba(255, 255, 255, 0.16);
+  --glass-blur: blur(28px) saturate(180%);
+  --glass-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.16), 0 10px 36px rgba(0, 0, 0, 0.38);
+}
+
+/* Without blur support, or when the viewer asks for less transparency,
+   the same surfaces turn nearly solid so text stays readable. */
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root {
+    --glass: rgba(24, 26, 31, 0.94);
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  :root {
+    --glass: rgba(24, 26, 31, 0.96);
+    --glass-blur: none;
+  }
+}
+
+/* ---------- Ambient artwork behind everything ---------- */
+.ambient {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 12% 0%, rgba(255, 107, 87, 0.2), transparent 70%),
+    radial-gradient(55% 55% at 95% 10%, rgba(90, 120, 190, 0.22), transparent 70%),
+    radial-gradient(60% 50% at 50% 110%, rgba(71, 58, 92, 0.35), transparent 70%),
+    var(--ink);
+}
+
+.ambient-art {
+  position: absolute;
+  inset: -20%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(90px) saturate(170%);
+  opacity: 0.5;
+  animation: ambient-in 0.6s ease-out;
+}
+
+.ambient::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, rgba(13, 14, 16, 0.25), rgba(13, 14, 16, 0.78) 70%, var(--ink));
+}
+
+@keyframes ambient-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ambient-art {
+    animation: none;
+  }
+}
+
+#root {
+  position: relative;
+  z-index: 1;
+}
+
+.shell,
+.signin {
+  position: relative;
+  z-index: 1;
+}
+
+/* ---------- The glass surface ---------- */
+.topbar,
+.musicbar,
+.tabbar,
+.menu,
+.signin-card,
+.watch-next,
+.watch-bottom {
+  background: var(--glass);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-line);
+  box-shadow: var(--glass-shadow);
+}
+
+/* ---------- Top bar: one floating pill ---------- */
+.topbar {
+  top: calc(10px + env(safe-area-inset-top));
+  margin: calc(10px + env(safe-area-inset-top)) var(--gutter) 0;
+  padding: 8px 10px 8px 22px;
+  border-radius: var(--pill);
+  flex-wrap: nowrap;
+}
+
+.topnav a {
+  border-radius: var(--pill);
+}
+
+.topnav a.active {
+  background: var(--glass-fill-hi);
+}
+
+.searchbox {
+  border-radius: var(--pill);
+  border-color: var(--glass-line);
+  background: var(--glass-fill);
+}
+
+.searchbox-page {
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+}
+
+.avatar {
+  background: var(--glass-fill-hi);
+  border-color: var(--glass-line);
+}
+
+.menu {
+  top: 56px;
+  border-radius: var(--r-lg);
+}
+
+/* ---------- Controls: pills and circles ---------- */
+.btn,
+.chip,
+.tab,
+.sort select {
+  border-radius: var(--pill);
+  border-color: var(--glass-line);
+  background: var(--glass-fill);
+}
+
+.btn:hover,
+.chip:hover,
+.tab:hover {
+  background: var(--glass-fill-hi);
+  border-color: var(--glass-line);
+}
+
+.btn[aria-pressed="true"] {
+  background: var(--glass-fill-hi);
+  border-color: var(--paper);
+}
+
+.btn-primary,
+.btn-primary:hover {
+  border-color: transparent;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.btn-primary {
+  background: var(--accent);
+}
+
+.btn-primary:hover {
+  background: #ff8271;
+}
+
+.chip[aria-pressed="true"],
+.tab[aria-selected="true"] {
+  background: var(--paper);
+  border-color: var(--paper);
+}
+
+.sort select {
+  padding: 0 16px;
+}
+
+.icon-btn:hover {
+  background: var(--glass-fill-hi);
+}
+
+.icon-btn-solid,
+.icon-btn-solid:hover {
+  background: var(--paper);
+}
+
+/* ---------- Artwork and lists ---------- */
+.hero-art,
+.detail-backdrop {
+  border-radius: var(--r-lg);
+}
+
+.art,
+.skeleton {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.3);
+}
+
+.skeleton {
+  background: var(--glass-fill);
+}
+
+.badge {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35);
+}
+
+.episodes,
+.tracks {
+  border-top-color: var(--glass-line);
+}
+
+.episode,
+.track {
+  border-bottom-color: rgba(255, 255, 255, 0.09);
+}
+
+.track {
+  border-radius: 12px;
+}
+
+.track:hover {
+  background: var(--glass-fill);
+}
+
+.track-head:hover {
+  background: transparent;
+}
+
+.play-mark {
+  background: rgba(24, 26, 31, 0.6);
+  -webkit-backdrop-filter: blur(12px);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-line);
+}
+
+.episode:hover .play-mark {
+  border-color: transparent;
+}
+
+/* ---------- Now playing: a floating bar ---------- */
+.musicbar {
+  bottom: calc(14px + env(safe-area-inset-bottom));
+  margin: 0 var(--gutter) calc(14px + env(safe-area-inset-bottom));
+  padding: 8px 12px;
+  border-radius: var(--pill);
+}
+
+.musicbar-track img,
+.musicbar-art {
+  border-radius: 50%;
+}
+
+/* ---------- Sign in ---------- */
+.signin-card {
+  border-radius: 28px;
+}
+
+.field input {
+  border-radius: 12px;
+  background: rgba(13, 14, 16, 0.45);
+  border-color: var(--glass-line);
+}
+
+.field-with-button .icon-btn {
+  top: 2px;
+}
+
+/* ---------- Player: glass controls floating over the picture ---------- */
+.watch-top {
+  background: none;
+  padding-bottom: 12px;
+}
+
+.watch-top .icon-btn {
+  background: var(--glass);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-line);
+}
+
+.watch-heading,
+.watch-top > .watch-title {
+  text-shadow: 0 1px 12px rgba(0, 0, 0, 0.8);
+}
+
+.watch-bottom {
+  left: 16px;
+  right: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom));
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 18px 8px;
+  border-radius: 28px;
+}
+
+.watch-next {
+  border-radius: var(--r-lg);
+  bottom: 150px;
+}
+
+/* ---------- Phone: floating tab bar and player ---------- */
+@media (max-width: 760px) {
+  .topbar {
+    margin-left: 12px;
+    margin-right: 12px;
+    padding: 6px 6px 6px 18px;
+  }
+
+  .page {
+    padding-bottom: 24px;
+  }
+
+  .musicbar {
+    flex-wrap: nowrap;
+    bottom: calc(80px + env(safe-area-inset-bottom));
+    margin: 0 12px 8px;
+    padding: 6px 8px;
+    gap: 8px;
+  }
+
+  /* On a phone the bar is a compact pill: play, next and close. Seeking and
+     going back a track are on the lock screen. */
+  .musicbar-seek,
+  .musicbar-controls .icon-btn:first-child {
+    display: none;
+  }
+
+  /* The cover is positioned inside its box, so the box needs its own width
+     once the album header is a centred column. */
+  .album-head .album-art {
+    flex: none;
+    width: min(260px, 68%);
+  }
+
+  .musicbar-track img,
+  .musicbar-art {
+    width: 40px;
+    height: 40px;
+  }
+
+  .tabbar {
+    bottom: calc(10px + env(safe-area-inset-bottom));
+    margin: 0 12px calc(10px + env(safe-area-inset-bottom));
+    padding: 4px;
+    border-radius: var(--pill);
+  }
+
+  .tabbar a {
+    border-radius: var(--pill);
+  }
+
+  .tabbar a.active {
+    background: var(--glass-fill-hi);
+  }
+
+  .watch-bottom {
+    left: 8px;
+    right: 8px;
+    padding: 10px 12px 6px;
+    border-radius: 24px;
+  }
+
+  .watch-next {
+    bottom: 160px;
+  }
 }

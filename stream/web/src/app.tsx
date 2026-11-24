@@ -33,6 +33,52 @@ export function useJellyfin(): Jellyfin {
   return jf;
 }
 
+// ---------- Ambient artwork ----------
+// The glass surfaces need colour behind them. Each page hands over its main
+// artwork, which is shown heavily blurred behind everything.
+
+type Ambient = { image: string | null; color: string | null };
+const NO_AMBIENT: Ambient = { image: null, color: null };
+
+const AmbientContext = createContext<{ ambient: Ambient; setAmbient: (a: Ambient) => void }>({
+  ambient: NO_AMBIENT,
+  setAmbient: () => undefined,
+});
+
+export function AmbientProvider({ children }: { children: ReactNode }) {
+  const [ambient, setAmbient] = useState<Ambient>(NO_AMBIENT);
+  const value = useMemo(() => ({ ambient, setAmbient }), [ambient]);
+  return <AmbientContext.Provider value={value}>{children}</AmbientContext.Provider>;
+}
+
+/** Sets the page's ambient artwork while the calling component is shown. */
+export function useAmbient(image: string | null | undefined, color?: string | null) {
+  const { setAmbient } = useContext(AmbientContext);
+  useEffect(() => {
+    setAmbient({ image: image ?? null, color: color ?? null });
+    return () => setAmbient(NO_AMBIENT);
+  }, [image, color, setAmbient]);
+}
+
+export function AmbientLayer() {
+  const { ambient } = useContext(AmbientContext);
+  const custom = ambient.image || ambient.color;
+  return (
+    <div className="ambient" aria-hidden="true">
+      {custom && (
+        <div
+          className="ambient-art"
+          key={ambient.image ?? ambient.color ?? ""}
+          style={{
+            backgroundColor: ambient.color ?? undefined,
+            backgroundImage: ambient.image ? `url("${ambient.image}")` : undefined,
+          }}
+        />
+      )}
+    </div>
+  );
+}
+
 // ---------- Data loading ----------
 
 export function useLoad<T>(load: () => Promise<T>, deps: unknown[]) {

@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { clock, runtime, TICKS_PER_SECOND } from "../api";
 import type { Item } from "../api";
-import { useJellyfin, useLoad, useMusic } from "../app";
-import { Art, Icon, Message } from "../ui";
+import { useAmbient, useJellyfin, useLoad, useMusic } from "../app";
+import { Art, Icon, Message, tileColor } from "../ui";
 
 function shuffled<T>(list: T[]): T[] {
   const a = [...list];
@@ -21,6 +21,7 @@ export function Album({ item }: { item: Item }) {
   const tracks = useLoad(() => jf.tracks(item.Id), [jf, item.Id]);
   const list = tracks.data ?? [];
   const total = list.reduce((sum, t) => sum + (t.RunTimeTicks ?? 0), 0);
+  useAmbient(jf.poster(item, 320), tileColor(item.Id));
   const artistId = (item as Item & { AlbumArtists?: { Id: string }[] }).AlbumArtists?.[0]?.Id;
 
   return (

@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { episodeLabel, runtime, timeLeft } from "../api";
 import type { Item } from "../api";
-import { useJellyfin, useLoad } from "../app";
-import { Art, Card, Icon, Message, Row } from "../ui";
+import { useAmbient, useJellyfin, useLoad } from "../app";
+import { Art, Card, Icon, Message, Row, tileColor } from "../ui";
 import { Album } from "./album";
 import { Seasons } from "./show";
 
@@ -56,6 +56,7 @@ export function Home() {
 function Hero({ item }: { item: Item }) {
   const jf = useJellyfin();
   const backdrop = jf.backdrop(item, 1600);
+  useAmbient(jf.backdrop(item, 480) ?? jf.poster(item, 320), tileColor(item.Id));
   const started = (item.UserData?.PlaybackPositionTicks ?? 0) > 0;
   const playable = item.Type === "Movie" || item.Type === "Episode";
   const title = item.Type === "Episode" ? item.SeriesName ?? item.Name : item.Name;
@@ -130,6 +131,7 @@ function Title({ item, reload }: { item: Item; reload: () => void }) {
   const playable = item.Type === "Movie" || item.Type === "Episode";
   const started = (item.UserData?.PlaybackPositionTicks ?? 0) > 0;
   const backdrop = jf.backdrop(item, 1600);
+  useAmbient(jf.backdrop(item, 480) ?? jf.poster(item, 320), tileColor(item.Id));
   const [busy, setBusy] = useState(false);
   const upNext = useLoad(() => (isSeries ? jf.nextEpisode(item.Id) : Promise.resolve(null)), [jf, item.Id, isSeries]);
 

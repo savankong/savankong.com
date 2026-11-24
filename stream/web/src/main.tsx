@@ -1,6 +1,6 @@
 import { createRoot } from "react-dom/client";
 import { HashRouter, Navigate, Route, Routes } from "react-router-dom";
-import { AuthProvider, MusicProvider, useAuth } from "./app";
+import { AmbientLayer, AmbientProvider, AuthProvider, MusicProvider, useAuth } from "./app";
 import { Library } from "./pages/library";
 import { Detail, Home } from "./pages/pages";
 import { Search } from "./pages/search";
@@ -37,9 +37,12 @@ function Pages() {
 createRoot(document.getElementById("root")!).render(
   <AuthProvider>
     <MusicProvider>
-      <HashRouter>
-        <Pages />
-      </HashRouter>
+      <AmbientProvider>
+        <AmbientLayer />
+        <HashRouter>
+          <Pages />
+        </HashRouter>
+      </AmbientProvider>
     </MusicProvider>
   </AuthProvider>,
 );
