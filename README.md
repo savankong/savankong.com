@@ -52,3 +52,7 @@ This app deploys to [DigitalOcean App Platform](https://www.digitalocean.com/pro
 3. Set the `NEXT_PUBLIC_ADMIN_PASSWORD` secret in the app's environment variables.
 4. Run the SQL in `db/migrations` against the new database (e.g. `npx drizzle-kit push` with `DATABASE_URL` set, or apply `migration.sql` directly), then optionally `npm run db:seed`.
 5. Point your domain's DNS at the app (App Platform issues a managed TLS cert automatically once the domain is added in the app's Settings → Domains).
+
+## home.savankong.com
+
+The same app also serves a private house dashboard on `home.savankong.com`: Ring camera recordings saved to our own Spaces bucket instead of Ring Protect, with vacuum and lights to come. A separate worker (`npm run home:recorder`) does the recording. Setup and design notes are in [docs/home.md](docs/home.md).

@@ -1,0 +1,76 @@
+# home.savankong.com
+
+A private dashboard for the house. Version 1 replaces the Ring Protect subscription: the Ring cameras stay, but recordings go to our own DigitalOcean storage. Vacuum, lights, climate and locks will be added to the same dashboard later.
+
+## How it works
+
+```
+Ring camera ──motion / ring──▶ Ring cloud ──push alert──▶ home-recorder (DO worker)
+                                    ▲                          │ opens a live stream (free on any plan)
+                                    └──────── live video ──────┘ saves 30 s to MP4 + a thumbnail
+                                                               ▼
+                         DigitalOcean Spaces (private)  ◀── upload      Postgres: devices, clips, commands
+                                                               ▲
+                     home.savankong.com (Next.js, password) ── signed links to play and download
+```
+
+- **Recorder** (`worker/home-recorder.mts`): signs in to Ring with a refresh token and listens for motion and doorbell alerts. For each alert it starts a live view, copies 30 seconds of video (no re-encoding) to MP4, takes a thumbnail and uploads both to Spaces. It also runs the dashboard's requests (Record now, floodlight on or off, siren) and deletes clips older than 30 days.
+- **Dashboard** (`app/home`): the same Next.js app as savankong.com. On the `home.` hostname, `middleware.ts` serves the `/home` pages at the site root and requires a login for every page and API route. Videos stay private in Spaces; the dashboard gives out signed links that expire after one hour.
+- **Data** (`db/migrations/*_create_home`): `home_devices` (all devices, so new kinds can be added later), `home_clips`, `home_commands` (requests from the dashboard to the recorder) and `home_kv` (Ring's rotating refresh token and the recorder's heartbeat).
+
+## Setup
+
+1. **Database.** Apply the migration to the app's Postgres:
+   ```bash
+   psql "$DATABASE_URL" -f db/migrations/20261124031307_create_home/migration.sql
+   ```
+2. **Storage.** In DigitalOcean, create a Spaces bucket named `kong-home` in `nyc3`. Keep it private, with the CDN off. Create a Spaces access key and secret for it.
+3. **Ring login.** On your own computer, in this repository:
+   ```bash
+   npm install
+   ```
+   ```bash
+   npm run ring:auth
+   ```
+   Enter the Ring email, password and 2FA code. Copy the refresh token it prints. The recorder saves each new token Ring issues, so you only do this once. Do it again only if the dashboard reports a login failure.
+4. **App settings.** Set the secrets in the DigitalOcean app (`.do/app.yaml` lists them all):
+   - web: `HOME_PASSWORD` (the dashboard password), `HOME_SESSION_SECRET` (any random string of 32 or more characters, for example from `openssl rand -base64 48`), `SPACES_KEY`, `SPACES_SECRET`
+   - home-recorder: `RING_REFRESH_TOKEN`, `SPACES_KEY`, `SPACES_SECRET`
+
+   Apply the spec (`doctl apps update <app id> --spec .do/app.yaml`) or add the `home-recorder` worker in the console. **The spec has no `domains` section.** If you apply it with doctl, check afterwards that savankong.com is still attached.
+5. **Domain.** In the app's Settings → Domains, add `home.savankong.com`. In GoDaddy, add a `CNAME` record for `home` that points to the app's `ondigitalocean.app` hostname.
+6. **Ring app.** For each camera:
+   - Turn on Motion Alerts. The recorder only hears about events Ring would notify you about.
+   - Turn off End-to-End Encryption, and turn off Ring Edge if the camera has it. With either one on, a third-party stream gets no video.
+   - The recorder appears under Control Center → Authorized Client Devices as "home.savankong.com".
+7. **Check, then cancel.** Walk past each camera and press the doorbell. Within about a minute the clip should appear on the dashboard and play. When every camera works, cancel Ring Protect.
+
+## What changes compared with Ring Protect
+
+- **Clips start a few seconds late.** Ring records from the moment of motion. Here the clip starts when the push alert arrives and the live stream connects, typically 3–8 seconds later.
+- **One clip per event, 30 seconds long** (`HOME_CLIP_SECONDS`). A second alert during a recording is folded into the clip already running. At most 3 clips record at once (`HOME_MAX_PARALLEL`).
+- **Battery cameras** use more battery: each clip is a live view, as if you had opened the camera in the Ring app.
+- **Clips are kept for 30 days** (`HOME_RETENTION_DAYS`). At roughly 1–2 Mbps, a 30-second clip is about 4–8 MB.
+- **The Ring app no longer shows history.** Live view, two-way talk and alerts in the Ring app still work.
+- **This uses Ring's unofficial API** (the `ring-client-api` library, also used by Homebridge and Home Assistant). Ring can change that API. Watch the "Recording on" indicator in the dashboard header.
+
+## Risks to check on deploy
+
+- **Outbound UDP from App Platform.** Ring's live video uses WebRTC. If the worker logs `Stream did not finish in time` for every clip, App Platform is blocking the media connection. In that case, run the same command on a small Droplet or on the home mini PC instead. Give it the same environment variables, and do not run it in two places at once.
+- **Ring login.** If the refresh token stops working, the header shows "Recorder offline" with the reason. Run `npm run ring:auth` again and update `RING_REFRESH_TOKEN`. A changed value takes priority over the saved token.
+
+## Running it locally
+
+`.env.local` needs `DATABASE_URL`, `HOME_PASSWORD`, `HOME_SESSION_SECRET` and the `SPACES_*` settings. Without `NEXT_PUBLIC_HOME_HOST`, the dashboard is at `http://localhost:3000/home`.
+
+```bash
+npm run dev
+```
+
+```bash
+npm run home:recorder
+```
+
+## Adding the next device
+
+Add a provider to the recorder: sign in, upsert each device into `home_devices` with its `kind` and `capabilities`, and handle the new actions in `pollCommands`. Then give that `kind` a tile on the overview page, in place of the "Coming to Home" placeholder.
