@@ -14,6 +14,8 @@ export const dynamic = 'force-dynamic'
 
 type Props = { params: Promise<{ id: string }> }
 
+const RETENTION_DAYS = Number(process.env.HOME_RETENTION_DAYS || 30)
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const clip = await getClip(Number((await params).id)).catch(() => null)
   return { title: clip ? `${clip.deviceName}, ${time(clip.startedAt)}` : 'Clip' }
@@ -26,6 +28,7 @@ export default async function ClipPage({ params }: Props) {
   if (!clip) notFound()
   const { newer, older } = await getNeighbours(clip)
   const src = `/api/home/media/${clip.id}?kind=video`
+  const daysLeft = Math.max(0, Math.ceil(RETENTION_DAYS - (Date.now() - clip.startedAt.getTime()) / 86400_000))
 
   return (
     <>
@@ -82,7 +85,14 @@ export default async function ClipPage({ params }: Props) {
             <dd>{seconds(clip.durationSeconds) || '—'}</dd>
             <dt>Size</dt>
             <dd>{clip.sizeBytes ? bytes(clip.sizeBytes) : '—'}</dd>
+            <dt>Kept for</dt>
+            <dd className={daysLeft <= 3 ? styles.low : undefined}>
+              {daysLeft === 0 ? 'Deleted today' : `${daysLeft} more ${daysLeft === 1 ? 'day' : 'days'}`}
+            </dd>
           </dl>
+          {clip.hasVideo && daysLeft <= 7 ? (
+            <p className={styles.stepText}>Download it to keep it past {RETENTION_DAYS} days.</p>
+          ) : null}
           <div className={styles.actions}>
             {clip.hasVideo ? (
               <a className={styles.btn} href={`/api/home/media/${clip.id}?kind=download`}>

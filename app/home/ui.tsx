@@ -5,6 +5,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useFormStatus } from 'react-dom'
 import { sendCommand } from './actions'
+import { Film, Grid } from './icons'
 import styles from './home.module.css'
 
 /** Re-renders the server page every `seconds` while the tab is visible. */
@@ -22,22 +23,37 @@ export function AutoRefresh({ seconds = 10 }: { seconds?: number }) {
   return null
 }
 
-export function NavLinks({ links }: { links: { href: string; label: string }[] }) {
+const NAV_ICONS: Record<string, React.ReactNode> = { Overview: <Grid />, Clips: <Film /> }
+
+/** Top links on wide screens; a bottom tab bar on phones (see .tabs). */
+export function NavLinks({ links, variant = 'top' }: { links: { href: string; label: string }[]; variant?: 'top' | 'tabs' }) {
   const pathname = usePathname()
   // On home.savankong.com the browser path has no /home prefix; compare both ways.
   const norm = (p: string) => p.replace(/^\/home(?=\/|$)/, '') || '/'
   const here = norm(pathname)
+  const isOn = (href: string) => {
+    const target = norm(href)
+    return target === '/' ? here === '/' : here === target || here.startsWith(`${target}/`)
+  }
+  if (variant === 'tabs') {
+    return (
+      <nav className={styles.tabs} aria-label="Home">
+        {links.map((l) => (
+          <Link key={l.href} href={l.href} className={`${styles.tab} ${isOn(l.href) ? styles.tabOn : ''}`}>
+            {NAV_ICONS[l.label]}
+            <span>{l.label}</span>
+          </Link>
+        ))}
+      </nav>
+    )
+  }
   return (
     <nav className={styles.nav} aria-label="Home">
-      {links.map((l) => {
-        const target = norm(l.href)
-        const on = target === '/' ? here === '/' : here === target || here.startsWith(`${target}/`)
-        return (
-          <Link key={l.href} href={l.href} className={`${styles.navLink} ${on ? styles.navLinkOn : ''}`}>
-            {l.label}
-          </Link>
-        )
-      })}
+      {links.map((l) => (
+        <Link key={l.href} href={l.href} className={`${styles.navLink} ${isOn(l.href) ? styles.navLinkOn : ''}`}>
+          {l.label}
+        </Link>
+      ))}
     </nav>
   )
 }

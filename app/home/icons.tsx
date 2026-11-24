@@ -97,3 +97,57 @@ export const Right = ({ className }: P) => (
     <path d="m9.5 6 6 6-6 6" />
   </svg>
 )
+export const Person = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <circle cx="12" cy="7.5" r="3.5" />
+    <path d="M5 20.5a7 7 0 0 1 14 0" />
+  </svg>
+)
+export const Waves = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M8.5 8.5a5 5 0 0 0 0 7M15.5 8.5a5 5 0 0 1 0 7M5.5 5.5a9.2 9.2 0 0 0 0 13M18.5 5.5a9.2 9.2 0 0 1 0 13" />
+    <circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none" />
+  </svg>
+)
+export const Car = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M4 16.5v-4l2-5.5h12l2 5.5v4M3 12.5h18M4 16.5h16v2.5h-3v-2.5M4 16.5v2.5h3v-2.5" />
+    <circle cx="7.5" cy="14.5" r=".6" fill="currentColor" />
+    <circle cx="16.5" cy="14.5" r=".6" fill="currentColor" />
+  </svg>
+)
+export const Box = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M3.5 7.5 12 3.5l8.5 4v9L12 20.5l-8.5-4Z" />
+    <path d="M3.5 7.5 12 11.5l8.5-4M12 11.5v9" />
+  </svg>
+)
+export const Grid = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <rect x="3.5" y="3.5" width="7" height="7" rx="1.5" />
+    <rect x="13.5" y="3.5" width="7" height="7" rx="1.5" />
+    <rect x="3.5" y="13.5" width="7" height="7" rx="1.5" />
+    <rect x="13.5" y="13.5" width="7" height="7" rx="1.5" />
+  </svg>
+)
+export const Film = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <rect x="3.5" y="4.5" width="17" height="15" rx="2" />
+    <path d="M7.5 4.5v15M16.5 4.5v15M3.5 9.5h4M3.5 14.5h4M16.5 9.5h4M16.5 14.5h4" />
+  </svg>
+)
+export const Cloud = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M7 18.5a4.5 4.5 0 0 1-.4-9A6 6 0 0 1 18 10a4.3 4.3 0 0 1-.5 8.5Z" />
+  </svg>
+)
+
+/** The icon that stands for a clip's trigger on the activity timeline. */
+export function TriggerIcon({ trigger, detail, className }: { trigger: string; detail: string | null; className?: string }) {
+  if (trigger === 'ding') return <Bell className={className} />
+  if (trigger === 'manual') return <Record className={className} />
+  if (detail === 'human' || detail === 'loitering') return <Person className={className} />
+  if (detail === 'vehicle') return <Car className={className} />
+  if (detail?.startsWith('package')) return <Box className={className} />
+  return <Waves className={className} />
+}

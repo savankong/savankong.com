@@ -9,24 +9,16 @@ import {
   type Device,
   type RecorderStatus,
 } from '@/lib/home/data'
-import { bytes, greeting, longDate } from '@/lib/home/format'
+import { greeting, longDate } from '@/lib/home/format'
 import { homeHref } from '@/lib/home/paths'
 import { storageConfigured } from '@/lib/home/storage'
-import { Bulb, Lock, Thermo, Vacuum } from '../icons'
-import { CameraTile, ClipRow, SetupChecklist } from '../parts'
+import { CameraTile, SetupChecklist, SoonTiles, StatusTiles, Timeline } from '../parts'
 import { AutoRefresh } from '../ui'
 import styles from '../home.module.css'
 
 export const dynamic = 'force-dynamic'
 
 const RETENTION_DAYS = Number(process.env.HOME_RETENTION_DAYS || 30)
-
-const SOON = [
-  { name: 'Vacuum', sub: 'Start, stop and dock', icon: <Vacuum /> },
-  { name: 'Lights', sub: 'Rooms and scenes', icon: <Bulb /> },
-  { name: 'Climate', sub: 'Thermostat', icon: <Thermo /> },
-  { name: 'Locks', sub: 'Front and back door', icon: <Lock /> },
-]
 
 export default async function Overview() {
   let devices: Device[] = []
@@ -38,7 +30,7 @@ export default async function Overview() {
   try {
     ;[devices, { clips: recent }, stats, recorder, pending] = await Promise.all([
       getDevices(),
-      getClips({ limit: 8 }),
+      getClips({ limit: 10 }),
       getStats(),
       getRecorderStatus(),
       getPendingCommands(),
@@ -60,20 +52,23 @@ export default async function Overview() {
         <div className={styles.eyebrow}>{longDate()}</div>
         <h1 className={styles.title}>{greeting()}.</h1>
         <p className={styles.summary}>
-          {devices.length ? (
-            <>
-              <strong>
-                {online} of {devices.length}
-              </strong>{' '}
-              {devices.length === 1 ? 'camera' : 'cameras'} online, <strong>{stats.clipsToday}</strong>{' '}
-              {stats.clipsToday === 1 ? 'clip' : 'clips'} in the last 24 hours.{' '}
-              {recorder?.online ? 'Every motion and ring is being saved.' : 'The recorder is offline, so nothing new is being saved.'}
-            </>
-          ) : (
-            'Your Ring cameras will show up here once the recorder is connected.'
-          )}
+          {!devices.length
+            ? 'Your Ring cameras will show up here once the recorder is connected.'
+            : recorder?.online
+              ? 'Every motion and doorbell ring is being saved.'
+              : 'The recorder is offline, so nothing new is being saved.'}
         </p>
       </div>
+      {devices.length ? (
+        <StatusTiles
+          online={online}
+          total={devices.length}
+          clipsToday={stats.clipsToday}
+          recorder={recorder}
+          bytesTotal={stats.bytesTotal}
+          retentionDays={RETENTION_DAYS}
+        />
+      ) : null}
 
       {!dbOk ? (
         <div className={styles.alert}>
@@ -116,11 +111,7 @@ export default async function Overview() {
               See everything →
             </Link>
           </div>
-          <div className={styles.rows}>
-            {recent.map((c) => (
-              <ClipRow key={c.id} clip={c} />
-            ))}
-          </div>
+          <Timeline clips={recent} />
         </section>
       ) : null}
 
@@ -128,24 +119,12 @@ export default async function Overview() {
         <div className={styles.sectionHead}>
           <h2 className={styles.sectionTitle}>Coming to Home</h2>
         </div>
-        <div className={styles.soon}>
-          {SOON.map((s) => (
-            <div key={s.name} className={styles.soonTile}>
-              <span className={styles.soonIcon}>{s.icon}</span>
-              <div>
-                <div className={styles.soonName}>{s.name}</div>
-                <div className={styles.soonSub}>{s.sub} · not connected</div>
-              </div>
-            </div>
-          ))}
-        </div>
+        <SoonTiles />
       </section>
 
       <footer className={styles.foot}>
-        <span>
-          {bytes(stats.bytesTotal)} of video · keeping {RETENTION_DAYS} days
-        </span>
-        <span>Saved to your own DigitalOcean storage, not Ring&rsquo;s.</span>
+        <span>Clips are saved to our own DigitalOcean storage, not Ring&rsquo;s.</span>
+        <span>Deleted automatically after {RETENTION_DAYS} days.</span>
       </footer>
     </>
   )

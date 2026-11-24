@@ -54,6 +54,10 @@ export default async function Clips({ searchParams }: { searchParams: Promise<Se
       <div className={styles.head}>
         <div className={styles.eyebrow}>Clips</div>
         <h1 className={styles.title}>{camName ?? 'Everything that happened'}</h1>
+        <p className={styles.summary}>
+          Clips are kept for {Number(process.env.HOME_RETENTION_DAYS || 30)} days, then deleted. Download any you
+          want to keep.
+        </p>
       </div>
 
       <div className={styles.filters}>

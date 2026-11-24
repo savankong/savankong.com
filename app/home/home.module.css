@@ -470,27 +470,6 @@
 }
 
 /* ---------- Activity rows ---------- */
-.rows {
-  display: flex;
-  flex-direction: column;
-}
-
-.rowLink {
-  display: grid;
-  grid-template-columns: 112px 1fr auto;
-  gap: 16px;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--line);
-  transition: background 0.15s;
-}
-
-.rowLink:hover .rowTitle {
-  text-decoration: underline;
-  text-underline-offset: 3px;
-  text-decoration-color: var(--line-2);
-}
-
 .thumb {
   position: relative;
   aspect-ratio: 16 / 9;
@@ -518,14 +497,6 @@
 .rowSub {
   color: var(--muted);
   font-size: 13px;
-}
-
-.rowTime {
-  color: var(--muted);
-  font-size: 13px;
-  text-align: right;
-  white-space: nowrap;
-  font-variant-numeric: tabular-nums;
 }
 
 .failed {
@@ -727,46 +698,307 @@
   padding: 24px;
 }
 
-/* ---------- Coming next ---------- */
+/* ---------- Status tiles (under the greeting) ---------- */
+.tiles {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: -4px 0 40px;
+}
+
+@media (min-width: 760px) {
+  .tiles {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+  }
+}
+
+.tile {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 12px;
+  background: var(--tile);
+  border: 1px solid var(--line);
+}
+
+.tileIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--home-dim);
+  color: var(--home);
+  flex: none;
+}
+
+.tileIcon svg {
+  width: 18px;
+  height: 18px;
+}
+
+.tileBad .tileIcon {
+  background: var(--live-dim);
+  color: var(--live);
+}
+
+.tileValue {
+  font: 500 22px / 1.1 var(--font-display), sans-serif;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.tileLabel {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+
+/* ---------- Activity timeline ---------- */
+.timeline {
+  display: grid;
+  gap: 8px;
+  max-width: 760px;
+}
+
+.tlDay {
+  font: 500 15px / 1.2 var(--font-inter), sans-serif;
+  color: var(--muted);
+  margin: 6px 0 10px 50px;
+}
+
+.tl {
+  position: relative;
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.tl::before {
+  content: '';
+  position: absolute;
+  left: 17px;
+  top: 18px;
+  bottom: 18px;
+  width: 1px;
+  background: var(--line-2);
+}
+
+.tlItem {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 14px;
+  align-items: center;
+}
+
+.tlNode {
+  position: relative;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: var(--tile-2);
+  border: 1px solid var(--line-2);
+  color: var(--body);
+}
+
+.tlNode svg {
+  width: 17px;
+  height: 17px;
+}
+
+.tl_ding {
+  color: var(--warn);
+  border-color: rgba(232, 165, 75, 0.45);
+  background: rgba(232, 165, 75, 0.12);
+}
+
+.tl_person {
+  color: var(--home);
+  border-color: rgba(158, 214, 163, 0.45);
+  background: var(--home-dim);
+}
+
+.tl_manual {
+  color: var(--paper);
+}
+
+.tl_failed {
+  color: var(--live);
+  border-color: rgba(255, 107, 94, 0.45);
+  background: var(--live-dim);
+}
+
+.tlCard {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 128px;
+  gap: 16px;
+  align-items: center;
+  padding: 10px 10px 10px 16px;
+  border-radius: 12px;
+  background: var(--tile);
+  border: 1px solid var(--line);
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.tlCard:hover {
+  border-color: var(--line-2);
+  background: var(--tile-2);
+}
+
+.tlText {
+  min-width: 0;
+}
+
+.tlTime {
+  color: var(--muted);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+  margin-bottom: 2px;
+}
+
+@media (max-width: 520px) {
+  .tlCard {
+    grid-template-columns: minmax(0, 1fr) 104px;
+    gap: 12px;
+  }
+}
+
+/* ---------- Coming to Home ---------- */
 .soon {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (min-width: 760px) {
+  .soon {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 .soonTile {
   display: flex;
-  gap: 14px;
-  align-items: center;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 22px;
+  min-height: 148px;
   padding: 16px;
-  border-radius: 10px;
-  border: 1px dashed var(--line-2);
+  border-radius: 14px;
+  border: 1px solid var(--line);
+  background: var(--tile);
   color: var(--muted);
 }
 
-.soonIcon {
-  width: 38px;
-  height: 38px;
-  border-radius: 9px;
-  display: grid;
-  place-items: center;
-  background: var(--tile-2);
-  color: var(--body);
-  flex: none;
+.soon_vac {
+  background: linear-gradient(160deg, rgba(142, 166, 232, 0.16), var(--tile) 70%);
 }
-
-.soonIcon svg {
-  width: 19px;
-  height: 19px;
+.soon_light {
+  background: linear-gradient(160deg, rgba(232, 165, 75, 0.16), var(--tile) 70%);
+}
+.soon_climate {
+  background: linear-gradient(160deg, rgba(123, 175, 212, 0.16), var(--tile) 70%);
+}
+.soon_lock {
+  background: linear-gradient(160deg, rgba(158, 214, 163, 0.14), var(--tile) 70%);
 }
 
 .soonName {
   color: var(--paper);
-  font-weight: 600;
+  font: 500 19px / 1.15 var(--font-display), sans-serif;
+  letter-spacing: -0.02em;
 }
 
 .soonSub {
   font-size: 13px;
+  margin-top: 2px;
+}
+
+.soonFoot {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.soonTag {
+  font-size: 12px;
+  color: var(--faint);
+}
+
+.soonBtn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  background: rgba(237, 235, 230, 0.08);
+  color: var(--body);
+  flex: none;
+}
+
+.soonBtn svg {
+  width: 19px;
+  height: 19px;
+}
+
+/* ---------- Phone tab bar ---------- */
+.tabs {
+  display: none;
+}
+
+@media (max-width: 620px) {
+  .nav {
+    display: none;
+  }
+  .main {
+    padding-bottom: calc(84px + env(safe-area-inset-bottom));
+  }
+  .tabs {
+    position: fixed;
+    z-index: 60;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 1fr;
+    padding: 8px 12px calc(8px + env(safe-area-inset-bottom));
+    background: rgba(13, 14, 16, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line);
+  }
+  .tab {
+    display: grid;
+    justify-items: center;
+    gap: 3px;
+    padding: 6px 0;
+    color: var(--faint);
+    font-size: 11.5px;
+    font-weight: 600;
+  }
+  .tab svg {
+    width: 22px;
+    height: 22px;
+  }
+  .tabOn {
+    color: var(--paper);
+  }
+  .tabOn svg {
+    color: var(--home);
+  }
+  /* Edge-to-edge video on phones */
+  .video,
+  .notice {
+    width: calc(100% + 2 * var(--gutter));
+    margin: 0 calc(-1 * var(--gutter));
+    border-radius: 0;
+  }
 }
 
 /* ---------- Setup checklist / empty states ---------- */

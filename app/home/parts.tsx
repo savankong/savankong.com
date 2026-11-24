@@ -2,9 +2,9 @@
 /* eslint-disable @next/next/no-img-element -- thumbnails are signed Spaces URLs behind a redirect */
 import Link from 'next/link'
 import type { Clip, Device, RecorderStatus } from '@/lib/home/data'
-import { dayLabel, seconds, time, triggerLabel, when } from '@/lib/home/format'
+import { bytes, groupByDay, seconds, time, triggerLabel, when } from '@/lib/home/format'
 import { homeHref } from '@/lib/home/paths'
-import { Battery, Bell, Bulb, Camera, Plug, Record, Siren } from './icons'
+import { Battery, Bell, Bulb, Camera, Cloud, Film, Lock, Plug, Record, Siren, Thermo, TriggerIcon, Vacuum } from './icons'
 import { CommandButton } from './ui'
 import styles from './home.module.css'
 
@@ -157,25 +157,117 @@ export function CameraTile({
   )
 }
 
-export function ClipRow({ clip }: { clip: Clip }) {
+/** Activity grouped by day on a vertical rail, one node per clip. */
+export function Timeline({ clips }: { clips: Clip[] }) {
   return (
-    <Link href={homeHref(`/clips/${clip.id}`)} className={styles.rowLink}>
-      <ClipThumb clip={clip} />
-      <div>
-        <div className={styles.rowTitle}>{triggerLabel(clip.trigger, clip.detail)}</div>
-        <div className={`${styles.rowSub} ${clip.status === 'failed' ? styles.failed : ''}`}>
-          {clip.deviceName}
-          {clip.status === 'failed' ? ' · not saved' : ''}
+    <div className={styles.timeline}>
+      {groupByDay(clips).map((g) => (
+        <section key={g.label + g.items[0].id}>
+          <h3 className={styles.tlDay}>{g.label}</h3>
+          <ol className={styles.tl}>
+            {g.items.map((c) => (
+              <li key={c.id} className={styles.tlItem}>
+                <span className={`${styles.tlNode} ${styles[`tl_${tone(c)}`]}`}>
+                  <TriggerIcon trigger={c.trigger} detail={c.detail} />
+                </span>
+                <Link href={homeHref(`/clips/${c.id}`)} className={styles.tlCard}>
+                  <div className={styles.tlText}>
+                    <div className={styles.tlTime}>
+                      {time(c.startedAt)}
+                      {Date.now() - c.startedAt.getTime() < 3 * 3600_000 ? ` · ${when(c.startedAt)}` : ''}
+                    </div>
+                    <div className={styles.rowTitle}>{triggerLabel(c.trigger, c.detail)}</div>
+                    <div className={`${styles.rowSub} ${c.status === 'failed' ? styles.failed : ''}`}>
+                      {c.deviceName}
+                      {c.status === 'failed' ? ' · not saved' : c.durationSeconds ? ` · ${seconds(c.durationSeconds)}` : ''}
+                    </div>
+                  </div>
+                  <ClipThumb clip={c} />
+                </Link>
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))}
+    </div>
+  )
+}
+
+function tone(c: Clip): 'ding' | 'person' | 'manual' | 'failed' | 'motion' {
+  if (c.status === 'failed') return 'failed'
+  if (c.trigger === 'ding') return 'ding'
+  if (c.trigger === 'manual') return 'manual'
+  return c.detail === 'human' || c.detail === 'loitering' ? 'person' : 'motion'
+}
+
+/** The at-a-glance row under the greeting. */
+export function StatusTiles({
+  online,
+  total,
+  clipsToday,
+  recorder,
+  bytesTotal,
+  retentionDays,
+}: {
+  online: number
+  total: number
+  clipsToday: number
+  recorder: RecorderStatus | null
+  bytesTotal: number
+  retentionDays: number
+}) {
+  const tiles = [
+    { icon: <Camera />, value: total ? `${online}/${total}` : '—', label: 'Cameras online', bad: total > 0 && online < total },
+    { icon: <Film />, value: String(clipsToday), label: 'Clips, last 24 h', bad: false },
+    {
+      icon: <Record />,
+      value: recorder?.online ? 'On' : 'Off',
+      label: 'Recorder',
+      bad: !recorder?.online,
+    },
+    { icon: <Cloud />, value: bytes(bytesTotal), label: `Kept ${retentionDays} days`, bad: false },
+  ]
+  return (
+    <div className={styles.tiles}>
+      {tiles.map((t) => (
+        <div key={t.label} className={`${styles.tile} ${t.bad ? styles.tileBad : ''}`}>
+          <span className={styles.tileIcon}>{t.icon}</span>
+          <div>
+            <div className={styles.tileValue}>{t.value}</div>
+            <div className={styles.tileLabel}>{t.label}</div>
+          </div>
         </div>
-      </div>
-      <div className={styles.rowTime}>
-        {time(clip.startedAt)}
-        <br />
-        <span>
-          {Date.now() - clip.startedAt.getTime() < 6 * 3600_000 ? when(clip.startedAt) : dayLabel(clip.startedAt)}
-        </span>
-      </div>
-    </Link>
+      ))}
+    </div>
+  )
+}
+
+const SOON = [
+  { name: 'Vacuum', status: 'Start, pause, send home', icon: <Vacuum />, tint: 'vac' },
+  { name: 'Lights', status: 'Rooms and scenes', icon: <Bulb />, tint: 'light' },
+  { name: 'Climate', status: 'Thermostat', icon: <Thermo />, tint: 'climate' },
+  { name: 'Locks', status: 'Front and back door', icon: <Lock />, tint: 'lock' },
+] as const
+
+/** Placeholder tiles for the devices Home will control next. */
+export function SoonTiles() {
+  return (
+    <div className={styles.soon}>
+      {SOON.map((s) => (
+        <div key={s.name} className={`${styles.soonTile} ${styles[`soon_${s.tint}`]}`}>
+          <div>
+            <div className={styles.soonName}>{s.name}</div>
+            <div className={styles.soonSub}>{s.status}</div>
+          </div>
+          <div className={styles.soonFoot}>
+            <span className={styles.soonTag}>Not connected</span>
+            <span className={styles.soonBtn} aria-hidden>
+              {s.icon}
+            </span>
+          </div>
+        </div>
+      ))}
+    </div>
   )
 }
 
