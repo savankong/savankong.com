@@ -1,0 +1,5 @@
+# The host itself
+psycopg[binary]==3.2.13
+
+# One line per integration. Remove the line when you remove the folder.
+-r dreame/requirements.txt

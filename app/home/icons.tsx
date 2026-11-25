@@ -209,3 +209,16 @@ export const Home = ({ className }: P) => (
     <path d="M4 10.5 12 4l8 6.5V20h-5.5v-5.5h-5V20H4Z" />
   </svg>
 )
+export const Gauge = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <path d="M4 17a8 8 0 1 1 16 0" />
+    <path d="M12 17l3.5-5" />
+    <circle cx="12" cy="17" r="1.2" fill="currentColor" stroke="none" />
+  </svg>
+)
+export const Gear = ({ className }: P) => (
+  <svg {...base} className={className}>
+    <circle cx="12" cy="12" r="3" />
+    <path d="M12 2.8v2.4M12 18.8v2.4M21.2 12h-2.4M5.2 12H2.8M18.5 5.5l-1.7 1.7M7.2 16.8l-1.7 1.7M18.5 18.5l-1.7-1.7M7.2 7.2 5.5 5.5" />
+  </svg>
+)

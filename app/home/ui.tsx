@@ -2,10 +2,10 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useFormStatus } from 'react-dom'
 import { sendCommand } from './actions'
-import { Grid, Pulse, Shield } from './icons'
+import { Gear, Grid, Pulse, Shield } from './icons'
 import styles from './home.module.css'
 
 /** Re-renders the server page every `seconds` while the tab is visible. */
@@ -23,7 +23,7 @@ export function AutoRefresh({ seconds = 10 }: { seconds?: number }) {
   return null
 }
 
-const NAV_ICONS: Record<string, React.ReactNode> = { Home: <Grid />, Security: <Shield />, Activity: <Pulse /> }
+const NAV_ICONS: Record<string, React.ReactNode> = { Home: <Grid />, Security: <Shield />, Activity: <Pulse />, Settings: <Gear /> }
 
 type NavLink = { href: string; label: string; also?: string[] }
 
@@ -146,6 +146,59 @@ export function ConfirmSubmit({ className, children, message }: { className: str
       }}
     >
       {pending ? 'Deleting…' : children}
+    </button>
+  )
+}
+
+/** Brightness slider: sends one set_brightness once you stop moving it. */
+export function Brightness({ deviceId, level }: { deviceId: string; level: number }) {
+  const [value, setValue] = useState(level)
+  const form = useRef<HTMLFormElement>(null)
+  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  useEffect(() => setValue(level), [level])
+  useEffect(() => () => {
+    if (timer.current) clearTimeout(timer.current)
+  }, [])
+  return (
+    <form ref={form} action={sendCommand} className={styles.sliderForm}>
+      <input type="hidden" name="deviceId" value={deviceId} />
+      <input type="hidden" name="action" value="set_brightness" />
+      <input
+        type="range"
+        name="level"
+        min={1}
+        max={100}
+        value={value}
+        aria-label="Brightness"
+        className={styles.slider}
+        style={{ '--fill': `${value}%` } as React.CSSProperties}
+        onChange={(e) => {
+          setValue(Number(e.target.value))
+          if (timer.current) clearTimeout(timer.current)
+          timer.current = setTimeout(() => form.current?.requestSubmit(), 600)
+        }}
+      />
+      <span className={styles.sliderVal}>{value}%</span>
+    </form>
+  )
+}
+
+/** A submit button that shows it's working, for small forms. */
+export function PendingButton({
+  className,
+  children,
+  label,
+  pressed,
+}: {
+  className: string
+  children: React.ReactNode
+  label?: string
+  pressed?: boolean
+}) {
+  const { pending } = useFormStatus()
+  return (
+    <button type="submit" className={className} disabled={pending} aria-label={label} aria-pressed={pressed} title={label}>
+      {children}
     </button>
   )
 }

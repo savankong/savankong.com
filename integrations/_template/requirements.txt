@@ -1,0 +1,2 @@
+# Packages this integration needs, pinned. Add "-r <id>/requirements.txt"
+# to integrations/requirements.txt so the worker installs them.

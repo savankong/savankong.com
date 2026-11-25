@@ -1,12 +1,13 @@
 # home.savankong.com
 
-A private dashboard for running the house. It has three tabs:
+A private dashboard for running the house. It has four tabs:
 
 - **Home**: whether anything needs attention (an offline camera, a low battery, a clip that wasn't saved), the house mode (Home / Away / Disarmed), one tile for each part of the house, and the latest activity.
 - **Security**: the cameras, live view and recordings. This replaces the Ring Protect subscription: the Ring cameras stay, but recordings go to our own DigitalOcean storage.
 - **Activity**: one feed of motion, doorbell rings and every change made from Home.
+- **Settings**: the connected services. Ring is built in; everything else (Dreame, lights, plugs, ...) is an integration you can turn off or remove.
 
-Cleaning (the Dreame robot vacuum) is connected: status, Start, Pause, Send home, Stop and Find it. Lights shows the floodlights on the Ring cameras. Climate and locks have tiles ready to be connected later.
+Ring is the only service built into the code. Every other service is a folder in `integrations/` that one worker runs; see [integrations/README.md](../integrations/README.md). The dashboard draws any device from its kind (light, switch, thermostat, vacuum, lock, sensor), its capabilities and its state, so adding a brand never needs dashboard changes. Today's integrations: **Dreame** (robot vacuum). The Ring floodlights also show under Lights.
 
 ## How it works
 
@@ -22,19 +23,22 @@ Ring camera ──motion / ring──▶ Ring cloud ──push alert──▶ ho
 
 - **Recorder** (`worker/home-recorder.mts`): signs in to Ring with a refresh token and listens for motion and doorbell alerts. For each alert it starts a live view, copies 30 seconds of video (no re-encoding) to MP4, takes a thumbnail and uploads both to Spaces. It also runs the dashboard's requests (Record now, floodlight on or off, siren) and deletes clips older than 30 days.
 - **Live view** (`app/home/LiveView.tsx`, `/live/<camera>`): the browser makes a WebRTC offer and sends it to `/api/home/live`. That queues a `live_start` request, and Postgres `NOTIFY` wakes the recorder at once. The recorder passes the offer to Ring and returns Ring's answer. From then on, video flows **directly from Ring to the browser**, not through DigitalOcean. Each view stops after `HOME_LIVE_SECONDS` (120 by default). It also stops when you press Stop, switch tabs or leave the page, to spare battery cameras.
-- **Vacuum bridge** (`worker/dreame/bridge.py`, a Python worker named `home-dreame`): signs in to DreameHome with the app's account. Every 30 seconds it saves each vacuum's state, battery, errors and last clean to `home_devices`. It runs the dashboard's vacuum requests (`vacuum_start`, `vacuum_pause`, `vacuum_dock`, `vacuum_stop`, `vacuum_locate`), woken by the same `NOTIFY` as the recorder. Each worker only takes requests for its own devices (`ring…` or `dreame:…`). The DreameHome protocol itself is copied unchanged from [Tasshack/dreame-vacuum](https://github.com/Tasshack/dreame-vacuum) (MIT) at a pinned commit, in `worker/dreame/dreame_vacuum/`.
+- **Integrations** (`integrations/host.py`, a Python worker named `home-integrations`): loads every folder in `integrations/`, registers it in `home_integrations` (shown on the Settings page), polls its devices into `home_devices` as `<integration>:<id>`, and runs the dashboard's commands for them. It is woken by the same `NOTIFY` as the recorder. The recorder only takes `ring…` commands, and each integration only takes its own. Dreame's protocol is copied unchanged from [Tasshack/dreame-vacuum](https://github.com/Tasshack/dreame-vacuum) (MIT) at a pinned commit, in `integrations/dreame/dreame_vacuum/`.
 - **House mode**: Ring Modes (Home / Away / Disarmed) for the Ring location. The recorder stores the location as a `house` device. The switch on the Home tab queues a `mode_set` request, and changes made in the Ring app show up within a minute. What each mode does to each camera is still set in the Ring app.
 - **Dashboard** (`app/home`): the same Next.js app as savankong.com. On the `home.` hostname, `middleware.ts` serves the `/home` pages at the site root and requires a login for every page and API route. Videos stay private in Spaces; the dashboard gives out signed links that expire after one hour.
 - **Data** (`db/migrations/*_create_home`): `home_devices` (all devices, so new kinds can be added later), `home_clips`, `home_commands` (requests from the dashboard to the recorder) and `home_kv` (Ring's rotating refresh token and the recorder's heartbeat).
 
 ## Setup
 
-1. **Database.** Apply the two home migrations to the app's Postgres, in order:
+1. **Database.** Apply the three home migrations to the app's Postgres, in order:
    ```bash
    psql "$DATABASE_URL" -f db/migrations/20261124031307_create_home/migration.sql
    ```
    ```bash
    psql "$DATABASE_URL" -f db/migrations/20261124033843_home_live/migration.sql
+   ```
+   ```bash
+   psql "$DATABASE_URL" -f db/migrations/20261125015724_home_integrations/migration.sql
    ```
 2. **Storage.** In DigitalOcean, create a Spaces bucket named `kong-home` in `nyc3`. Keep it private, with the CDN off. Create a Spaces access key and secret for it.
 3. **Ring login.** On your own computer, in this repository:
@@ -51,7 +55,7 @@ Ring camera ──motion / ring──▶ Ring cloud ──push alert──▶ ho
 
    Apply the spec (`doctl apps update <app id> --spec .do/app.yaml`) or add the `home-recorder` worker in the console. **The spec has no `domains` section.** If you apply it with doctl, check afterwards that savankong.com is still attached.
 5. **Domain.** In the app's Settings → Domains, add `home.savankong.com`. In GoDaddy, add a `CNAME` record for `home` that points to the app's `ondigitalocean.app` hostname.
-6. **Dreame.** Set `DREAME_USERNAME` and `DREAME_PASSWORD` on the `home-dreame` worker: the email and password you use in the DreameHome app. Set `DREAME_COUNTRY` to your account's region (`us`, `eu`, `cn`, `ru`, `sg` or `kr`; it's `us` in the spec). The vacuum appears on the Home tab within a minute. If the sign-in fails, the Cleaning page shows the reason.
+6. **Integrations.** Set each integration's settings on the `home-integrations` worker. For Dreame: `DREAME_USERNAME` and `DREAME_PASSWORD`: the email and password you use in the DreameHome app. Set `DREAME_COUNTRY` to your account's region (`us`, `eu`, `cn`, `ru`, `sg` or `kr`; it's `us` in the spec). The vacuum appears on the Home tab within a minute. If the sign-in fails, the Settings page shows the reason.
 7. **Ring app.** For each camera:
    - Turn on Motion Alerts. The recorder only hears about events Ring would notify you about.
    - Turn off End-to-End Encryption, and turn off Ring Edge if the camera has it. With either one on, a third-party stream gets no video.
@@ -72,7 +76,7 @@ Ring camera ──motion / ring──▶ Ring cloud ──push alert──▶ ho
 ## Risks to check on deploy
 
 - **Outbound UDP from App Platform.** The recorder receives Ring's video over WebRTC to make clips. If the worker logs `Stream did not finish in time` for every clip, App Platform is blocking the media connection. Live view on the dashboard is not affected, because its video never touches the worker. In that case, run the same command on a small Droplet or on the home mini PC instead. Give it the same environment variables, and do not run it in two places at once.
-- **Dreame is unofficial too.** DreameHome has no public API. The vendored protocol copies how the DreameHome app talks to Dreame's servers, including its TLS handshake. Dreame has changed this before, and the bridge stops working until the copied files are updated from a newer upstream commit (see `worker/dreame/dreame_vacuum/__init__.py`).
+- **Dreame is unofficial too.** DreameHome has no public API. The vendored protocol copies how the DreameHome app talks to Dreame's servers, including its TLS handshake. Dreame has changed this before, and the integration stops working until the copied files are updated from a newer upstream commit (see `integrations/dreame/dreame_vacuum/__init__.py`).
 - **Ring login.** If the refresh token stops working, the header shows "Recorder offline" with the reason. Run `npm run ring:auth` again and update `RING_REFRESH_TOKEN`. A changed value takes priority over the saved token.
 
 ## Running it locally
@@ -87,8 +91,6 @@ npm run dev
 npm run home:recorder
 ```
 
-## Adding the next device
+## Adding or removing a service
 
-1. Add a provider to the recorder: sign in, upsert each device into `home_devices` with its `kind` and `capabilities`, and handle the new actions in `pollCommands`.
-2. The Home tab finds the device through `lib/home/systems.ts`, which maps kinds to systems (`light` → Lights, `thermostat` → Climate, `vacuum` → Cleaning, `lock` → Locks). Its tile switches from "Not connected" to connected.
-3. Give the system its own page with controls, as Security has. Add the new actions to `changeLabel` in `lib/home/format.ts` so they read well in the Activity feed.
+See [integrations/README.md](../integrations/README.md). In short: copy `integrations/_template` to a new folder, fill in sign-in, devices and actions, add its packages and settings, and deploy. To remove one, delete its folder and press Remove on the Settings page.
