@@ -30,9 +30,11 @@ const int = (v: string | undefined, d: number) => (v && Number.isFinite(Number(v
 const CLIP_SECONDS = int(process.env.HOME_CLIP_SECONDS, 30)
 const RETENTION_DAYS = int(process.env.HOME_RETENTION_DAYS, 30)
 const MAX_PARALLEL = int(process.env.HOME_MAX_PARALLEL, 3)
-// ffmpeg-static is CommonJS; its default export is the binary's path.
-const ffmpegStatic = createRequire(import.meta.url)('ffmpeg-static') as string | null
-const FFMPEG = process.env.FFMPEG_PATH || ffmpegStatic || 'ffmpeg'
+// Static ffmpeg build that the Ring library already depends on. If its download
+// fails, its installer still lets npm ci finish (ffmpeg-static's exits with an
+// error and fails the whole install); the recorder then reports it at startup.
+const bundledFfmpeg = createRequire(import.meta.url)('ffmpeg-for-homebridge') as string | undefined
+const FFMPEG = process.env.FFMPEG_PATH || bundledFfmpeg || 'ffmpeg'
 const LIVE_SECONDS = int(process.env.HOME_LIVE_SECONDS, 120)
 const COMMAND_TTL_MS = 2 * 60_000
 const LIVE_TTL_MS = 20_000 // the browser stops waiting for an answer after ~15 s
@@ -42,6 +44,7 @@ const locations = new Map<string, Location>() // house modes live on Ring locati
 const MODES = new Set(['home', 'away', 'disarmed'])
 const recording = new Set<string>()
 let api: RingApi | null = null
+let ffmpegProblem: string | null = null // shown on the dashboard until fixed
 let stopping = false
 
 const log = (...a: unknown[]) => console.log(new Date().toISOString(), '[home]', ...a)
@@ -375,13 +378,19 @@ async function connect() {
   }
   for (const loc of await api.getLocations()) await syncLocation(loc).catch((e) => log('location error', e))
   log(`connected: ${list.map((c) => c.name).join(', ') || 'no cameras'}; ${locations.size} location(s) with Modes`)
-  await note(list.length ? null : 'Ring login works, but the account has no cameras.')
+  await note(ffmpegProblem ?? (list.length ? null : 'Ring login works, but the account has no cameras.'))
 }
 
 async function main() {
   log(`starting (clips ${CLIP_SECONDS}s, keep ${RETENTION_DAYS} days, ffmpeg ${FFMPEG})`)
   await sql`UPDATE home_clips SET status = 'failed', error = 'Recorder restarted while recording'
             WHERE status = 'recording'`
+  const probe = await run(['-version']).catch((e: Error) => ({ code: -1, log: e.message }))
+  if (probe.code !== 0) {
+    log(`ffmpeg not usable at ${FFMPEG}: ${probe.log.slice(0, 200)}`)
+    ffmpegProblem = 'ffmpeg is missing on the recorder, so clips can’t be saved. Redeploy, or set FFMPEG_PATH.'
+    await note(ffmpegProblem).catch(() => {})
+  }
 
   for (let attempt = 1; !stopping; attempt++) {
     try {
