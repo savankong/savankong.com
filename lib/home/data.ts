@@ -1,5 +1,8 @@
 // Reads for the home dashboard. The recorder worker writes these tables.
 import { sql } from '../db'
+import { isCamera, stateOf } from './kinds'
+
+export { isCamera }
 
 export type Device = {
   id: string
@@ -80,6 +83,8 @@ export async function getDevices(): Promise<Device[]> {
       (SELECT count(*) FROM home_clips c
          WHERE c.device_id = d.id AND c.started_at > now() - interval '24 hours') AS clips_today
     FROM home_devices d
+    WHERE NOT EXISTS (
+      SELECT 1 FROM home_integrations i WHERE i.id = split_part(d.id, ':', 1) AND NOT i.enabled)
     ORDER BY CASE d.kind WHEN 'doorbell' THEN 0 WHEN 'camera' THEN 1 ELSE 2 END, d.name`
   return rows.map(toDevice)
 }
@@ -164,8 +169,6 @@ export async function getPendingCommands(): Promise<Pending[]> {
 
 // ---------- Whole-home views ----------
 
-export const isCamera = (d: Pick<Device, 'kind'>) => d.kind === 'camera' || d.kind === 'doorbell'
-
 export type House = { id: string; name: string; mode: string }
 
 /** The Ring location whose mode (Home / Away / Disarmed) the hub switches. */
@@ -177,27 +180,36 @@ export function houseOf(devices: Device[]): House | null {
 
 export type Attention = { tone: 'bad' | 'warn'; title: string; text: string; href?: string }
 
-export type VacuumMeta = {
-  state?: string
-  error?: string | null
-  charging?: boolean
-  cleanMinutes?: number | null
-  cleanedArea?: number | null
+export type Integration = {
+  id: string
+  name: string
+  enabled: boolean
+  status: string // starting | connected | needs_setup | error | disabled | missing
+  note: string | null
+  deviceCount: number
+  lastSeenAt: Date | null
+  online: boolean // the host has checked in recently
 }
-export const vacuumMeta = (d: Device) => d.meta as VacuumMeta
 
-/** Floodlights on Ring cameras count as lights until real lights are connected. */
-export const isLight = (d: Device) => d.kind === 'light' || (isCamera(d) && d.capabilities.includes('light'))
-
-export async function getBridgeStatus(prefix: 'dreame'): Promise<RecorderStatus> {
-  const rows = await sql`SELECT key, value, updated_at FROM home_kv WHERE key IN (${`${prefix}_heartbeat`}, ${`${prefix}_note`})`
-  const beat = rows.find((r) => r.key === `${prefix}_heartbeat`)
-  const note = rows.find((r) => r.key === `${prefix}_note`)
-  const lastBeat = beat ? new Date(beat.updated_at as string) : null
+/** Integrations other than Ring, as registered by integrations/host.py. */
+export async function getIntegrations(): Promise<{ list: Integration[]; hostOnline: boolean }> {
+  const [rows, beat] = await Promise.all([
+    sql`SELECT * FROM home_integrations ORDER BY name`,
+    sql`SELECT updated_at FROM home_kv WHERE key = 'integrations_heartbeat'`,
+  ])
+  const hostOnline = Boolean(beat[0] && Date.now() - new Date(beat[0].updated_at as string).getTime() < 3 * 60_000)
   return {
-    online: Boolean(lastBeat && Date.now() - lastBeat.getTime() < 3 * 60_000),
-    lastBeat,
-    note: note ? String(note.value) : null,
+    hostOnline,
+    list: rows.map((r) => ({
+      id: String(r.id),
+      name: String(r.name),
+      enabled: Boolean(r.enabled),
+      status: String(r.status),
+      note: (r.note as string) ?? null,
+      deviceCount: Number(r.device_count ?? 0),
+      lastSeenAt: r.last_seen_at ? new Date(r.last_seen_at as string) : null,
+      online: hostOnline,
+    })),
   }
 }
 
@@ -206,17 +218,23 @@ export function attentionItems(
   devices: Device[],
   recorder: RecorderStatus | null,
   failedToday: number,
-  vacuumBridge: RecorderStatus | null = null,
+  integrations: { list: Integration[]; hostOnline: boolean } | null = null,
 ): Attention[] {
   const out: Attention[] = []
-  const vacuums = devices.filter((d) => d.kind === 'vacuum')
-  if (vacuums.length && vacuumBridge && !vacuumBridge.online) {
-    out.push({ tone: 'bad', title: 'Vacuum bridge offline', text: vacuumBridge.note ?? 'Vacuum status and controls are paused.' })
+  const live = integrations?.list.filter((i) => i.enabled) ?? []
+  if (integrations && live.length && !integrations.hostOnline) {
+    out.push({ tone: 'bad', title: 'Integrations offline', text: 'Lights, vacuum and other devices can’t be controlled.', href: '/settings' })
   }
-  for (const v of vacuums) {
-    const m = vacuumMeta(v)
-    if (m.error || m.state === 'error')
-      out.push({ tone: 'bad', title: `${v.name} needs help`, text: m.error ?? 'Check it in the DreameHome app.', href: '/cleaning' })
+  for (const i of live) {
+    if (i.status === 'error' || i.status === 'needs_setup' || i.status === 'missing')
+      out.push({ tone: i.status === 'error' ? 'bad' : 'warn', title: `${i.name} isn’t connected`, text: i.note ?? 'See Settings.', href: '/settings' })
+  }
+  for (const d of devices.filter((x) => !isCamera(x) && x.kind !== 'house')) {
+    const s = stateOf(d)
+    const href = `/devices/${encodeURIComponent(d.id)}`
+    if (!d.online) out.push({ tone: 'warn', title: `${d.name} is offline`, text: 'It hasn’t reported in.', href })
+    else if (s.error || s.status === 'error') out.push({ tone: 'bad', title: `${d.name} needs help`, text: s.error ?? 'Check it in its app.', href })
+    else if (d.battery != null && d.battery < 20) out.push({ tone: 'warn', title: `${d.name} battery at ${d.battery}%`, text: 'Charge it soon.', href })
   }
   if (recorder && !recorder.online && devices.some(isCamera)) {
     out.push({ tone: 'bad', title: 'Recorder offline', text: recorder.note ?? 'New motion and rings aren’t being saved.' })
@@ -234,7 +252,7 @@ export function attentionItems(
       href: '/activity?show=failed',
     })
   }
-  return out
+  return out.sort((x, y) => Number(y.tone === 'bad') - Number(x.tone === 'bad'))
 }
 
 export async function getFailedToday(): Promise<number> {
@@ -248,6 +266,7 @@ export type Change = {
   deviceName: string
   action: string
   mode: string | null
+  params: Record<string, unknown> | null
   status: string
   error: string | null
   at: Date
@@ -281,7 +300,8 @@ export async function getActivity(opts: { show?: string; limit?: number; before?
       : Promise.resolve([]),
     wantChanges
       ? sql`
-        SELECT m.id, m.device_id, d.name AS device_name, m.action, m.payload->>'mode' AS mode, m.status, m.error,
+        SELECT m.id, m.device_id, d.name AS device_name, m.action, m.payload->>'mode' AS mode,
+               CASE WHEN m.action = 'live_start' THEN NULL ELSE m.payload END AS params, m.status, m.error,
                coalesce(m.finished_at, m.created_at) AS at
         FROM home_commands m JOIN home_devices d ON d.id = m.device_id
         WHERE m.action NOT IN ('record', 'live_stop') AND m.status IN ('done', 'failed')
@@ -302,6 +322,7 @@ export async function getActivity(opts: { show?: string; limit?: number; before?
           deviceName: String(r.device_name),
           action: String(r.action),
           mode: (r.mode as string) ?? null,
+          params: (r.params as Record<string, unknown>) ?? null,
           status: String(r.status),
           error: (r.error as string) ?? null,
           at: new Date(r.at as string),

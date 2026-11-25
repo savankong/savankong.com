@@ -67,3 +67,17 @@ export const homeKv = pgTable('home_kv', {
   value: text('value').notNull(),
   updatedAt: timestamp('updated_at', { withTimezone: true }).notNull().defaultNow(),
 })
+
+// Plug-in integrations other than Ring (Dreame, lights, ...). Each folder under
+// integrations/ registers itself here; the dashboard's Settings page turns
+// them on and off. Their devices use ids "<integration id>:<device id>".
+export const homeIntegrations = pgTable('home_integrations', {
+  id: text('id').primaryKey(), // folder name, e.g. "dreame"
+  name: text('name').notNull(),
+  enabled: boolean('enabled').notNull().default(true),
+  status: text('status').notNull().default('starting'), // starting | connected | needs_setup | error | disabled
+  note: text('note'),
+  deviceCount: integer('device_count').notNull().default(0),
+  lastSeenAt: timestamp('last_seen_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).notNull().defaultNow(),
+})

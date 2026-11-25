@@ -55,4 +55,4 @@ This app deploys to [DigitalOcean App Platform](https://www.digitalocean.com/pro
 
 ## home.savankong.com
 
-The same app also serves a private house dashboard on `home.savankong.com`: Ring camera recordings saved to our own Spaces bucket instead of Ring Protect, with vacuum and lights to come. A separate worker (`npm run home:recorder`) does the recording. Setup and design notes are in [docs/home.md](docs/home.md).
+The same app also serves a private house dashboard on `home.savankong.com`: Ring camera recordings saved to our own Spaces bucket instead of Ring Protect, with vacuum and lights to come. A separate worker (`npm run home:recorder`) does the recording. Every other service (Dreame, lights, plugs, ...) is a folder in `integrations/` run by one Python worker; see [integrations/README.md](integrations/README.md). Setup and design notes are in [docs/home.md](docs/home.md).

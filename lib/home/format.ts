@@ -72,7 +72,7 @@ export function groupByDay<T extends { startedAt: Date }>(items: T[]): { label: 
 export const MODE_LABEL: Record<string, string> = { home: 'Home', away: 'Away', disarmed: 'Disarmed' }
 
 /** "Light turned on", "House set to Away", ... for the activity feed. */
-export function changeLabel(action: string, mode: string | null): string {
+export function changeLabel(action: string, mode: string | null, params?: Record<string, unknown> | null): string {
   switch (action) {
     case 'light_on':
       return 'Light turned on'
@@ -86,37 +86,29 @@ export function changeLabel(action: string, mode: string | null): string {
       return 'Watched live'
     case 'mode_set':
       return `House set to ${MODE_LABEL[mode ?? ''] ?? mode}`
-    case 'vacuum_start':
-      return 'Vacuum started'
-    case 'vacuum_pause':
-      return 'Vacuum paused'
-    case 'vacuum_dock':
-      return 'Vacuum sent home'
-    case 'vacuum_stop':
-      return 'Vacuum stopped'
-    case 'vacuum_locate':
-      return 'Vacuum asked to beep'
+    case 'turn_on':
+      return 'Turned on'
+    case 'turn_off':
+      return 'Turned off'
+    case 'set_brightness':
+      return `Brightness set to ${params?.level ?? '?'}%`
+    case 'set_target':
+      return `Set to ${params?.target ?? '?'}°`
+    case 'lock':
+      return 'Locked'
+    case 'unlock':
+      return 'Unlocked'
+    case 'start':
+      return 'Started'
+    case 'pause':
+      return 'Paused'
+    case 'stop':
+      return 'Stopped'
+    case 'dock':
+      return 'Sent home'
+    case 'locate':
+      return 'Asked to beep'
     default:
       return action.replaceAll('_', ' ')
   }
-}
-
-/** What the vacuum is doing, in words (see worker/dreame/bridge.py STATES). */
-export const VACUUM_STATE: Record<string, string> = {
-  cleaning: 'Cleaning',
-  idle: 'Idle',
-  paused: 'Paused',
-  error: 'Needs help',
-  returning: 'Heading home',
-  charging: 'Charging',
-  docked: 'Docked',
-  drying: 'Drying the mop',
-  washing: 'Washing the mop',
-  mapping: 'Mapping',
-  updating: 'Updating',
-  station: 'At the station',
-  emptying: 'Emptying the bin',
-  remote: 'Remote control',
-  offline: 'Offline',
-  unknown: 'Unknown',
 }

@@ -1,9 +1,10 @@
 // Server-rendered building blocks shared by the dashboard pages.
 /* eslint-disable @next/next/no-img-element -- thumbnails are signed Spaces URLs behind a redirect */
 import Link from 'next/link'
-import { isLight, vacuumMeta, type Activity, type Attention, type Change, type Clip, type Device, type House, type RecorderStatus } from '@/lib/home/data'
+import type { Activity, Attention, Change, Clip, Device, House, RecorderStatus } from '@/lib/home/data'
+import { can, isRingFloodlight, stateOf, statusLine, toneOf } from '@/lib/home/kinds'
 import { SYSTEMS, type SystemKey } from '@/lib/home/systems'
-import { MODE_LABEL, VACUUM_STATE, bytes, changeLabel, groupByDay, seconds, time, triggerLabel, when } from '@/lib/home/format'
+import { MODE_LABEL, bytes, changeLabel, groupByDay, seconds, time, triggerLabel, when } from '@/lib/home/format'
 import { homeHref } from '@/lib/home/paths'
 import {
   Alert,
@@ -14,6 +15,8 @@ import {
   Camera,
   Cloud,
   Film,
+  Gauge,
+  Grid,
   HouseMark,
   Home as HomeIcon,
   Lock,
@@ -30,7 +33,7 @@ import {
   TriggerIcon,
   Vacuum,
 } from './icons'
-import { CommandButton } from './ui'
+import { Brightness, CommandButton } from './ui'
 import styles from './home.module.css'
 
 export const thumbSrc = (id: number) => `/api/home/media/${id}?kind=thumb`
@@ -236,11 +239,13 @@ function ClipItem({ c, compact }: { c: Clip; compact: boolean }) {
 }
 
 function ChangeIcon({ action }: { action: string }) {
-  if (action.startsWith('light')) return <Bulb />
+  if (action.startsWith('light') || action.startsWith('turn_') || action === 'set_brightness') return <Bulb />
   if (action.startsWith('siren')) return <Siren />
   if (action === 'mode_set') return <HouseMark />
   if (action === 'live_start') return <Play />
-  if (action.startsWith('vacuum')) return <Vacuum />
+  if (action === 'lock' || action === 'unlock') return <Lock />
+  if (action === 'set_target') return <Thermo />
+  if (['start', 'pause', 'stop', 'dock', 'locate'].includes(action)) return <Vacuum />
   return <Record />
 }
 
@@ -253,7 +258,7 @@ function ChangeItem({ m }: { m: Change }) {
       <div className={`${styles.tlCard} ${styles.tlPlain}`}>
         <div className={styles.tlText}>
           <div className={styles.tlTime}>{time(m.at)}</div>
-          <div className={styles.rowTitle}>{changeLabel(m.action, m.mode)}</div>
+          <div className={styles.rowTitle}>{changeLabel(m.action, m.mode, m.params)}</div>
           <div className={`${styles.rowSub} ${m.status === 'failed' ? styles.failed : ''}`}>
             {m.deviceName}
             {m.status === 'failed' ? ` · didn’t work${m.error ? `: ${m.error}` : ''}` : ' · from Home'}
@@ -303,64 +308,6 @@ export function ModeSwitch({ house, pending }: { house: House; pending: string |
   )
 }
 
-export function vacuumLine(v: Device): string {
-  const m = vacuumMeta(v)
-  if (!v.online) return 'Offline'
-  const state = VACUUM_STATE[m.state ?? 'unknown'] ?? m.state
-  const parts = [m.error ? `${state}: ${m.error}` : state]
-  if (v.battery != null) parts.push(`${v.battery}%`)
-  return parts.join(' · ')
-}
-
-function vacuumTone(v: Device): string {
-  const m = vacuumMeta(v)
-  if (!v.online || m.error || m.state === 'error') return styles.sysIconBad
-  if (m.state === 'cleaning' || m.state === 'returning' || m.state === 'mapping') return styles.sysIconActive
-  return ''
-}
-
-/** The one or two buttons that make sense for what the vacuum is doing now. */
-export function VacuumControls({ device, full = false }: { device: Device; full?: boolean }) {
-  const state = vacuumMeta(device).state ?? 'unknown'
-  const busy = state === 'cleaning' || state === 'mapping'
-  const atHome = ['charging', 'docked', 'station', 'drying', 'washing', 'emptying'].includes(state)
-  const big = full ? ` ${styles.btnLg}` : ''
-  if (!device.online) return null
-  return (
-    <div className={full ? styles.controls : styles.vacButtons}>
-      {busy ? (
-        <CommandButton deviceId={device.id} action="vacuum_pause" className={`${styles.btn}${big}`}>
-          <Pause /> Pause
-        </CommandButton>
-      ) : (
-        <CommandButton deviceId={device.id} action="vacuum_start" className={`${styles.btn}${big}`}>
-          <Play /> {state === 'paused' ? 'Resume' : 'Start cleaning'}
-        </CommandButton>
-      )}
-      {!atHome ? (
-        <CommandButton deviceId={device.id} action="vacuum_dock" className={`${styles.btnGhost}${big}`}>
-          <HomeIcon /> Send home
-        </CommandButton>
-      ) : null}
-      {full && busy ? (
-        <CommandButton
-          deviceId={device.id}
-          action="vacuum_stop"
-          className={`${styles.btnGhost}${big}`}
-          confirmText="Stop this clean? It won't resume where it left off."
-        >
-          Stop
-        </CommandButton>
-      ) : null}
-      {full ? (
-        <CommandButton deviceId={device.id} action="vacuum_locate" className={`${styles.btnGhost}${big}`}>
-          <Speaker /> Find it (beep)
-        </CommandButton>
-      ) : null}
-    </div>
-  )
-}
-
 export function AttentionList({ items }: { items: Attention[] }) {
   if (!items.length) return null
   return (
@@ -395,12 +342,204 @@ export function AttentionList({ items }: { items: Attention[] }) {
 const SYSTEM_ICON: Record<SystemKey, React.ReactNode> = {
   security: <Shield />,
   lights: <Bulb />,
+  switches: <Plug />,
   climate: <Thermo />,
   cleaning: <Vacuum />,
   locks: <Lock />,
+  sensors: <Gauge />,
+  other: <Grid />,
 }
 
-/** One tile per part of the house; connected ones lead. */
+/** Icon for one device, by kind. */
+export function DeviceIcon({ device }: { device: Device }) {
+  if (isRingFloodlight(device)) return <Bulb />
+  switch (device.kind) {
+    case 'light':
+      return <Bulb />
+    case 'switch':
+    case 'fan':
+      return <Plug />
+    case 'thermostat':
+      return <Thermo />
+    case 'vacuum':
+      return <Vacuum />
+    case 'lock':
+      return <Lock />
+    case 'sensor':
+      return <Gauge />
+    default:
+      return <Grid />
+  }
+}
+
+const TONE: Record<string, string> = { active: styles.sysIconActive, bad: styles.sysIconBad, warn: styles.sysIconWarn, '': '' }
+
+/**
+ * The one control that fits a device in a list: a toggle, lock button,
+ * temperature stepper or the vacuum's next step. Drawn from capabilities.
+ */
+export function QuickControl({ device }: { device: Device }) {
+  if (!device.online) return null
+  const s = stateOf(device)
+  if (isRingFloodlight(device)) {
+    return <Toggle device={device} on={Boolean(s.light)} onAction="light_on" offAction="light_off" />
+  }
+  if (can(device, 'turn_on') && can(device, 'turn_off')) {
+    return <Toggle device={device} on={Boolean(s.on)} onAction="turn_on" offAction="turn_off" />
+  }
+  if (can(device, 'lock') && can(device, 'unlock')) {
+    return s.locked ? (
+      <CommandButton
+        deviceId={device.id}
+        action="unlock"
+        className={styles.btnGhost}
+        confirmText={`Unlock ${device.name}?`}
+      >
+        <Lock /> Unlock
+      </CommandButton>
+    ) : (
+      <CommandButton deviceId={device.id} action="lock" className={styles.btn}>
+        <Lock /> Lock
+      </CommandButton>
+    )
+  }
+  if (can(device, 'set_target') && s.target != null) return <Stepper device={device} target={s.target} />
+  if (device.kind === 'vacuum') return <VacuumButtons device={device} compact />
+  return null
+}
+
+function Toggle({ device, on, onAction, offAction }: { device: Device; on: boolean; onAction: string; offAction: string }) {
+  return (
+    <CommandButton
+      deviceId={device.id}
+      action={on ? offAction : onAction}
+      pressed={on}
+      className={`${styles.switch} ${on ? styles.switchOn : ''}`}
+      label={`${device.name}: ${on ? 'on, turn off' : 'off, turn on'}`}
+      busy={<span className={styles.switchKnob} />}
+    >
+      <span className={styles.switchKnob} />
+    </CommandButton>
+  )
+}
+
+function Stepper({ device, target }: { device: Device; target: number }) {
+  const unit = stateOf(device).unit ?? '°'
+  return (
+    <div className={styles.stepperCtl}>
+      <CommandButton deviceId={device.id} action="set_target" fields={{ target: String(target - 1) }} className={styles.btnGhost} label="Lower">
+        −
+      </CommandButton>
+      <span className={styles.stepperVal}>
+        {target}
+        {unit}
+      </span>
+      <CommandButton deviceId={device.id} action="set_target" fields={{ target: String(target + 1) }} className={styles.btnGhost} label="Raise">
+        +
+      </CommandButton>
+    </div>
+  )
+}
+
+/** The vacuum buttons that make sense for what it's doing now. */
+function VacuumButtons({ device, full = false, compact = false }: { device: Device; full?: boolean; compact?: boolean }) {
+  const status = stateOf(device).status ?? 'unknown'
+  const busy = status === 'cleaning' || status === 'mapping'
+  const atHome = ['charging', 'docked', 'station', 'drying', 'washing', 'emptying'].includes(status)
+  const big = full ? ` ${styles.btnLg}` : ''
+  return (
+    <div className={full ? styles.controls : styles.vacButtons}>
+      {busy && can(device, 'pause') ? (
+        <CommandButton deviceId={device.id} action="pause" className={`${styles.btn}${big}`}>
+          <Pause /> Pause
+        </CommandButton>
+      ) : !busy && can(device, 'start') ? (
+        <CommandButton deviceId={device.id} action="start" className={`${styles.btn}${big}`}>
+          <Play /> {status === 'paused' ? 'Resume' : 'Start'}
+        </CommandButton>
+      ) : null}
+      {!compact && !atHome && can(device, 'dock') ? (
+        <CommandButton deviceId={device.id} action="dock" className={`${styles.btnGhost}${big}`}>
+          <HomeIcon /> Send home
+        </CommandButton>
+      ) : null}
+      {full && busy && can(device, 'stop') ? (
+        <CommandButton
+          deviceId={device.id}
+          action="stop"
+          className={`${styles.btnGhost}${big}`}
+          confirmText="Stop? It won't resume where it left off."
+        >
+          Stop
+        </CommandButton>
+      ) : null}
+      {full && can(device, 'locate') ? (
+        <CommandButton deviceId={device.id} action="locate" className={`${styles.btnGhost}${big}`}>
+          <Speaker /> Find it (beep)
+        </CommandButton>
+      ) : null}
+    </div>
+  )
+}
+
+/** Every control a device offers, for its own page. */
+export function DeviceControls({ device }: { device: Device }) {
+  const s = stateOf(device)
+  if (!device.online) return <p className={styles.stepText}>Controls come back when it reports in again.</p>
+  if (device.kind === 'vacuum') return <VacuumButtons device={device} full />
+  return (
+    <div className={styles.controls}>
+      {isRingFloodlight(device) || (can(device, 'turn_on') && can(device, 'turn_off')) ? (
+        <div className={styles.ctlRow}>
+          <span>Power</span>
+          <QuickControl device={device} />
+        </div>
+      ) : null}
+      {can(device, 'set_brightness') ? (
+        <div className={styles.ctlRow}>
+          <span>Brightness</span>
+          <Brightness deviceId={device.id} level={s.brightness ?? 0} />
+        </div>
+      ) : null}
+      {can(device, 'set_target') && s.target != null ? (
+        <div className={styles.ctlRow}>
+          <span>Target</span>
+          <Stepper device={device} target={s.target} />
+        </div>
+      ) : null}
+      {can(device, 'lock') ? (
+        <div className={styles.ctlRow}>
+          <span>{s.locked ? 'Locked' : 'Unlocked'}</span>
+          <QuickControl device={device} />
+        </div>
+      ) : null}
+    </div>
+  )
+}
+
+/** A device in a system tile: icon, name, what it's doing, one control. */
+export function DeviceRow({ device }: { device: Device }) {
+  const href = isRingFloodlight(device)
+    ? homeHref(`/live/${encodeURIComponent(device.id)}`)
+    : homeHref(`/devices/${encodeURIComponent(device.id)}`)
+  const name = isRingFloodlight(device) ? `${device.name} floodlight` : device.name
+  return (
+    <div className={styles.devRow}>
+      <span className={`${styles.devIcon} ${TONE[toneOf(device)]}`}>
+        <DeviceIcon device={device} />
+      </span>
+      <Link href={href} className={styles.devText}>
+        <span className={styles.devName}>{name}</span>
+        <span className={styles.devSub}>{statusLine(device)}</span>
+      </Link>
+      <div className={styles.devCtl}>
+        <QuickControl device={device} />
+      </div>
+    </div>
+  )
+}
+
+/** One tile per kind of thing in the house, from whatever is connected. */
 export function SystemsGrid({
   devices,
   recorder,
@@ -410,14 +549,13 @@ export function SystemsGrid({
   recorder: RecorderStatus | null
   clipsToday: number
 }) {
-  const systems = SYSTEMS.map((s) => ({
-    ...s,
-    devices: devices.filter((d) => (s.key === 'lights' ? isLight(d) : s.kinds.includes(d.kind))),
-  })).sort((a, b) => Number(b.devices.length > 0) - Number(a.devices.length > 0))
+  const systems = SYSTEMS.map((s) => ({ ...s, devices: devices.filter((d) => d.kind !== 'house' && s.match(d)) })).filter(
+    (s) => s.devices.length > 0,
+  )
   return (
     <div className={styles.systems}>
       {systems.map((s) => {
-        if (s.key === 'security' && s.devices.length) {
+        if (s.key === 'security') {
           const online = s.devices.filter((d) => d.online).length
           const thumbs = s.devices.filter((d) => d.latestThumbClipId).slice(0, 3)
           return (
@@ -448,69 +586,36 @@ export function SystemsGrid({
             </Link>
           )
         }
-        if (s.key === 'cleaning' && s.devices.length) {
-          return (
-            <div key={s.key} className={styles.sys}>
-              {s.devices.map((v) => (
-                <div key={v.id} className={styles.sysBlock}>
-                  <Link href={homeHref('/cleaning')} className={styles.sysHead}>
-                    <span className={`${styles.sysIcon} ${vacuumTone(v)}`}>{SYSTEM_ICON.cleaning}</span>
-                    <div>
-                      <div className={styles.cardTitle}>{v.name}</div>
-                      <div className={styles.cardSub}>{vacuumLine(v)}</div>
-                    </div>
-                  </Link>
-                  <VacuumControls device={v} />
-                </div>
-              ))}
-            </div>
-          )
-        }
-        if (s.key === 'lights' && s.devices.length) {
-          return (
-            <div key={s.key} className={styles.sys}>
-              <div className={styles.sysHead}>
-                <span className={styles.sysIcon}>{SYSTEM_ICON.lights}</span>
-                <div>
-                  <div className={styles.cardTitle}>{s.name}</div>
-                  <div className={styles.cardSub}>
-                    {s.devices.filter((d) => d.meta.light).length} of {s.devices.length} on
-                  </div>
-                </div>
-              </div>
-              <div className={styles.lightList}>
-                {s.devices.map((d) => (
-                  <CommandButton
-                    key={d.id}
-                    deviceId={d.id}
-                    action={d.meta.light ? 'light_off' : 'light_on'}
-                    pressed={Boolean(d.meta.light)}
-                    className={`${styles.lightBtn} ${d.meta.light ? styles.lightOn : ''}`}
-                    label={`${d.name} light ${d.meta.light ? 'on, turn off' : 'off, turn on'}`}
-                  >
-                    <Bulb />
-                    <span>{d.kind === 'light' ? d.name : `${d.name} floodlight`}</span>
-                    <span className={styles.lightState}>{d.meta.light ? 'On' : 'Off'}</span>
-                  </CommandButton>
-                ))}
-              </div>
-            </div>
-          )
-        }
-        const connected = s.devices.length > 0
+        const on = s.devices.filter((d) => ['active'].includes(toneOf(d))).length
         return (
-          <div key={s.key} className={`${styles.sys} ${connected ? '' : styles.sysIdle}`}>
+          <div key={s.key} className={`${styles.sys} ${styles.sysList}`}>
             <div className={styles.sysHead}>
               <span className={styles.sysIcon}>{SYSTEM_ICON[s.key]}</span>
               <div>
                 <div className={styles.cardTitle}>{s.name}</div>
-                <div className={styles.cardSub}>{connected ? `${s.devices.length} connected` : s.idle}</div>
+                <div className={styles.cardSub}>
+                  {s.devices.length} {s.devices.length === 1 ? 'device' : 'devices'}
+                  {on && (s.key === 'lights' || s.key === 'switches') ? ` · ${on} on` : ''}
+                </div>
               </div>
             </div>
-            <div className={styles.sysFoot}>{connected ? 'Connected' : 'Not connected'}</div>
+            <div className={styles.devList}>
+              {s.devices.map((d) => (
+                <DeviceRow key={d.id} device={d} />
+              ))}
+            </div>
           </div>
         )
       })}
+      <Link href={homeHref('/settings')} className={`${styles.sys} ${styles.sysIdle} ${styles.sysAdd}`}>
+        <div className={styles.sysHead}>
+          <span className={styles.sysIcon}>+</span>
+          <div>
+            <div className={styles.cardTitle}>Add or remove</div>
+            <div className={styles.cardSub}>Lights, plugs, climate, locks and more</div>
+          </div>
+        </div>
+      </Link>
     </div>
   )
 }
